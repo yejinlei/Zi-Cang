@@ -39,12 +39,25 @@ function buildThemeMenu(){
     </div>
   </div>`;
 }
-function closeThemeMenu(){ document.getElementById('themeDropdown')?.classList.remove('open'); }
+function closeThemeMenu(){
+  const dd = document.getElementById('themeDropdown');
+  const btn = document.getElementById('themeBtn');
+  if(dd) dd.classList.remove('open');
+  if(btn) btn.setAttribute('aria-open','false');
+}
 document.addEventListener('click', e=>{
   const wrap = document.querySelector('.theme-menu-wrap');
   if(!wrap) return;
-  if(e.target.closest('.theme-btn')) document.getElementById('themeDropdown').classList.toggle('open');
-  else if(!e.target.closest('.theme-dropdown')) closeThemeMenu();
+  if(e.target.closest('.theme-btn')){
+    const dd = document.getElementById('themeDropdown');
+    const btn = document.getElementById('themeBtn');
+    if(!dd) return;
+    const willOpen = !dd.classList.contains('open');
+    dd.classList.toggle('open', willOpen);
+    if(btn) btn.setAttribute('aria-open', willOpen?'true':'false');
+  } else if(!e.target.closest('.theme-dropdown')){
+    closeThemeMenu();
+  }
 });
 
 // ====== 导航栏 ======
