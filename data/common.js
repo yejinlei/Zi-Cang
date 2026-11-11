@@ -70,22 +70,23 @@ function renderFooter() {
 }
 
 // 主题系统（子藏主题）
+const THEMES = [
+  {id:'xuanzhi', name:'宣紙古籍', icon:'卷', desc:'米黄朱红·诸子风',
+   vars:{'--bg':'#f5efe0','--paper':'#fbf6e9','--paper2':'#f0e7d3','--ink':'#2b1d0e','--ink2':'#5a4227','--ink3':'#8a6c42','--red':'#b83b2f','--gold':'#d4a853','--jade':'#5d8f6f','--indigo':'#3d4f6f','--border':'#d4c6a8'}},
+  {id:'shuimo', name:'水墨山水', icon:'☁', desc:'素白淡墨·写意风',
+   vars:{'--bg':'#f8f8f6','--paper':'#ffffff','--paper2':'#f0f0ed','--ink':'#1a1a1a','--ink2':'#444444','--ink3':'#777777','--red':'#c83c3c','--gold':'#b8860b','--jade':'#4a7c59','--indigo':'#4a5f7f','--border':'#e0e0dc'}},
+  {id:'zhujian', name:'竹簡漢簡', icon:'⺮', desc:'青竹墨·汉简书风',
+   vars:{'--bg':'#2a3328','--paper':'#344032','--paper2':'#3d4b3b','--ink':'#e8e4d6','--ink2':'#c4bfb0','--ink3':'#9a9585','--red':'#d4634a','--gold':'#e2c079','--jade':'#7cb69a','--indigo':'#6a7a9f','--border':'#4a5a47'}},
+  {id:'qingtong', name:'青銅吉金', icon:'鼎', desc:'玄黑金·商周铜器',
+   vars:{'--bg':'#161310','--paper':'#201c18','--paper2':'#2a2520','--ink':'#e0d8c8','--ink2':'#b8af9f','--ink3':'#8a8272','--red':'#c94c3a','--gold':'#d4af37','--jade':'#6a9b83','--indigo':'#5a6a8f','--border':'#3a342d'}},
+  {id:'xingxiang', name:'星象羅盤', icon:'✦', desc:'深空蓝·数术星空',
+   vars:{'--bg':'#0f1425','--paper':'#181f36','--paper2':'#212a47','--ink':'#e0e6f5','--ink2':'#b0bad0','--ink3':'#7f8aa8','--red':'#e2705d','--gold':'#f0c86e','--jade':'#75b8a0','--indigo':'#7a8abf','--border':'#2d385c'}},
+];
+
 function initTheme() {
-  const themes = [
-    {id:'xuanzhi', name:'宣紙古籍', icon:'卷', desc:'米黄朱红·诸子风',
-     vars:{'--bg':'#f5efe0','--paper':'#fbf6e9','--paper2':'#f0e7d3','--ink':'#2b1d0e','--ink2':'#5a4227','--ink3':'#8a6c42','--red':'#b83b2f','--gold':'#d4a853','--jade':'#5d8f6f','--indigo':'#3d4f6f','--border':'#d4c6a8'}},
-    {id:'shuimo', name:'水墨山水', icon:'☁', desc:'素白淡墨·写意风',
-     vars:{'--bg':'#f8f8f6','--paper':'#ffffff','--paper2':'#f0f0ed','--ink':'#1a1a1a','--ink2':'#444444','--ink3':'#777777','--red':'#c83c3c','--gold':'#b8860b','--jade':'#4a7c59','--indigo':'#4a5f7f','--border':'#e0e0dc'}},
-    {id:'zhujian', name:'竹簡漢簡', icon:'⺮', desc:'青竹墨·汉简书风',
-     vars:{'--bg':'#2a3328','--paper':'#344032','--paper2':'#3d4b3b','--ink':'#e8e4d6','--ink2':'#c4bfb0','--ink3':'#9a9585','--red':'#d4634a','--gold':'#e2c079','--jade':'#7cb69a','--indigo':'#6a7a9f','--border':'#4a5a47'}},
-    {id:'qingtong', name:'青銅吉金', icon:'鼎', desc:'玄黑金·商周铜器',
-     vars:{'--bg':'#161310','--paper':'#201c18','--paper2':'#2a2520','--ink':'#e0d8c8','--ink2':'#b8af9f','--ink3':'#8a8272','--red':'#c94c3a','--gold':'#d4af37','--jade':'#6a9b83','--indigo':'#5a6a8f','--border':'#3a342d'}},
-    {id:'xingxiang', name:'星象羅盤', icon:'✦', desc:'深空蓝·数术星空',
-     vars:{'--bg':'#0f1425','--paper':'#181f36','--paper2':'#212a47','--ink':'#e0e6f5','--ink2':'#b0bad0','--ink3':'#7f8aa8','--red':'#e2705d','--gold':'#f0c86e','--jade':'#75b8a0','--indigo':'#7a8abf','--border':'#2d385c'}},
-  ];
   let currentTheme = localStorage.getItem('zicang_theme') || 'xuanzhi';
   function applyTheme(themeId) {
-    const theme = themes.find(t=>t.id===themeId) || themes[0];
+    const theme = THEMES.find(t=>t.id===themeId) || THEMES[0];
     Object.entries(theme.vars).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));
     if(['qingtong','xingxiang','zhujian'].includes(themeId)){
       document.body.style.backgroundImage = 'radial-gradient(circle at 20% 20%, rgba(212,175,55,0.08) 0%, transparent 50%),radial-gradient(circle at 80% 80%, rgba(184,59,47,0.06) 0%,transparent 50%)';
@@ -94,35 +95,64 @@ function initTheme() {
     }
     localStorage.setItem('zicang_theme', themeId);
     currentTheme = themeId;
-    renderPanel();
+    renderThemeDropdown();
   }
-  const switcher = document.createElement('div');
-  switcher.className='theme-switcher';
-  switcher.style.cssText='position:fixed;left:10px;top:20px;z-index:1000;';
-  document.body.appendChild(switcher);
-  const btn = document.createElement('button');
-  btn.innerHTML='✦ 主題';
-  btn.style.cssText='background:var(--paper);color:var(--ink);border:1px solid var(--border);border-radius:20px;padding:8px 16px;cursor:pointer;box-shadow:var(--shadow);font-family:inherit;font-size:0.9rem;transition:all 0.3s;';
-  switcher.appendChild(btn);
-  const panel = document.createElement('div');
-  panel.style.cssText='position:absolute;top:45px;left:0;background:var(--paper);border:1px solid var(--border);border-radius:12px;padding:12px;box-shadow:var(--shadow-lg);display:none;min-width:200px;backdrop-filter:blur(10px);';
-  switcher.appendChild(panel);
-  btn.onclick=e=>{e.stopPropagation();panel.style.display=panel.style.display==='none'?'block':'none';};
-  document.addEventListener('click',()=>panel.style.display='none');
-  panel.addEventListener('click',e=>e.stopPropagation());
-  function renderPanel(){
-    panel.innerHTML='';
-    themes.forEach(theme=>{
+
+  // 在导航栏中构建主题按钮（由 renderNav 挂载到 nav）
+  const themeBtn = document.createElement('button');
+  themeBtn.id = 'themeBtn';
+  themeBtn.className = 'theme-nav-btn';
+  themeBtn.innerHTML = '<span class="theme-diamond">✦</span><span class="theme-label">主題</span>';
+
+  const themePanel = document.createElement('div');
+  themePanel.id = 'themePanel';
+  themePanel.className = 'theme-panel';
+
+  // 延迟到 renderNav 之后挂载到导航栏（在 DOMContentLoaded 顺序里 initTheme 在 renderNav 前调用，这里用定时器等 nav 就绪）
+  setTimeout(() => {
+    const navLinks = document.querySelector('.nav-links');
+    if(navLinks) {
+      // 构造一个包裹按钮的 li 容器
+      const wrap = document.createElement('span');
+      wrap.className = 'theme-nav-wrap';
+      wrap.style.cssText = 'position:relative;display:inline-flex;align-items:center;';
+      wrap.appendChild(themeBtn);
+      wrap.appendChild(themePanel);
+      navLinks.appendChild(wrap);
+    }
+    renderThemeDropdown();
+  }, 0);
+
+  themeBtn.onclick = e => {
+    e.stopPropagation();
+    const open = themePanel.classList.toggle('open');
+    themeBtn.classList.toggle('active', open);
+  };
+  document.addEventListener('click', () => {
+    themePanel.classList.remove('open');
+    themeBtn.classList.remove('active');
+  });
+  themePanel.addEventListener('click', e => e.stopPropagation());
+
+  function renderThemeDropdown(){
+    themePanel.innerHTML = '';
+    THEMES.forEach(theme=>{
       const active = theme.id===currentTheme;
-      const item=document.createElement('div');
-      item.style.cssText=`padding:10px 12px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all 0.2s;background:${active?'var(--paper2)':'transparent'};color:${active?'var(--red)':'var(--ink)'};font-weight:${active?'600':'400'};`;
-      item.innerHTML=`<span style="width:28px;height:28px;border-radius:50%;background:${theme.vars['--bg']};border:2px solid ${theme.vars['--gold']};display:flex;align-items:center;justify-content:center;font-size:14px;color:${theme.vars['--ink']};flex-shrink:0;">${theme.icon}</span><div><div style="font-size:0.95rem;">${theme.name}</div><div style="font-size:0.75rem;color:var(--ink3);">${theme.desc}</div></div>`;
-      item.onclick=()=>applyTheme(theme.id);
-      item.onmouseover=()=>!active&&(item.style.background='var(--paper2)');
-      item.onmouseout=()=>!active&&(item.style.background='transparent');
-      panel.appendChild(item);
+      const item = document.createElement('div');
+      item.className = 'theme-item' + (active?' active':'');
+      item.innerHTML = `
+        <span class="theme-swatch" style="background:${theme.vars['--bg']};border-color:${theme.vars['--gold']};color:${theme.vars['--ink']};">${theme.icon}</span>
+        <div class="theme-info">
+          <div class="theme-name">${theme.name}</div>
+          <div class="theme-desc">${theme.desc}</div>
+        </div>
+        ${active?'<span class="theme-check" style="color:var(--red);">●</span>':''}
+      `;
+      item.onclick = ()=>applyTheme(theme.id);
+      themePanel.appendChild(item);
     });
   }
+
   applyTheme(currentTheme);
 }
 
