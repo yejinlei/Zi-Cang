@@ -1,1019 +1,1132 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>子藏本体论 - 诸子百家智能知识图谱与义理推演平台</title>
-    <script src="https://aisearch-task.bj.bcebos.com/static/tailwindcss-3.4.17.js"></script>
-    <script src="https://aisearch-task.bj.bcebos.com/static/echarts-5.6.0.min.js"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        ink: '#1a1a1a',
-                        vermilion: '#c41e3a',
-                        ochre: '#d4a017',
-                        jade: '#2e8b57',
-                        indigo: '#2c3e50',
-                        paper: '#f8f4e9',
-                        'paper-dark': '#eae3d2',
-                    },
-                    fontFamily: {
-                        song: ['Songti SC', 'STSong', 'SimSun', 'serif'],
-                        hei: ['PingFang SC', 'HarmonyOS Sans SC', 'Microsoft YaHei', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    <style type="text/tailwindcss">
-        @layer utilities {
-            .text-shadow {
-                text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-            }
-            .border-paper {
-                border-color: rgba(26,26,26,0.1);
-            }
-            .bg-seal {
-                background-color: rgba(196,30,58,0.08);
-            }
-        }
-    </style>
-    <style>
-        body {
-            background: linear-gradient(135deg, #f8f4e9 0%, #fff9f0 50%, #f5efe3 100%);
-            background-attachment: fixed;
-        }
-        .seal {
-            font-family: 'Songti SC', serif;
-            border: 2px solid #c41e3a;
-            color: #c41e3a;
-            padding: 2px 6px;
-            border-radius: 2px;
-            transform: rotate(-2deg);
-        }
-        .axis-grid td {
-            padding: 12px;
-            border: 1px solid rgba(26,26,26,0.08);
-            vertical-align: top;
-            font-size: 14px;
-        }
-        .layer-badge {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: bold;
-            margin-right: 6px;
-        }
-        .class-tree-item {
-            padding: 6px 0 6px 20px;
-            position: relative;
-            font-family: 'PingFang SC', sans-serif;
-            font-size: 14px;
-        }
-        .class-tree-item::before {
-            content: '·';
-            position: absolute;
-            left: 8px;
-            color: #999;
-        }
-        .class-tree-parent {
-            font-weight: bold;
-            color: #1a1a1a;
-        }
-        .relation-table th {
-            background: rgba(44,62,80,0.05);
-            padding: 10px;
-            text-align: left;
-            font-weight: 600;
-            font-size: 13px;
-            border-bottom: 2px solid rgba(26,26,26,0.1);
-        }
-        .relation-table td {
-            padding: 10px;
-            border-bottom: 1px solid rgba(26,26,26,0.05);
-            font-size: 13px;
-            line-height: 1.6;
-        }
-        .nav-link {
-            padding: 6px 12px;
-            border-radius: 6px;
-            transition: all 0.2s ease;
-        }
-        .nav-link:hover {
-            background: rgba(196,30,58,0.08);
-            color: #c41e3a;
-        }
-        .card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-            border: 1px solid rgba(26,26,26,0.05);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
-        }
-        .kpi-number {
-            font-family: 'Georgia', serif;
-            font-size: 42px;
-            font-weight: bold;
-            background: linear-gradient(135deg, #c41e3a, #d4a017);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0.92; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-in {
-            animation: fadeInUp 0.6s cubic-bezier(.2,.8,.2,1) forwards;
-        }
-        .tab-btn.active {
-            background: #2c3e50;
-            color: white;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>子藏本体论 · Zi-Cang Ontology</title>
+<link rel="stylesheet" href="style/common.css">
 </head>
-<body class="font-hei text-ink">
-    <!-- 导航栏 -->
-    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-paper shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <span class="seal text-lg font-song">子藏</span>
-                <h1 class="text-xl font-bold font-song">子藏本体论</h1>
-            </div>
-            <div class="hidden md:flex items-center gap-1 text-sm">
-                <a href="#overview" class="nav-link">总览</a>
-                <a href="#matrix" class="nav-link">本体矩阵</a>
-                <a href="#classes" class="nav-link">类体系</a>
-                <a href="#relations" class="nav-link">关系谓词</a>
-                <a href="#datasource" class="nav-link">数据源</a>
-                <a href="#inference" class="nav-link">思想推演</a>
-            </div>
-        </div>
-    </nav>
+<body>
+<nav class="top-nav"></nav>
 
-    <!-- Hero 区域 -->
-    <header class="py-12 md:py-16 px-4">
-        <div class="max-w-7xl mx-auto">
-            <div class="grid md:grid-cols-2 gap-8 items-center">
-                <div class="animate-in">
-                    <div class="inline-block mb-4">
-                        <span class="bg-seal text-vermilion px-3 py-1 rounded-full text-sm font-medium">四轴 × 七层 正交本体架构</span>
-                    </div>
-                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-song font-bold leading-tight mb-4 text-shadow">
-                        子藏本体论
-                    </h1>
-                    <p class="text-lg text-gray-600 leading-relaxed mb-6 font-song">
-                        诸子百家智能知识图谱与义理推演平台<br>
-                        <span class="text-base">汇周秦两汉诸子，通历代注疏义理，辨学派流变成因</span>
-                    </p>
-                    <div class="flex flex-wrap gap-3">
-                        <button class="bg-vermilion text-white px-6 py-3 rounded-lg font-medium hover:bg-vermilion/90 transition shadow-lg shadow-vermilion/20">
-                            📜 进入本体世界
-                        </button>
-                        <button class="border border-ink/20 px-6 py-3 rounded-lg font-medium hover:bg-paper transition">
-                            📚 子藏原文库
-                        </button>
-                        <button class="border border-ink/20 px-6 py-3 rounded-lg font-medium hover:bg-paper transition">
-                            🔮 探索义理图谱
-                        </button>
-                    </div>
-                </div>
-                <div class="card p-6 animate-in" style="animation-delay: 0.1s">
-                    <h3 class="font-bold text-lg mb-4 font-song">本体数据概览</h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="text-center p-4 bg-paper/50 rounded-lg">
-                            <div class="kpi-number">1158</div>
-                            <div class="text-sm text-gray-500 mt-1">部 子藏典籍</div>
-                        </div>
-                        <div class="text-center p-4 bg-paper/50 rounded-lg">
-                            <div class="kpi-number">189</div>
-                            <div class="text-sm text-gray-500 mt-1">位 诸子人物</div>
-                        </div>
-                        <div class="text-center p-4 bg-paper/50 rounded-lg">
-                            <div class="kpi-number">12</div>
-                            <div class="text-sm text-gray-500 mt-1">家 学术流派</div>
-                        </div>
-                        <div class="text-center p-4 bg-paper/50 rounded-lg">
-                            <div class="kpi-number">2300+</div>
-                            <div class="text-sm text-gray-500 mt-1">条 义理三元组</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
+<section class="hero">
+  <h1 class="hero-title">子藏本体论</h1>
+  <p class="hero-desc">
+    先秦诸子、百家争鸣——以四轴×七层正交架构，整理子学文献。<br>
+    道、法、儒、墨、兵、名、农、杂、阴阳、纵横、小说、算学，九流十家之学，尽在其中。
+  </p>
+  <div class="hero-actions">
+    <a href="library.html" class="btn btn-primary">📜 进入全文库</a>
+    <a href="#schools" class="btn btn-outline">九流十家</a>
+    <a href="#ontology" class="btn btn-jade">本體架構</a>
+    <a href="#thinkers" class="btn btn-indigo">諸子人物</a>
+  </div>
+</section>
 
-    <!-- 七层架构概览 -->
-    <section class="py-10 px-4" id="overview">
-        <div class="max-w-7xl mx-auto">
-            <h2 class="text-2xl md:text-3xl font-song font-bold mb-8 text-center">子藏本体论七层架构</h2>
-            <div class="grid grid-cols-1 md:grid-cols-7 gap-3">
-                <div class="card p-4 text-center">
-                    <div class="layer-badge bg-gray-100 text-gray-700">L0</div>
-                    <h4 class="font-bold font-song mt-2">元模型层</h4>
-                    <p class="text-xs text-gray-500 mt-1">类/属性/关系定义</p>
-                </div>
-                <div class="card p-4 text-center">
-                    <div class="layer-badge bg-indigo/10 text-indigo">L1</div>
-                    <h4 class="font-bold font-song mt-2">道体本体层</h4>
-                    <p class="text-xs text-gray-500 mt-1">道/仁/法/性…核心形上概念</p>
-                </div>
-                <div class="card p-4 text-center">
-                    <div class="layer-badge bg-jade/10 text-jade">L2</div>
-                    <h4 class="font-bold font-song mt-2">义理范畴层</h4>
-                    <p class="text-xs text-gray-500 mt-1">阴阳/名实/礼法/天人…</p>
-                </div>
-                <div class="card p-4 text-center">
-                    <div class="layer-badge bg-ochre/10 text-ochre">L3</div>
-                    <h4 class="font-bold font-song mt-2">宗派流派层</h4>
-                    <p class="text-xs text-gray-500 mt-1">儒/道/法/墨/兵/名…诸家</p>
-                </div>
-                <div class="card p-4 text-center">
-                    <div class="layer-badge bg-vermilion/10 text-vermilion">L4</div>
-                    <h4 class="font-bold font-song mt-2">文本载体层</h4>
-                    <p class="text-xs text-gray-500 mt-1">经/子/注/疏·篇/章/句</p>
-                </div>
-                <div class="card p-4 text-center">
-                    <div class="layer-badge bg-purple-100 text-purple-700">L5</div>
-                    <h4 class="font-bold font-song mt-2">人物传承层</h4>
-                    <p class="text-xs text-gray-500 mt-1">诸子→注家→学者</p>
-                </div>
-                <div class="card p-4 text-center">
-                    <div class="layer-badge bg-orange-100 text-orange-700">L6</div>
-                    <h4 class="font-bold font-song mt-2">文化外延层</h4>
-                    <p class="text-xs text-gray-500 mt-1">民间信仰/技艺/制度</p>
-                </div>
-            </div>
-        </div>
-    </section>
+<div class="main-content">
 
-    <!-- 部类概览（大智阁子藏分类） -->
-    <section class="py-10 px-4">
-        <div class="max-w-7xl mx-auto">
-            <div class="card p-6">
-                <h2 class="text-2xl font-song font-bold mb-6">子藏部类 · 大智阁文献分类</h2>
-                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4" id="categoryChart" style="height: 200px;">
-                    <!-- 部类卡片 -->
-                    <div class="text-center p-3 rounded-lg hover:bg-paper/50 transition cursor-pointer">
-                        <div class="text-2xl font-bold text-vermilion">863</div>
-                        <div class="text-sm font-song mt-1">笔记</div>
-                    </div>
-                    <div class="text-center p-3 rounded-lg hover:bg-paper/50 transition cursor-pointer">
-                        <div class="text-2xl font-bold text-indigo">65</div>
-                        <div class="text-sm font-song mt-1">诸子</div>
-                    </div>
-                    <div class="text-center p-3 rounded-lg hover:bg-paper/50 transition cursor-pointer">
-                        <div class="text-2xl font-bold text-jade">78</div>
-                        <div class="text-sm font-song mt-1">类书</div>
-                    </div>
-                    <div class="text-center p-3 rounded-lg hover:bg-paper/50 transition cursor-pointer">
-                        <div class="text-2xl font-bold text-ochre">62</div>
-                        <div class="text-sm font-song mt-1">兵家</div>
-                    </div>
-                    <div class="text-center p-3 rounded-lg hover:bg-paper/50 transition cursor-pointer">
-                        <div class="text-2xl font-bold text-purple-700">50</div>
-                        <div class="text-sm font-song mt-1">算法</div>
-                    </div>
-                    <div class="text-center p-3 rounded-lg hover:bg-paper/50 transition cursor-pointer">
-                        <div class="text-2xl font-bold text-orange-700">30</div>
-                        <div class="text-sm font-song mt-1">农家</div>
-                    </div>
-                    <div class="text-center p-3 rounded-lg hover:bg-paper/50 transition cursor-pointer">
-                        <div class="text-2xl font-bold text-gray-700">10</div>
-                        <div class="text-sm font-song mt-1">法家</div>
-                    </div>
-                </div>
-                <div class="mt-4 text-sm text-gray-500 text-center font-song">
-                    数据来源：殆知阁（daizhige.org）古典文献全文检索引擎 · 子藏共计 1158 部
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- KPI -->
+<div class="kpi-grid">
+  <div class="kpi-card"><div class="kpi-num">1463</div><div class="kpi-label">典籍总数</div></div>
+  <div class="kpi-card"><div class="kpi-num">2.06亿</div><div class="kpi-label">总字数</div></div>
+  <div class="kpi-card"><div class="kpi-num">7</div><div class="kpi-label">子部分类</div></div>
+  <div class="kpi-card"><div class="kpi-num">12</div><div class="kpi-label">诸子流派</div></div>
+  <div class="kpi-card"><div class="kpi-num">36</div><div class="kpi-label">道体概念</div></div>
+</div>
 
-    <!-- 本体矩阵：四轴 × 七层 -->
-    <section class="py-10 px-4" id="matrix">
-        <div class="max-w-7xl mx-auto">
-            <div class="card overflow-hidden">
-                <div class="p-6 border-b border-paper">
-                    <h2 class="text-2xl font-song font-bold">🗺️ 站点地图 · 按本体坐标导航</h2>
-                    <p class="text-gray-500 text-sm mt-2">四轴正交 × 七层抽象：横轴为分类维度，纵轴为抽象层级</p>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="axis-grid w-full min-w-[900px]">
-                        <thead>
-                            <tr>
-                                <th class="bg-paper/50 p-3 text-left text-sm font-bold"></th>
-                                <th class="bg-vermilion/5 p-3 text-center text-sm font-bold text-vermilion">A1 分类轴<br><span class="font-normal text-xs">部类·流派·体裁·版本</span></th>
-                                <th class="bg-indigo/5 p-3 text-center text-sm font-bold text-indigo">A2 思想轴<br><span class="font-normal text-xs">教义·概念·命题·章句</span></th>
-                                <th class="bg-jade/5 p-3 text-center text-sm font-bold text-jade">A3 人物轴<br><span class="font-normal text-xs">诸子·注家·学者·传人</span></th>
-                                <th class="bg-ochre/5 p-3 text-center text-sm font-bold text-ochre">A4 事件轴<br><span class="font-normal text-xs">著述·成书·整理·流传</span></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="bg-gray-50 font-bold"><span class="layer-badge bg-gray-200">L0</span>元模型层<br><span class="text-xs text-gray-500">类/属性/关系定义</span></td>
-                                <td class="bg-green-50/50">✅ 本体总纲 v1.0<br><span class="text-xs text-gray-500">四轴×七层、TBox/ABox元模型</span></td>
-                                <td class="bg-gray-50/30">——</td>
-                                <td class="bg-gray-50/30">——</td>
-                                <td class="bg-gray-50/30">——</td>
-                            </tr>
-                            <tr>
-                                <td class="bg-indigo/5 font-bold"><span class="layer-badge bg-indigo/10 text-indigo">L1</span>道体本体层<br><span class="text-xs text-gray-500">道/仁/法/性…核心形上</span></td>
-                                <td class="bg-gray-50/30">——</td>
-                                <td class="bg-indigo/5">✅ 义理图谱 · L1<br><span class="text-xs text-gray-500">36核心道体概念关系网络</span><br>✅ 诸子词典<br><span class="text-xs text-gray-500">8200词条，双向挂接本体</span><br>✅ 思想推演<br><span class="text-xs text-gray-500">2300义理三元组</span></td>
-                                <td class="bg-gray-50/30">——</td>
-                                <td class="bg-gray-50/30">——</td>
-                            </tr>
-                            <tr>
-                                <td class="bg-jade/5 font-bold"><span class="layer-badge bg-jade/10 text-jade">L2</span>义理范畴层<br><span class="text-xs text-gray-500">阴阳/名实/礼法…</span></td>
-                                <td class="bg-gray-50/30">——</td>
-                                <td class="bg-jade/5">✅ 义理图谱 · L2<br><span class="text-xs text-gray-500">84义理范畴：名实/天人/义利/王霸…</span></td>
-                                <td class="bg-gray-50/30">——</td>
-                                <td class="bg-gray-50/30">——</td>
-                            </tr>
-                            <tr>
-                                <td class="bg-ochre/5 font-bold"><span class="layer-badge bg-ochre/10 text-ochre">L3</span>宗派流派层<br><span class="text-xs text-gray-500">十二家学派与法门</span></td>
-                                <td class="bg-ochre/5">✅ 部类总览<br><span class="text-xs text-gray-500">12家流派：儒/道/法/墨/兵/名/农/杂/阴阳/纵横/小说/医</span></td>
-                                <td class="bg-gray-50/30">◐ 学派判教对比<br><span class="text-xs text-gray-500">诸子十家学术源流与判教差异</span></td>
-                                <td class="bg-gray-50/30">——</td>
-                                <td class="bg-gray-50/30">——</td>
-                            </tr>
-                            <tr>
-                                <td class="bg-vermilion/5 font-bold"><span class="layer-badge bg-vermilion/10 text-vermilion">L4</span>文本载体层<br><span class="text-xs text-gray-500">典籍·篇章·句读</span></td>
-                                <td class="bg-vermilion/5" colspan="2">✅ 子藏原典<br><span class="text-xs text-gray-500">1158部大智阁子藏典籍，繁简二态、术语划词</span><br>✅ 章句导航<br><span class="text-xs text-gray-500">62部已标点核心子书的篇章结构</span><br>✅ 异本对照<br><span class="text-xs text-gray-500">32组异本/版本段落级对齐</span><br>✅ 全文检索<br><span class="text-xs text-gray-500">42万可检索段落</span></td>
-                                <td class="bg-gray-50/30">◐ 人物总览<br><span class="text-xs text-gray-500">189人物索引：诸子/注家/学者</span></td>
-                                <td class="bg-gray-50/30">——</td>
-                            </tr>
-                            <tr>
-                                <td class="bg-purple-50 font-bold"><span class="layer-badge bg-purple-100 text-purple-700">L5</span>事件流变层<br><span class="text-xs text-gray-500">著述·传承·整理</span></td>
-                                <td class="bg-gray-50/30">——</td>
-                                <td class="bg-gray-50/30">——</td>
-                                <td class="bg-gray-50/30">——</td>
-                                <td class="bg-purple-5">✅ 学脉时间轴<br><span class="text-xs text-gray-500">286著述/传法/整理事件</span><br>✅ 诸子事迹<br><span class="text-xs text-gray-500">124则问答/游历/著述事迹</span><br>✅ 典籍结集<br><span class="text-xs text-gray-500">7次大规模子书整理事件</span></td>
-                            </tr>
-                            <tr>
-                                <td class="bg-orange-50 font-bold"><span class="layer-badge bg-orange-100 text-orange-700">L6</span>文化外延层<br><span class="text-xs text-gray-500">制度·技艺·民俗</span></td>
-                                <td class="bg-gray-50/30">——</td>
-                                <td class="bg-gray-50/30">——</td>
-                                <td class="bg-orange-5">○ 民间诸子化人物<br><span class="text-xs text-gray-500">孔子/老子/关公等民间化圣众</span></td>
-                                <td class="bg-gray-50/30">○ 制度技艺外延<br><span class="text-xs text-gray-500">法家制度/兵家谋略/农家技艺等</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- 四轴说明 -->
-    <section class="py-10 px-4">
-        <div class="max-w-7xl mx-auto">
-            <h2 class="text-2xl md:text-3xl font-song font-bold mb-8 text-center">一、四轴（顶层分类骨架）</h2>
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
-                <div class="card p-5 border-l-4 border-vermilion">
-                    <h3 class="font-bold text-lg font-song mb-2 text-vermilion">A1 分类轴</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed">横向分类轴：诸子十家 → 部类 → 流派 → 体裁 → 版本。回答「这部子书属于哪一家、哪一类」。相关类 21 个。</p>
-                </div>
-                <div class="card p-5 border-l-4 border-indigo">
-                    <h3 class="font-bold text-lg font-song mb-2 text-indigo">A2 思想轴</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed">纵向内容轴：道体 → 范畴 → 命题 → 典籍 → 篇章 → 句读。回答「在讲什么思想、义理结构怎样」。相关类 22 个。</p>
-                </div>
-                <div class="card p-5 border-l-4 border-jade">
-                    <h3 class="font-bold text-lg font-song mb-2 text-jade">A3 人物轴</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed">人物传承轴：诸子 → 弟子 → 注家 → 学者 → 传人。回答「谁立说、谁传承、谁注解」。相关类 14 个。</p>
-                </div>
-                <div class="card p-5 border-l-4 border-ochre">
-                    <h3 class="font-bold text-lg font-song mb-2 text-ochre">A4 事件轴</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed">事件缘起轴：问道 → 著述 → 争鸣 → 整理 → 刻印 → 流传。回答「何时何地何缘著书立说」。相关类 11 个。</p>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- 子部七大类 -->
+<div class="section">
+<h2 class="section-title">📚 子部七大类</h2>
+<div class="zang-grid">
 
-    <!-- 七层说明 -->
-    <section class="py-10 px-4 bg-paper/30">
-        <div class="max-w-7xl mx-auto">
-            <h2 class="text-2xl md:text-3xl font-song font-bold mb-8 text-center">二、七层（抽象层级）</h2>
-            <div class="grid md:grid-cols-2 gap-5">
-                <div class="card p-5">
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="layer-badge bg-gray-200">L0</span>
-                        <h3 class="font-bold font-song">元模型层</h3>
-                    </div>
-                    <p class="text-sm text-gray-600 leading-relaxed">描述本体所用的元语言：轴、层、类、属性、关系、实例。类 7 个。</p>
-                </div>
-                <div class="card p-5">
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="layer-badge bg-indigo/10 text-indigo">L1</span>
-                        <h3 class="font-bold font-song">道体本体层</h3>
-                    </div>
-                    <p class="text-sm text-gray-600 leading-relaxed">诸子学最顶层的形而上学核心概念（道、仁、法、性、天、理、气…）。类 1 个。</p>
-                </div>
-                <div class="card p-5">
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="layer-badge bg-jade/10 text-jade">L2</span>
-                        <h3 class="font-bold font-song">义理范畴层</h3>
-                    </div>
-                    <p class="text-sm text-gray-600 leading-relaxed">诸子核心思想分析框架（阴阳、名实、天人、义利、王霸、礼法、心性…）。类 1 个。</p>
-                </div>
-                <div class="card p-5">
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="layer-badge bg-ochre/10 text-ochre">L3</span>
-                        <h3 class="font-bold font-song">宗派流派层</h3>
-                    </div>
-                    <p class="text-sm text-gray-600 leading-relaxed">诸子十二家学派及其思想体系，以及流派传承、学术宗旨、核心主张。类 8 个。</p>
-                </div>
-                <div class="card p-5">
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="layer-badge bg-vermilion/10 text-vermilion">L4</span>
-                        <h3 class="font-bold font-song">文本载体层</h3>
-                    </div>
-                    <p class="text-sm text-gray-600 leading-relaxed">子藏典籍、部类、篇章结构（典籍→篇→章→句）、版本与异本、注疏。类 22 个。</p>
-                </div>
-                <div class="card p-5">
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="layer-badge bg-purple-100 text-purple-700">L5</span>
-                        <h3 class="font-bold font-song">人物传承层</h3>
-                    </div>
-                    <p class="text-sm text-gray-600 leading-relaxed">诸子、弟子、注疏家、历代研究者、学派传人。类 6 个。</p>
-                </div>
-                <div class="card p-5 md:col-span-2">
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="layer-badge bg-orange-100 text-orange-700">L6</span>
-                        <h3 class="font-bold font-song">信仰文化外延层</h3>
-                    </div>
-                    <p class="text-sm text-gray-600 leading-relaxed">民间化诸子人物、制度技艺外延元素：如孔子为文宣王、老子为道教始祖、法家思想对历代制度的影响、兵家谋略的应用等。类 3 个。</p>
-                </div>
-            </div>
-        </div>
-    </section>
+  <a href="library.html" class="zang-card">
+    <h3>诸子</h3>
+    <p>先秦诸子百家核心著作，儒道墨法名各家之言，乃中华思想之源。</p>
+    <div class="zang-meta">
+      <span>📖 65部</span>
+      <span>✍️ 673万字</span>
+      <span>→ 浏览全部</span>
+    </div>
+  </a>
+  <a href="library.html" class="zang-card">
+    <h3>兵家</h3>
+    <p>兵法谋略、武学兵书，《孙子》为百世谈兵之祖。</p>
+    <div class="zang-meta">
+      <span>📖 62部</span>
+      <span>✍️ 232万字</span>
+      <span>→ 浏览全部</span>
+    </div>
+  </a>
+  <a href="library.html" class="zang-card">
+    <h3>法家</h3>
+    <p>法家刑名法术之学，管商申韩之书，富国强兵之策。</p>
+    <div class="zang-meta">
+      <span>📖 10部</span>
+      <span>✍️ 71万字</span>
+      <span>→ 浏览全部</span>
+    </div>
+  </a>
+  <a href="library.html" class="zang-card">
+    <h3>农家</h3>
+    <p>农政、农学、种植、茶酒、器物，民生日用之本。</p>
+    <div class="zang-meta">
+      <span>📖 30部</span>
+      <span>✍️ 147万字</span>
+      <span>→ 浏览全部</span>
+    </div>
+  </a>
+  <a href="library.html" class="zang-card">
+    <h3>算学</h3>
+    <p>算经算法、天文律历，《九章算术》为算学鼻祖。</p>
+    <div class="zang-meta">
+      <span>📖 49部</span>
+      <span>✍️ 666万字</span>
+      <span>→ 浏览全部</span>
+    </div>
+  </a>
+  <a href="library.html" class="zang-card">
+    <h3>笔记</h3>
+    <p>历代笔记小说、杂记丛谈、稗官野史，正史之余、文人雅趣。</p>
+    <div class="zang-meta">
+      <span>📖 863部</span>
+      <span>✍️ 5348万字</span>
+      <span>→ 浏览全部</span>
+    </div>
+  </a>
+  <a href="library.html" class="zang-card">
+    <h3>类书</h3>
+    <p>类书丛编、百科全书、大型类编文献，汇聚古今、以类相从。</p>
+    <div class="zang-meta">
+      <span>📖 384部</span>
+      <span>✍️ 13475万字</span>
+      <span>→ 浏览全部</span>
+    </div>
+  </a>
+</div>
+</div>
 
-    <!-- 类体系 -->
-    <section class="py-10 px-4" id="classes">
-        <div class="max-w-7xl mx-auto">
-            <div class="card p-6">
-                <h2 class="text-2xl font-song font-bold mb-6">三、类体系（Class Hierarchy）</h2>
-                
-                <!-- Tab 切换 -->
-                <div class="flex flex-wrap gap-2 mb-6">
-                    <button class="tab-btn active px-4 py-2 rounded-lg text-sm border border-gray-200 transition" onclick="showTab('all', this)">全部轴</button>
-                    <button class="tab-btn px-4 py-2 rounded-lg text-sm border border-gray-200 transition" onclick="showTab('a1', this)">A1 分类轴</button>
-                    <button class="tab-btn px-4 py-2 rounded-lg text-sm border border-gray-200 transition" onclick="showTab('a2', this)">A2 思想轴</button>
-                    <button class="tab-btn px-4 py-2 rounded-lg text-sm border border-gray-200 transition" onclick="showTab('a3', this)">A3 人物轴</button>
-                    <button class="tab-btn px-4 py-2 rounded-lg text-sm border border-gray-200 transition" onclick="showTab('a4', this)">A4 事件轴</button>
-                </div>
+<div class="section" id="cat-诸子">
+<h2 class="section-title">📜 诸子·核心典籍</h2>
+<div class="book-grid">
 
-                <div id="classTree" class="bg-paper/30 rounded-lg p-5 font-mono text-sm">
-                    <div class="class-tree-item class-tree-parent" data-axis="all a1 a2 a3 a4" data-layer="l0">zi:Entity 本体元素 <span class="text-xs text-gray-500">A1A2A3A4 · L0</span></div>
-                    <div class="class-tree-item" data-axis="all a1 a2 a3 a4" data-layer="l0">·zi:Axis 轴 <span class="text-xs text-gray-500">A1A2A3A4 · L0</span></div>
-                    <div class="class-tree-item" data-axis="all a1 a2 a3 a4" data-layer="l0">·zi:Layer 层 <span class="text-xs text-gray-500">A1A2A3A4 · L0</span></div>
-                    <div class="class-tree-item" data-axis="all a1 a2 a3 a4" data-layer="l0">·zi:OntologyClass 类 <span class="text-xs text-gray-500">A1A2A3A4 · L0</span></div>
-                    <div class="class-tree-item" data-axis="all a1 a2 a3 a4" data-layer="l0">·zi:DatatypeProperty 数据属性 <span class="text-xs text-gray-500">A1A2A3A4 · L0</span></div>
-                    <div class="class-tree-item" data-axis="all a1 a2 a3 a4" data-layer="l0">·zi:ObjectProperty 关系谓词 <span class="text-xs text-gray-500">A1A2A3A4 · L0</span></div>
-                    <div class="class-tree-item" data-axis="all a1 a2 a3 a4" data-layer="l0">·zi:Individual 个体 <span class="text-xs text-gray-500">A1A2A3A4 · L0</span></div>
-                    
-                    <div class="class-tree-item" data-axis="all a2" data-layer="l1">·zi:DaoConcept 道体核心概念 <span class="text-xs text-gray-500">A2 · L1</span></div>
-                    <div class="class-tree-item" data-axis="all a2" data-layer="l2">·zi:Category 义理范畴 <span class="text-xs text-gray-500">A2 · L2</span></div>
-                    
-                    <div class="class-tree-item class-tree-parent" data-axis="all a1 a2" data-layer="l3">·zi:School 诸子流派 <span class="text-xs text-gray-500">A1 · L3</span></div>
-                    <div class="class-tree-item" data-axis="all a1 a2" data-layer="l3">·zi:AcademicSystem 学术体系 <span class="text-xs text-gray-500">A1 · L3</span></div>
-                    <div class="class-tree-item" data-axis="all a1 a2" data-layer="l3">·zi:Practice 治术法门 <span class="text-xs text-gray-500">A1A2 · L3</span></div>
-                    <div class="class-tree-item" data-axis="all a1" data-layer="l3">·zi:Genre 体裁 <span class="text-xs text-gray-500">A1 · L3</span></div>
-                    
-                    <div class="class-tree-item class-tree-parent" data-axis="all a1" data-layer="l4">▸ zi:ZiCang 子藏 <span class="text-xs text-gray-500">A1 · L4</span></div>
-                    <div class="class-tree-item" data-axis="all a1" data-layer="l4">&nbsp;&nbsp;·zi:Zhuzi 诸子类 <span class="text-xs text-gray-500">A1 · L4</span></div>
-                    <div class="class-tree-item" data-axis="all a1" data-layer="l4">&nbsp;&nbsp;·zi:Bingjia 兵家类 <span class="text-xs text-gray-500">A1 · L4</span></div>
-                    <div class="class-tree-item" data-axis="all a1" data-layer="l4">&nbsp;&nbsp;·zi:Fajia 法家类 <span class="text-xs text-gray-500">A1 · L4</span></div>
-                    <div class="class-tree-item" data-axis="all a1" data-layer="l4">&nbsp;&nbsp;·zi:Nongjia 农家类 <span class="text-xs text-gray-500">A1 · L4</span></div>
-                    <div class="class-tree-item" data-axis="all a1" data-layer="l4">&nbsp;&nbsp;·zi:Leishu 类书类 <span class="text-xs text-gray-500">A1 · L4</span></div>
-                    <div class="class-tree-item" data-axis="all a1" data-layer="l4">&nbsp;&nbsp;·zi:Suanfa 算法类 <span class="text-xs text-gray-500">A1 · L4</span></div>
-                    <div class="class-tree-item" data-axis="all a1" data-layer="l4">&nbsp;&nbsp;·zi:Biji 笔记类 <span class="text-xs text-gray-500">A1 · L4</span></div>
-                    
-                    <div class="class-tree-item class-tree-parent" data-axis="all a2" data-layer="l4">▸ zi:Text 典籍 <span class="text-xs text-gray-500">A2 · L4</span></div>
-                    <div class="class-tree-item" data-axis="all a2" data-layer="l4">&nbsp;&nbsp;·zi:ZiShu 子书 <span class="text-xs text-gray-500">A2 · L4</span></div>
-                    <div class="class-tree-item" data-axis="all a2" data-layer="l4">&nbsp;&nbsp;·zi:Zhu 注 <span class="text-xs text-gray-500">A2 · L4</span></div>
-                    <div class="class-tree-item" data-axis="all a2" data-layer="l4">&nbsp;&nbsp;·zi:Shu 疏 <span class="text-xs text-gray-500">A2 · L4</span></div>
-                    <div class="class-tree-item" data-axis="all a2" data-layer="l4">&nbsp;&nbsp;·zi:Edition 版本 <span class="text-xs text-gray-500">A2 · L4</span></div>
-                    
-                    <div class="class-tree-item" data-axis="all a2" data-layer="l4">·zi:Chapter 篇章 <span class="text-xs text-gray-500">A2 · L4</span></div>
-                    <div class="class-tree-item" data-axis="all a2" data-layer="l4">·zi:Section 段落 <span class="text-xs text-gray-500">A2 · L4</span></div>
-                    <div class="class-tree-item" data-axis="all a2" data-layer="l4">·zi:Sentence 句读 <span class="text-xs text-gray-500">A2 · L4</span></div>
-                    
-                    <div class="class-tree-item class-tree-parent" data-axis="all a3" data-layer="l5">▸ zi:Person 人物 <span class="text-xs text-gray-500">A3 · L5</span></div>
-                    <div class="class-tree-item" data-axis="all a3" data-layer="l5">&nbsp;&nbsp;·zi:ZhuziMaster 诸子 <span class="text-xs text-gray-500">A3 · L5</span></div>
-                    <div class="class-tree-item" data-axis="all a3" data-layer="l5">&nbsp;&nbsp;·zi:Disciple 弟子 <span class="text-xs text-gray-500">A3 · L5</span></div>
-                    <div class="class-tree-item" data-axis="all a3" data-layer="l5">&nbsp;&nbsp;·zi:Commentator 注家 <span class="text-xs text-gray-500">A3 · L5</span></div>
-                    <div class="class-tree-item" data-axis="all a3" data-layer="l5">&nbsp;&nbsp;·zi:Scholar 学者 <span class="text-xs text-gray-500">A3 · L5</span></div>
-                    
-                    <div class="class-tree-item" data-axis="all a3" data-layer="l6">·zi:FolkFigure 民间信仰人物 <span class="text-xs text-gray-500">A3 · L6</span></div>
-                    <div class="class-tree-item" data-axis="all a1" data-layer="l6">·zi:CulturalElement 文化外延元素 <span class="text-xs text-gray-500">A1 · L6</span></div>
-                    
-                    <div class="class-tree-item class-tree-parent" data-axis="all a4" data-layer="l5">▸ zi:Event 事件 <span class="text-xs text-gray-500">A4 · L5</span></div>
-                    <div class="class-tree-item" data-axis="all a4" data-layer="l5">&nbsp;&nbsp;·zi:WritingEvent 著述事件 <span class="text-xs text-gray-500">A4 · L5</span></div>
-                    <div class="class-tree-item" data-axis="all a4" data-layer="l5">&nbsp;&nbsp;·zi:DebateEvent 争鸣事件 <span class="text-xs text-gray-500">A4 · L5</span></div>
-                    <div class="class-tree-item" data-axis="all a4" data-layer="l5">&nbsp;&nbsp;·zi:CollationEvent 整理事件 <span class="text-xs text-gray-500">A4 · L5</span></div>
-                    <div class="class-tree-item" data-axis="all a4" data-layer="l5">&nbsp;&nbsp;·zi:TransmissionEvent 传承事件 <span class="text-xs text-gray-500">A4 · L5</span></div>
-                </div>
-            </div>
-        </div>
-    </section>
+  <div class="book-card">
+    <div class="book-icon">荀</div>
+    <div class="book-info">
+      <div class="book-name">荀子</div>
+      <div class="book-meta">诸子 · 9.1万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=诸子/荀子.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">韩</div>
+    <div class="book-info">
+      <div class="book-name">韩非子</div>
+      <div class="book-meta">诸子 · 12.9万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=诸子/韩非子.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">墨</div>
+    <div class="book-info">
+      <div class="book-name">墨子</div>
+      <div class="book-meta">诸子 · 9.2万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=诸子/墨子.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">鹖</div>
+    <div class="book-info">
+      <div class="book-name">鹖冠子</div>
+      <div class="book-meta">诸子 · 3.8万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=诸子/鹖冠子.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">公</div>
+    <div class="book-info">
+      <div class="book-name">公孙龙子</div>
+      <div class="book-meta">诸子 · 1.0万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=诸子/公孙龙子.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">鬼</div>
+    <div class="book-info">
+      <div class="book-name">鬼谷子</div>
+      <div class="book-meta">诸子 · 8994字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=诸子/鬼谷子.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">吕</div>
+    <div class="book-info">
+      <div class="book-name">吕氏春秋</div>
+      <div class="book-meta">诸子 · 18.3万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=诸子/吕氏春秋.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">淮</div>
+    <div class="book-info">
+      <div class="book-name">淮南子</div>
+      <div class="book-meta">诸子 · 15.9万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=诸子/淮南子.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">论</div>
+    <div class="book-info">
+      <div class="book-name">论衡</div>
+      <div class="book-meta">诸子 · 24.7万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=诸子/论衡.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">文</div>
+    <div class="book-info">
+      <div class="book-name">文中子中说</div>
+      <div class="book-meta">诸子 · 3.7万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=诸子/文中子中说.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">化</div>
+    <div class="book-info">
+      <div class="book-name">化书</div>
+      <div class="book-meta">诸子 · 1.2万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=诸子/化书.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">无</div>
+    <div class="book-info">
+      <div class="book-name">无能子</div>
+      <div class="book-meta">诸子 · 1.1万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=诸子/无能子.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">刘</div>
+    <div class="book-info">
+      <div class="book-name">刘子</div>
+      <div class="book-meta">诸子 · 3.5万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=诸子/刘子.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">子</div>
+    <div class="book-info">
+      <div class="book-name">子华子</div>
+      <div class="book-meta">诸子 · 2.1万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=诸子/子华子.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">尹</div>
+    <div class="book-info">
+      <div class="book-name">尹文子</div>
+      <div class="book-meta">诸子 · 6812字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=诸子/尹文子.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">慎</div>
+    <div class="book-info">
+      <div class="book-name">慎子</div>
+      <div class="book-meta">诸子 · 7924字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=诸子/慎子.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">尸</div>
+    <div class="book-info">
+      <div class="book-name">尸子</div>
+      <div class="book-meta">诸子 · 4.4万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=诸子/尸子.txt">阅读 →</a>
+  </div>
+</div>
+<div style="text-align:right;margin-top:1rem;">
+  <a href="library.html" style="color:var(--red);font-weight:600;">浏览全部诸子典籍 →</a>
+</div>
+</div>
 
-    <!-- 关系谓词 -->
-    <section class="py-10 px-4" id="relations">
-        <div class="max-w-7xl mx-auto">
-            <h2 class="text-2xl md:text-3xl font-song font-bold mb-8 text-center">四、关系谓词（Object Properties）</h2>
-            
-            <div class="flex flex-wrap gap-2 mb-6 justify-center">
-                <button class="tab-btn active px-4 py-2 rounded-lg text-sm border border-gray-200" onclick="showRelationTab('all', this)">全部关系</button>
-                <button class="tab-btn px-4 py-2 rounded-lg text-sm border border-gray-200" onclick="showRelationTab('a1', this)">分类关系</button>
-                <button class="tab-btn px-4 py-2 rounded-lg text-sm border border-gray-200" onclick="showRelationTab('a2', this)">义理关系</button>
-                <button class="tab-btn px-4 py-2 rounded-lg text-sm border border-gray-200" onclick="showRelationTab('a3', this)">人物关系</button>
-                <button class="tab-btn px-4 py-2 rounded-lg text-sm border border-gray-200" onclick="showRelationTab('a4', this)">事件关系</button>
-            </div>
+<div class="section" id="cat-兵家">
+<h2 class="section-title">📜 兵家·核心典籍</h2>
+<div class="book-grid">
 
-            <div class="card overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="relation-table w-full" id="relationTable">
-                        <thead>
-                            <tr>
-                                <th>id</th>
-                                <th>名称 / 轴</th>
-                                <th>domain → range</th>
-                                <th>说明</th>
-                                <th>特性</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- 分类关系 A1 -->
-                            <tr data-axis="a1">
-                                <td class="font-mono text-xs">belongs_to_category</td>
-                                <td><span class="text-vermilion font-medium">属部类 A1</span></td>
-                                <td class="font-mono text-xs">Text → School/Category</td>
-                                <td>某典籍归属子藏某一部类或流派</td>
-                                <td class="text-xs text-gray-500">belongsToCategory</td>
-                            </tr>
-                            <tr data-axis="a1">
-                                <td class="font-mono text-xs">part_of</td>
-                                <td><span class="text-vermilion font-medium">属于 A1</span></td>
-                                <td class="font-mono text-xs">Chapter/Text → Text/Collection</td>
-                                <td>篇章/典籍属于某部典籍或丛书</td>
-                                <td class="text-xs text-gray-500">partOf 逆 has_part</td>
-                            </tr>
-                            <tr data-axis="a1">
-                                <td class="font-mono text-xs">of_genre</td>
-                                <td><span class="text-vermilion font-medium">属体裁 A1</span></td>
-                                <td class="font-mono text-xs">Text → Genre</td>
-                                <td>典籍属于某类文体（论说/语录/注疏/笔记…）</td>
-                                <td class="text-xs text-gray-500">ofGenre</td>
-                            </tr>
-                            <tr data-axis="a1">
-                                <td class="font-mono text-xs">different_edition</td>
-                                <td><span class="text-vermilion font-medium">异本 A1</span></td>
-                                <td class="font-mono text-xs">Text → Text</td>
-                                <td>两部典籍为同一子书的不同版本</td>
-                                <td class="text-xs text-gray-500">对称</td>
-                            </tr>
-                            <tr data-axis="a1">
-                                <td class="font-mono text-xs">commentary_on</td>
-                                <td><span class="text-vermilion font-medium">注疏 A1</span></td>
-                                <td class="font-mono text-xs">Commentary → Text</td>
-                                <td>某注疏是对某部典籍的注释</td>
-                                <td class="text-xs text-gray-500">逆 commented_by</td>
-                            </tr>
+  <div class="book-card">
+    <div class="book-icon">孙</div>
+    <div class="book-info">
+      <div class="book-name">孙子兵法</div>
+      <div class="book-meta">兵家 · 7519字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=兵家/孙子兵法.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">吴</div>
+    <div class="book-info">
+      <div class="book-name">吴子</div>
+      <div class="book-meta">兵家 · 4772字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=兵家/吴子.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">司</div>
+    <div class="book-info">
+      <div class="book-name">司马法</div>
+      <div class="book-meta">兵家 · 3452字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=兵家/司马法.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">尉</div>
+    <div class="book-info">
+      <div class="book-name">尉缭子</div>
+      <div class="book-meta">兵家 · 1.1万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=兵家/尉缭子.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">六</div>
+    <div class="book-info">
+      <div class="book-name">六韬</div>
+      <div class="book-meta">兵家 · 2.1万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=兵家/六韬.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">三</div>
+    <div class="book-info">
+      <div class="book-name">三十六计</div>
+      <div class="book-meta">兵家 · 1171字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=兵家/三十六计.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">孙</div>
+    <div class="book-info">
+      <div class="book-name">孙膑兵法</div>
+      <div class="book-meta">兵家 · 1.5万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=兵家/孙膑兵法.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">将</div>
+    <div class="book-info">
+      <div class="book-name">将苑</div>
+      <div class="book-meta">兵家 · 6329字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=兵家/将苑.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">太</div>
+    <div class="book-info">
+      <div class="book-name">太白阴经</div>
+      <div class="book-meta">兵家 · 6.7万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=兵家/太白阴经.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">武</div>
+    <div class="book-info">
+      <div class="book-name">武经总要</div>
+      <div class="book-meta">兵家 · 41.6万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=兵家/武经总要.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">虎</div>
+    <div class="book-info">
+      <div class="book-name">虎钤经</div>
+      <div class="book-meta">兵家 · 8.4万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=兵家/虎钤经.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">何</div>
+    <div class="book-info">
+      <div class="book-name">何博士备论</div>
+      <div class="book-meta">兵家 · 2.7万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=兵家/何博士备论.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">握</div>
+    <div class="book-info">
+      <div class="book-name">握奇经</div>
+      <div class="book-meta">兵家 · 2866字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=兵家/握奇经.txt">阅读 →</a>
+  </div>
+</div>
+<div style="text-align:right;margin-top:1rem;">
+  <a href="library.html" style="color:var(--red);font-weight:600;">浏览全部兵家典籍 →</a>
+</div>
+</div>
 
-                            <!-- 义理关系 A2 -->
-                            <tr data-axis="a2">
-                                <td class="font-mono text-xs">expounds</td>
-                                <td><span class="text-indigo font-medium">阐明 A2</span></td>
-                                <td class="font-mono text-xs">Text → DaoConcept/Category</td>
-                                <td>某典籍阐明某个核心道体概念或义理范畴</td>
-                                <td class="text-xs text-gray-500">逆 origin_from_text</td>
-                            </tr>
-                            <tr data-axis="a2">
-                                <td class="font-mono text-xs">discusses</td>
-                                <td><span class="text-indigo font-medium">论辩 A2</span></td>
-                                <td class="font-mono text-xs">Text/School → Concept</td>
-                                <td>某家/某书讨论某个义理问题</td>
-                                <td class="text-xs text-gray-500">lunbian</td>
-                            </tr>
-                            <tr data-axis="a2">
-                                <td class="font-mono text-xs">critiques</td>
-                                <td><span class="text-indigo font-medium">驳斥 A2</span></td>
-                                <td class="font-mono text-xs">School/Text → School/Concept</td>
-                                <td>某家/某书驳斥对立学派的观点</td>
-                                <td class="text-xs text-gray-500">bochi 对称</td>
-                            </tr>
-                            <tr data-axis="a2">
-                                <td class="font-mono text-xs">inherits_from</td>
-                                <td><span class="text-indigo font-medium">继承 A2</span></td>
-                                <td class="font-mono text-xs">School → School</td>
-                                <td>某学派继承另一学派的思想</td>
-                                <td class="text-xs text-gray-500">逆 influences</td>
-                            </tr>
-                            <tr data-axis="a2">
-                                <td class="font-mono text-xs">synonymy</td>
-                                <td><span class="text-indigo font-medium">同实异名 A2</span></td>
-                                <td class="font-mono text-xs">Concept → Concept</td>
-                                <td>两个概念为同一思想的不同表述</td>
-                                <td class="text-xs text-gray-500">对称</td>
-                            </tr>
+<div class="section" id="cat-法家">
+<h2 class="section-title">📜 法家·核心典籍</h2>
+<div class="book-grid">
 
-                            <!-- 人物关系 A3 -->
-                            <tr data-axis="a3">
-                                <td class="font-mono text-xs">teacher_of</td>
-                                <td><span class="text-jade font-medium">师徒 A3</span></td>
-                                <td class="font-mono text-xs">Person → Person</td>
-                                <td>两人为师徒关系（师→徒）</td>
-                                <td class="text-xs text-gray-500">dishi 逆 student_of</td>
-                            </tr>
-                            <tr data-axis="a3">
-                                <td class="font-mono text-xs">authored</td>
-                                <td><span class="text-jade font-medium">著有 A3</span></td>
-                                <td class="font-mono text-xs">Person → Text</td>
-                                <td>某人物著述某部典籍</td>
-                                <td class="text-xs text-gray-500">zhushu 逆 authored_by</td>
-                            </tr>
-                            <tr data-axis="a3">
-                                <td class="font-mono text-xs">commented</td>
-                                <td><span class="text-jade font-medium">注 A3</span></td>
-                                <td class="font-mono text-xs">Person → Text</td>
-                                <td>某注家为某典籍作注</td>
-                                <td class="text-xs text-gray-500">zhu</td>
-                            </tr>
-                            <tr data-axis="a3">
-                                <td class="font-mono text-xs">school_affiliation</td>
-                                <td><span class="text-jade font-medium">归属流派 A3</span></td>
-                                <td class="font-mono text-xs">Person → School</td>
-                                <td>某人物属于某诸子流派</td>
-                                <td class="text-xs text-gray-500">guishu</td>
-                            </tr>
+  <div class="book-card">
+    <div class="book-icon">韩</div>
+    <div class="book-info">
+      <div class="book-name">韩非子</div>
+      <div class="book-meta">法家 · 12.2万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=法家/韩非子.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">邓</div>
+    <div class="book-info">
+      <div class="book-name">邓析子</div>
+      <div class="book-meta">法家 · 4203字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=法家/邓析子.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">管</div>
+    <div class="book-info">
+      <div class="book-name">管子</div>
+      <div class="book-meta">法家 · 20.7万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=法家/管子.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">管</div>
+    <div class="book-info">
+      <div class="book-name">管子补注</div>
+      <div class="book-meta">法家 · 21.1万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=法家/管子补注.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">折</div>
+    <div class="book-info">
+      <div class="book-name">折狱龟鉴</div>
+      <div class="book-meta">法家 · 7.2万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=法家/折狱龟鉴.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">疑</div>
+    <div class="book-info">
+      <div class="book-name">疑狱集</div>
+      <div class="book-meta">法家 · 3.3万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=法家/疑狱集.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">商</div>
+    <div class="book-info">
+      <div class="book-name">商子</div>
+      <div class="book-meta">法家 · 2.5万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=法家/商子.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">棠</div>
+    <div class="book-info">
+      <div class="book-name">棠阴比事</div>
+      <div class="book-meta">法家 · 1.6万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=法家/棠阴比事.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">政</div>
+    <div class="book-info">
+      <div class="book-name">政论</div>
+      <div class="book-meta">法家 · 1.2万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=法家/政论.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">邓</div>
+    <div class="book-info">
+      <div class="book-name">邓子</div>
+      <div class="book-meta">法家 · 3775字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=法家/邓子.txt">阅读 →</a>
+  </div>
+</div>
+<div style="text-align:right;margin-top:1rem;">
+  <a href="library.html" style="color:var(--red);font-weight:600;">浏览全部法家典籍 →</a>
+</div>
+</div>
 
-                            <!-- 事件关系 A4 -->
-                            <tr data-axis="a4">
-                                <td class="font-mono text-xs">wrote_at</td>
-                                <td><span class="text-ochre font-medium">著于 A4</span></td>
-                                <td class="font-mono text-xs">Person → WritingEvent</td>
-                                <td>某子在某事件中著书立说</td>
-                                <td class="text-xs text-gray-500">逆 written_by</td>
-                            </tr>
-                            <tr data-axis="a4">
-                                <td class="font-mono text-xs">debated_in</td>
-                                <td><span class="text-ochre font-medium">争鸣于 A4</span></td>
-                                <td class="font-mono text-xs">Person/School → DebateEvent</td>
-                                <td>某家/某人在某场争鸣中参与辩论</td>
-                                <td class="text-xs text-gray-500">zhengming</td>
-                            </tr>
-                            <tr data-axis="a4">
-                                <td class="font-mono text-xs">collated_in</td>
-                                <td><span class="text-ochre font-medium">整理于 A4</span></td>
-                                <td class="font-mono text-xs">Text → CollationEvent</td>
-                                <td>某典籍在某场整理事件中被编订</td>
-                                <td class="text-xs text-gray-500">zhengli</td>
-                            </tr>
-                            <tr data-axis="a4">
-                                <td class="font-mono text-xs">during_event</td>
-                                <td><span class="text-ochre font-medium">发生于 A4</span></td>
-                                <td class="font-mono text-xs">Event → Event</td>
-                                <td>子事件发生于母事件期间</td>
-                                <td class="text-xs text-gray-500">duringEvent</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </section>
+<div class="section" id="cat-农家">
+<h2 class="section-title">📜 农家·核心典籍</h2>
+<div class="book-grid">
 
-    <!-- 数据源 -->
-    <section class="py-10 px-4 bg-paper/30" id="datasource">
-        <div class="max-w-7xl mx-auto">
-            <h2 class="text-2xl md:text-3xl font-song font-bold mb-8 text-center">五、数据源登记（ABox）</h2>
-            <div class="card overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="relation-table w-full">
-                        <thead>
-                            <tr>
-                                <th>数据文件</th>
-                                <th>实体类</th>
-                                <th>规划数量</th>
-                                <th>说明</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>data/concepts.json</td>
-                                <td>DaoConcept / Category</td>
-                                <td>120</td>
-                                <td>道体概念与义理范畴实例，id前缀 c###</td>
-                            </tr>
-                            <tr>
-                                <td>data/persons.json</td>
-                                <td>Person（诸子/弟子/注家/学者）</td>
-                                <td>189</td>
-                                <td>人物实例，id前缀 p###</td>
-                            </tr>
-                            <tr>
-                                <td>data/schools.json</td>
-                                <td>School / AcademicSystem</td>
-                                <td>12</td>
-                                <td>诸子十二家流派实例，id前缀 sc###，含学术源流对比</td>
-                            </tr>
-                            <tr>
-                                <td>data/texts.json</td>
-                                <td>Text 元数据</td>
-                                <td>1158</td>
-                                <td>大智阁子藏全部典籍元数据，id前缀 t###</td>
-                            </tr>
-                            <tr>
-                                <td>data/relations.json</td>
-                                <td>ObjectProperty 三元组</td>
-                                <td>2300+</td>
-                                <td>义理、分类、人物、事件关系三元组</td>
-                            </tr>
-                            <tr>
-                                <td>ontology/texts/</td>
-                                <td>Text 全文实例</td>
-                                <td>1158</td>
-                                <td>子藏文本本体，分片存储，章句结构已标注</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="p-4 bg-paper/50 border-t border-paper text-sm text-gray-600 font-song">
-                    <p>📚 原始文献来源：殆知阁（daizhige.org）中国古典文献全文检索引擎 · 子藏 1158 部典籍</p>
-                    <p>📖 学术分类依据：《四库全书总目·子部》十四类、《中国古籍总目·子部》十五类、华东师范大学《子藏》工程学术体系</p>
-                </div>
-            </div>
-        </div>
-    </section>
+  <div class="book-card">
+    <div class="book-icon">齐</div>
+    <div class="book-info">
+      <div class="book-name">齐民要术</div>
+      <div class="book-meta">农家 · 14.2万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=农家/齐民要术.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">农</div>
+    <div class="book-info">
+      <div class="book-name">农书</div>
+      <div class="book-meta">农家 · 1.7万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=农家/农书.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">农</div>
+    <div class="book-info">
+      <div class="book-name">农政全书</div>
+      <div class="book-meta">农家 · 40.2万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=农家/农政全书.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">耒</div>
+    <div class="book-info">
+      <div class="book-name">耒耜经</div>
+      <div class="book-meta">农家 · 678字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=农家/耒耜经.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">救</div>
+    <div class="book-info">
+      <div class="book-name">救荒本草</div>
+      <div class="book-meta">农家 · 4.4万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=农家/救荒本草.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">钦</div>
+    <div class="book-info">
+      <div class="book-name">钦定授时通考</div>
+      <div class="book-meta">农家 · 48.2万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=农家/钦定授时通考.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">王</div>
+    <div class="book-info">
+      <div class="book-name">王氏农书</div>
+      <div class="book-meta">农家 · 12.0万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=农家/王氏农书.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">农</div>
+    <div class="book-info">
+      <div class="book-name">农桑辑要</div>
+      <div class="book-meta">农家 · 6.3万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=农家/农桑辑要.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">天</div>
+    <div class="book-info">
+      <div class="book-name">天工开物</div>
+      <div class="book-meta">农家 · 5.7万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=农家/天工开物.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">四</div>
+    <div class="book-info">
+      <div class="book-name">四时纂要</div>
+      <div class="book-meta">农家 · 4.2万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=农家/四时纂要.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">泰</div>
+    <div class="book-info">
+      <div class="book-name">泰西水法</div>
+      <div class="book-meta">农家 · 2.3万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=农家/泰西水法.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">野</div>
+    <div class="book-info">
+      <div class="book-name">野菜博录</div>
+      <div class="book-meta">农家 · 1.6万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=农家/野菜博录.txt">阅读 →</a>
+  </div>
+</div>
+<div style="text-align:right;margin-top:1rem;">
+  <a href="library.html" style="color:var(--red);font-weight:600;">浏览全部农家典籍 →</a>
+</div>
+</div>
 
-    <!-- 诸子流派对比 -->
-    <section class="py-10 px-4" id="inference">
-        <div class="max-w-7xl mx-auto">
-            <h2 class="text-2xl md:text-3xl font-song font-bold mb-8 text-center">诸子流派判教对比</h2>
-            <div class="card p-6">
-                <div class="flex flex-wrap gap-2 mb-6">
-                    <button class="tab-btn active px-4 py-2 rounded-lg text-sm border border-gray-200" onclick="showSchool('ru', this)">儒家</button>
-                    <button class="tab-btn px-4 py-2 rounded-lg text-sm border border-gray-200" onclick="showSchool('dao', this)">道家</button>
-                    <button class="tab-btn px-4 py-2 rounded-lg text-sm border border-gray-200" onclick="showSchool('fa', this)">法家</button>
-                    <button class="tab-btn px-4 py-2 rounded-lg text-sm border border-gray-200" onclick="showSchool('mo', this)">墨家</button>
-                    <button class="tab-btn px-4 py-2 rounded-lg text-sm border border-gray-200" onclick="showSchool('bing', this)">兵家</button>
-                    <button class="tab-btn px-4 py-2 rounded-lg text-sm border border-gray-200" onclick="showSchool('ming', this)">名家</button>
-                </div>
-                <div id="schoolContent">
-                    <div id="school-ru" class="school-panel">
-                        <h3 class="font-bold text-xl font-song mb-3 text-vermilion">儒家 · 五常教化</h3>
-                        <div class="grid md:grid-cols-3 gap-4 text-sm">
-                            <div class="bg-paper/50 p-4 rounded-lg">
-                                <div class="font-bold mb-2">核心概念</div>
-                                <p class="text-gray-600">仁、义、礼、智、信、忠恕、中庸、教化、正名</p>
-                            </div>
-                            <div class="bg-paper/50 p-4 rounded-lg">
-                                <div class="font-bold mb-2">代表人物</div>
-                                <p class="text-gray-600">孔子、孟子、荀子、董仲舒、朱熹</p>
-                            </div>
-                            <div class="bg-paper/50 p-4 rounded-lg">
-                                <div class="font-bold mb-2">核心典籍</div>
-                                <p class="text-gray-600">《论语》《孟子》《荀子》《春秋繁露》</p>
-                            </div>
-                            <div class="bg-paper/50 p-4 rounded-lg md:col-span-3">
-                                <div class="font-bold mb-2">核心主张</div>
-                                <p class="text-gray-600">以仁为核心，以礼为规范，主张德治教化、修己安人；孟子主性善、倡仁政，荀子主性恶、重礼法，后世发展为经学与理学。</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="school-dao" class="school-panel hidden">
-                        <h3 class="font-bold text-xl font-song mb-3 text-indigo">道家 · 道法自然</h3>
-                        <div class="grid md:grid-cols-3 gap-4 text-sm">
-                            <div class="bg-paper/50 p-4 rounded-lg">
-                                <div class="font-bold mb-2">核心概念</div>
-                                <p class="text-gray-600">道、自然、无为、虚静、齐物、逍遥、柔弱胜刚强</p>
-                            </div>
-                            <div class="bg-paper/50 p-4 rounded-lg">
-                                <div class="font-bold mb-2">代表人物</div>
-                                <p class="text-gray-600">老子、庄子、列子、文子、淮南子</p>
-                            </div>
-                            <div class="bg-paper/50 p-4 rounded-lg">
-                                <div class="font-bold mb-2">核心典籍</div>
-                                <p class="text-gray-600">《道德经》《庄子》《列子》《文子》《淮南子》</p>
-                            </div>
-                            <div class="bg-paper/50 p-4 rounded-lg md:col-span-3">
-                                <div class="font-bold mb-2">核心主张</div>
-                                <p class="text-gray-600">以道为本体，主张道法自然、无为而治；老庄追求精神逍遥，黄老主张君无为而臣有为，对中国艺术、医学、政治影响深远。</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="school-fa" class="school-panel hidden">
-                        <h3 class="font-bold text-xl font-song mb-3 text-gray-800">法家 · 刑名法术</h3>
-                        <div class="grid md:grid-cols-3 gap-4 text-sm">
-                            <div class="bg-paper/50 p-4 rounded-lg">
-                                <div class="font-bold mb-2">核心概念</div>
-                                <p class="text-gray-600">法、术、势、刑名、赏罚、耕战、中央集权</p>
-                            </div>
-                            <div class="bg-paper/50 p-4 rounded-lg">
-                                <div class="font-bold mb-2">代表人物</div>
-                                <p class="text-gray-600">商鞅、申不害、慎到、韩非、李斯</p>
-                            </div>
-                            <div class="bg-paper/50 p-4 rounded-lg">
-                                <div class="font-bold mb-2">核心典籍</div>
-                                <p class="text-gray-600">《商君书》《韩非子》《慎子》《申子》</p>
-                            </div>
-                            <div class="bg-paper/50 p-4 rounded-lg md:col-span-3">
-                                <div class="font-bold mb-2">核心主张</div>
-                                <p class="text-gray-600">主张以法治国、信赏必罚，兼用术（驾驭臣下）、势（君主权威）；韩非集法家大成，为秦统一提供理论基础，后世阳儒阴法。</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="school-mo" class="school-panel hidden">
-                        <h3 class="font-bold text-xl font-song mb-3 text-gray-700">墨家 · 兼爱非攻</h3>
-                        <div class="grid md:grid-cols-3 gap-4 text-sm">
-                            <div class="bg-paper/50 p-4 rounded-lg">
-                                <div class="font-bold mb-2">核心概念</div>
-                                <p class="text-gray-600">兼爱、非攻、尚贤、尚同、天志、明鬼、节用、节葬</p>
-                            </div>
-                            <div class="bg-paper/50 p-4 rounded-lg">
-                                <div class="font-bold mb-2">代表人物</div>
-                                <p class="text-gray-600">墨子、禽滑厘、后期墨家</p>
-                            </div>
-                            <div class="bg-paper/50 p-4 rounded-lg">
-                                <div class="font-bold mb-2">核心典籍</div>
-                                <p class="text-gray-600">《墨子》（含墨辩逻辑、光学、力学内容）</p>
-                            </div>
-                            <div class="bg-paper/50 p-4 rounded-lg md:col-span-3">
-                                <div class="font-bold mb-2">核心主张</div>
-                                <p class="text-gray-600">主张无差别的兼爱，反对战争；重视逻辑与科技，提倡尚贤使能、节俭薄葬，是先秦带有平民色彩的学派，汉后中绝。</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="school-bing" class="school-panel hidden">
-                        <h3 class="font-bold text-xl font-song mb-3 text-ochre">兵家 · 权谋形势</h3>
-                        <div class="grid md:grid-cols-3 gap-4 text-sm">
-                            <div class="bg-paper/50 p-4 rounded-lg">
-                                <div class="font-bold mb-2">核心概念</div>
-                                <p class="text-gray-600">道、天、地、将、法、奇正、虚实、形势、权谋</p>
-                            </div>
-                            <div class="bg-paper/50 p-4 rounded-lg">
-                                <div class="font-bold mb-2">代表人物</div>
-                                <p class="text-gray-600">孙武、司马穰苴、吴起、孙膑、尉缭</p>
-                            </div>
-                            <div class="bg-paper/50 p-4 rounded-lg">
-                                <div class="font-bold mb-2">核心典籍</div>
-                                <p class="text-gray-600">《孙子兵法》《吴子》《司马法》《孙膑兵法》《六韬》</p>
-                            </div>
-                            <div class="bg-paper/50 p-4 rounded-lg md:col-span-3">
-                                <div class="font-bold mb-2">核心主张</div>
-                                <p class="text-gray-600">分为兵权谋、兵形势、兵阴阳、兵技巧四类，以《孙子兵法》为代表，主张不战而屈人之兵、知彼知己、因敌制胜，影响遍及世界军事与商业领域。</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="school-ming" class="school-panel hidden">
-                        <h3 class="font-bold text-xl font-song mb-3 text-purple-700">名家 · 名实之辩</h3>
-                        <div class="grid md:grid-cols-3 gap-4 text-sm">
-                            <div class="bg-paper/50 p-4 rounded-lg">
-                                <div class="font-bold mb-2">核心概念</div>
-                                <p class="text-gray-600">名实、白马非马、坚白同异、合同异、离坚白</p>
-                            </div>
-                            <div class="bg-paper/50 p-4 rounded-lg">
-                                <div class="font-bold mb-2">代表人物</div>
-                                <p class="text-gray-600">邓析、惠施、公孙龙、尹文子</p>
-                            </div>
-                            <div class="bg-paper/50 p-4 rounded-lg">
-                                <div class="font-bold mb-2">核心典籍</div>
-                                <p class="text-gray-600">《公孙龙子》《邓析子》《尹文子》《惠子》（佚）</p>
-                            </div>
-                            <div class="bg-paper/50 p-4 rounded-lg md:col-span-3">
-                                <div class="font-bold mb-2">核心主张</div>
-                                <p class="text-gray-600">专注于名实关系与逻辑思辨，惠施主张"合同异"（强调事物同一性），公孙龙主张"离坚白""白马非马"（强调概念差异性），是中国古代的逻辑学传统。</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<div class="section" id="cat-算学">
+<h2 class="section-title">📜 算学·核心典籍</h2>
+<div class="book-grid">
 
-    <!--  Footer -->
-    <footer class="py-10 px-4 border-t border-paper bg-white/50 mt-10">
-        <div class="max-w-7xl mx-auto text-center text-sm text-gray-500 font-song">
-            <p class="mb-2">子藏本体论 · 诸子百家智能知识图谱与义理推演平台</p>
-            <p>文献来源：<a href="https://daizhige.org" class="text-vermilion hover:underline" target="_blank">殆知阁（daizhige.org）</a> · 架构参考：佛学本体论平台</p>
-            <p class="mt-2 text-xs">「自六经以外立说者，皆子书也」——《四库全书总目提要》</p>
-        </div>
-    </footer>
+  <div class="book-card">
+    <div class="book-icon">九</div>
+    <div class="book-info">
+      <div class="book-name">九章算术</div>
+      <div class="book-meta">算学 · 6.5万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=算法/九章算术.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">周</div>
+    <div class="book-info">
+      <div class="book-name">周髀算经</div>
+      <div class="book-meta">算学 · 3.7万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=算法/周髀算经.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">孙</div>
+    <div class="book-info">
+      <div class="book-name">孙子算经</div>
+      <div class="book-meta">算学 · 1.2万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=算法/孙子算经.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">五</div>
+    <div class="book-info">
+      <div class="book-name">五曹算经</div>
+      <div class="book-meta">算学 · 5943字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=算法/五曹算经.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">海</div>
+    <div class="book-info">
+      <div class="book-name">海岛算经</div>
+      <div class="book-meta">算学 · 3460字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=算法/海岛算经.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">夏</div>
+    <div class="book-info">
+      <div class="book-name">夏侯阳算经</div>
+      <div class="book-meta">算学 · 1.2万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=算法/夏侯阳算经.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">五</div>
+    <div class="book-info">
+      <div class="book-name">五经算术</div>
+      <div class="book-meta">算学 · 1.4万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=算法/五经算术.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">缉</div>
+    <div class="book-info">
+      <div class="book-name">缉古算经</div>
+      <div class="book-meta">算学 · 1.1万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=算法/缉古算经.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">数</div>
+    <div class="book-info">
+      <div class="book-name">数术记遗</div>
+      <div class="book-meta">算学 · 5537字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=算法/数术记遗.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">御</div>
+    <div class="book-info">
+      <div class="book-name">御制数理精蕴</div>
+      <div class="book-meta">算学 · 277.9万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=算法/御制数理精蕴.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">新</div>
+    <div class="book-info">
+      <div class="book-name">新法算书</div>
+      <div class="book-meta">算学 · 72.1万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=算法/新法算书.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">历</div>
+    <div class="book-info">
+      <div class="book-name">历算全书</div>
+      <div class="book-meta">算学 · 65.8万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=算法/历算全书.txt">阅读 →</a>
+  </div>
+</div>
+<div style="text-align:right;margin-top:1rem;">
+  <a href="library.html" style="color:var(--red);font-weight:600;">浏览全部算学典籍 →</a>
+</div>
+</div>
 
-    <script>
-        // Tab 切换 - 类体系
-        function showTab(axis, btn) {
-            document.querySelectorAll('#classes .tab-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            
-            document.querySelectorAll('.class-tree-item').forEach(item => {
-                const axes = item.dataset.axis.split(' ');
-                if (axis === 'all' || axes.includes(axis)) {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        }
+<div class="section" id="cat-笔记">
+<h2 class="section-title">📜 笔记·核心典籍</h2>
+<div class="book-grid">
 
-        // Tab 切换 - 关系谓词
-        function showRelationTab(axis, btn) {
-            document.querySelectorAll('#relations .tab-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            
-            document.querySelectorAll('#relationTable tbody tr').forEach(row => {
-                if (axis === 'all' || row.dataset.axis === axis) {
-                    row.style.display = 'table-row';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        }
+  <div class="book-card">
+    <div class="book-icon">世</div>
+    <div class="book-info">
+      <div class="book-name">世说新语</div>
+      <div class="book-meta">笔记 · 15.6万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=笔记/世说新语.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">梦</div>
+    <div class="book-info">
+      <div class="book-name">梦溪笔谈</div>
+      <div class="book-meta">笔记 · 12.7万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=笔记/梦溪笔谈.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">容</div>
+    <div class="book-info">
+      <div class="book-name">容斋随笔</div>
+      <div class="book-meta">笔记 · 41.1万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=笔记/容斋随笔.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">阅</div>
+    <div class="book-info">
+      <div class="book-name">阅微草堂笔记</div>
+      <div class="book-meta">笔记 · 36.6万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=笔记/阅微草堂笔记.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">子</div>
+    <div class="book-info">
+      <div class="book-name">子不语</div>
+      <div class="book-meta">笔记 · 26.7万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=笔记/子不语.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">酉</div>
+    <div class="book-info">
+      <div class="book-name">酉阳杂俎</div>
+      <div class="book-meta">笔记 · 13.2万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=笔记/酉阳杂俎.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">东</div>
+    <div class="book-info">
+      <div class="book-name">东坡志林</div>
+      <div class="book-meta">笔记 · 4.5万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=笔记/东坡志林.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">老</div>
+    <div class="book-info">
+      <div class="book-name">老学庵笔记</div>
+      <div class="book-meta">笔记 · 6.1万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=笔记/老学庵笔记.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">癸</div>
+    <div class="book-info">
+      <div class="book-name">癸辛杂识</div>
+      <div class="book-meta">笔记 · 9.2万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=笔记/癸辛杂识.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">五</div>
+    <div class="book-info">
+      <div class="book-name">五杂俎</div>
+      <div class="book-meta">笔记 · 24.9万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=笔记/五杂俎.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">池</div>
+    <div class="book-info">
+      <div class="book-name">池北偶谈</div>
+      <div class="book-meta">笔记 · 21.1万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=笔记/池北偶谈.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">香</div>
+    <div class="book-info">
+      <div class="book-name">香祖笔记</div>
+      <div class="book-meta">笔记 · 11.4万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=笔记/香祖笔记.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">分</div>
+    <div class="book-info">
+      <div class="book-name">分甘余话</div>
+      <div class="book-meta">笔记 · 3.8万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=笔记/分甘余话.txt">阅读 →</a>
+  </div>
+</div>
+<div style="text-align:right;margin-top:1rem;">
+  <a href="library.html" style="color:var(--red);font-weight:600;">浏览全部笔记典籍 →</a>
+</div>
+</div>
 
-        // Tab 切换 - 诸子流派
-        function showSchool(school, btn) {
-            document.querySelectorAll('#inference .tab-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            
-            document.querySelectorAll('.school-panel').forEach(panel => {
-                panel.classList.add('hidden');
-            });
-            document.getElementById('school-' + school).classList.remove('hidden');
-        }
+<div class="section" id="cat-类书">
+<h2 class="section-title">📜 类书·核心典籍</h2>
+<div class="book-grid">
 
-        // 平滑滚动
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
+  <div class="book-card">
+    <div class="book-icon">艺</div>
+    <div class="book-info">
+      <div class="book-name">艺文类聚</div>
+      <div class="book-meta">类书 · 113.3万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=类书/艺文类聚.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">北</div>
+    <div class="book-info">
+      <div class="book-name">北堂书钞</div>
+      <div class="book-meta">类书 · 100.0万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=类书/北堂书钞.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">太</div>
+    <div class="book-info">
+      <div class="book-name">太平御览</div>
+      <div class="book-meta">类书 · 481.7万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=类书/太平御览.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">太</div>
+    <div class="book-info">
+      <div class="book-name">太平广记</div>
+      <div class="book-meta">类书 · 194.3万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=类书/太平广记.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">册</div>
+    <div class="book-info">
+      <div class="book-name">册府元龟</div>
+      <div class="book-meta">类书 · 875.6万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=类书/册府元龟.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">玉</div>
+    <div class="book-info">
+      <div class="book-name">玉海</div>
+      <div class="book-meta">类书 · 278.9万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=类书/玉海.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">初</div>
+    <div class="book-info">
+      <div class="book-name">初学记</div>
+      <div class="book-meta">类书 · 63.1万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=类书/初学记.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">白</div>
+    <div class="book-info">
+      <div class="book-name">白孔六帖</div>
+      <div class="book-meta">类书 · 166.3万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=类书/白孔六帖.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">事</div>
+    <div class="book-info">
+      <div class="book-name">事类赋</div>
+      <div class="book-meta">类书 · 27.7万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=类书/事类赋.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">小</div>
+    <div class="book-info">
+      <div class="book-name">小名录</div>
+      <div class="book-meta">类书 · 1.5万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=类书/小名录.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">永</div>
+    <div class="book-info">
+      <div class="book-name">永乐大典残卷</div>
+      <div class="book-meta">类书 · 365.0万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=类书/永乐大典残卷.txt">阅读 →</a>
+  </div>
+  <div class="book-card">
+    <div class="book-icon">清</div>
+    <div class="book-info">
+      <div class="book-name">清稗类钞</div>
+      <div class="book-meta">类书 · 308.8万字</div>
+    </div>
+    <a class="book-link" href="reader.html?b=类书/清稗类钞.txt">阅读 →</a>
+  </div>
+</div>
+<div style="text-align:right;margin-top:1rem;">
+  <a href="library.html" style="color:var(--red);font-weight:600;">浏览全部类书典籍 →</a>
+</div>
+</div>
 
-        // 部类分布饼图
-        window.addEventListener('load', function() {
-            const chartDom = document.getElementById('categoryChart');
-            if (chartDom && echarts) {
-                const myChart = echarts.init(chartDom);
-                const option = {
-                    tooltip: {
-                        trigger: 'item'
-                    },
-                    legend: {
-                        bottom: '0%',
-                        left: 'center'
-                    },
-                    series: [
-                        {
-                            name: '子藏部类分布',
-                            type: 'pie',
-                            radius: ['40%', '70%'],
-                            avoidLabelOverlap: false,
-                            itemStyle: {
-                                borderRadius: 10,
-                                borderColor: '#fff',
-                                borderWidth: 2
-                            },
-                            label: {
-                                show: false,
-                                position: 'center'
-                            },
-                            emphasis: {
-                                label: {
-                                    show: true,
-                                    fontSize: 16,
-                                    fontWeight: 'bold'
-                                }
-                            },
-                            labelLine: {
-                                show: false
-                            },
-                            data: [
-                                { value: 863, name: '笔记', itemStyle: { color: '#c41e3a' } },
-                                { value: 78, name: '类书', itemStyle: { color: '#2e8b57' } },
-                                { value: 65, name: '诸子', itemStyle: { color: '#2c3e50' } },
-                                { value: 62, name: '兵家', itemStyle: { color: '#d4a017' } },
-                                { value: 50, name: '算法', itemStyle: { color: '#8e44ad' } },
-                                { value: 30, name: '农家', itemStyle: { color: '#e67e22' } },
-                                { value: 10, name: '法家', itemStyle: { color: '#7f8c8d' } }
-                            ]
-                        }
-                    ]
-                };
-                myChart.setOption(option);
-                
-                window.addEventListener('resize', () => myChart.resize());
-            }
-        });
-    </script>
+<div class="section" id="schools">
+<h2 class="section-title">流 九流十家</h2>
+<p style="color:var(--ink2);margin-bottom:1.5rem;">《汉书·艺文志》载诸子十家：儒家、道家、法家、墨家、名家、阴阳家、纵横家、杂家、农家、小说家，九家可观（小说家为小道），加兵家、医家，共成子学大观。</p>
+<table class="compare-table">
+<thead><tr><th>流派</th><th>始祖/代表</th><th>核心范畴</th><th>思想主张</th><th>代表典籍</th></tr></thead>
+<tbody>
+<tr>
+  <td class="school" style="color:#b83b2f;">儒家</td>
+  <td>孔子</td>
+  <td>仁、义、礼、智、信</td>
+  <td>修齐治平，内圣外王，德治仁政</td>
+  <td>论语、孟子、荀子、孔子家语</td>
+</tr>
+<tr>
+  <td class="school" style="color:#5d8f6f;">道家</td>
+  <td>老子</td>
+  <td>道、自然、无为</td>
+  <td>道法自然，无为而治，清静无为</td>
+  <td>老子、庄子、列子、文子、鹖冠子</td>
+</tr>
+<tr>
+  <td class="school" style="color:#3d4f6f;">法家</td>
+  <td>管仲/商鞅/韩非</td>
+  <td>法、术、势</td>
+  <td>以法治国，信赏必罚，富国强兵</td>
+  <td>韩非子、商君书、管子、慎子、申子</td>
+</tr>
+<tr>
+  <td class="school" style="color:#8a6c42;">墨家</td>
+  <td>墨子</td>
+  <td>兼爱、非攻、尚贤</td>
+  <td>兼相爱交相利，尚同尚贤，节用节葬</td>
+  <td>墨子</td>
+</tr>
+<tr>
+  <td class="school" style="color:#c06030;">兵家</td>
+  <td>孙子</td>
+  <td>奇正、虚实、庙算</td>
+  <td>兵者诡道，知己知彼，上兵伐谋</td>
+  <td>孙子兵法、吴子、六韬、三略、司马法</td>
+</tr>
+<tr>
+  <td class="school" style="color:#7a5c8f;">名家</td>
+  <td>公孙龙/惠施</td>
+  <td>名实、坚白、同异</td>
+  <td>循名责实，白马非马，合同异离坚白</td>
+  <td>公孙龙子、尹文子</td>
+</tr>
+<tr>
+  <td class="school" style="color:#d4a853;">阴阳家</td>
+  <td>邹衍</td>
+  <td>阴阳、五行、五德终始</td>
+  <td>阴阳消息，五行生克，天人感应</td>
+  <td>邹子（已佚）、月令</td>
+</tr>
+<tr>
+  <td class="school" style="color:#5a7a5a;">纵横家</td>
+  <td>鬼谷子</td>
+  <td>合纵、连横</td>
+  <td>纵横捭阖，游说诸侯，因势而动</td>
+  <td>鬼谷子、战国策</td>
+</tr>
+<tr>
+  <td class="school" style="color:#6a6a6a;">杂家</td>
+  <td>吕不韦/刘安</td>
+  <td>兼儒墨合名法</td>
+  <td>博采众家之长，贯通王治之道</td>
+  <td>吕氏春秋、淮南子</td>
+</tr>
+<tr>
+  <td class="school" style="color:#8fa05d;">农家</td>
+  <td>许行</td>
+  <td>耕战、重农</td>
+  <td>君民并耕，以农为本，贵粟强本</td>
+  <td>神农、野老（已佚）、齐民要术</td>
+</tr>
+<tr>
+  <td class="school" style="color:#a07a5a;">小说家</td>
+  <td>稗官</td>
+  <td>街谈巷语、道听途说</td>
+  <td>虽小道必有可观，正史之余资观风</td>
+  <td>世说新语、笔记小说</td>
+</tr>
+</tbody></table>
+</div>
+
+<div class="section" id="thinkers">
+<h2 class="section-title">賢 诸子人物</h2>
+<div class="figure-grid">
+
+  <div class="figure-card">
+    <div class="figure-avatar">李</div>
+    <div class="figure-name">老子</div>
+    <div class="figure-meta">春秋 · 道家始祖</div>
+  </div>
+  <div class="figure-card">
+    <div class="figure-avatar">莊</div>
+    <div class="figure-name">庄子</div>
+    <div class="figure-meta">战国 · 南华真人</div>
+  </div>
+  <div class="figure-card">
+    <div class="figure-avatar">孔</div>
+    <div class="figure-name">孔子</div>
+    <div class="figure-meta">春秋 · 儒家至圣</div>
+  </div>
+  <div class="figure-card">
+    <div class="figure-avatar">孟</div>
+    <div class="figure-name">孟子</div>
+    <div class="figure-meta">战国 · 亚圣</div>
+  </div>
+  <div class="figure-card">
+    <div class="figure-avatar">荀</div>
+    <div class="figure-name">荀子</div>
+    <div class="figure-meta">战国 · 性恶论</div>
+  </div>
+  <div class="figure-card">
+    <div class="figure-avatar">韓</div>
+    <div class="figure-name">韩非子</div>
+    <div class="figure-meta">战国 · 法家集大成</div>
+  </div>
+  <div class="figure-card">
+    <div class="figure-avatar">商</div>
+    <div class="figure-name">商鞅</div>
+    <div class="figure-meta">战国 · 变法家</div>
+  </div>
+  <div class="figure-card">
+    <div class="figure-avatar">墨</div>
+    <div class="figure-name">墨子</div>
+    <div class="figure-meta">战国 · 墨家巨子</div>
+  </div>
+  <div class="figure-card">
+    <div class="figure-avatar">孫</div>
+    <div class="figure-name">孙子</div>
+    <div class="figure-meta">春秋 · 兵圣</div>
+  </div>
+  <div class="figure-card">
+    <div class="figure-avatar">吳</div>
+    <div class="figure-name">吴起</div>
+    <div class="figure-meta">战国 · 兵家名将</div>
+  </div>
+  <div class="figure-card">
+    <div class="figure-avatar">公</div>
+    <div class="figure-name">公孙龙</div>
+    <div class="figure-meta">战国 · 白马非马</div>
+  </div>
+  <div class="figure-card">
+    <div class="figure-avatar">鬼</div>
+    <div class="figure-name">鬼谷子</div>
+    <div class="figure-meta">战国 · 纵横家祖</div>
+  </div>
+  <div class="figure-card">
+    <div class="figure-avatar">鄒</div>
+    <div class="figure-name">邹衍</div>
+    <div class="figure-meta">战国 · 五德终始</div>
+  </div>
+  <div class="figure-card">
+    <div class="figure-avatar">呂</div>
+    <div class="figure-name">吕不韦</div>
+    <div class="figure-meta">战国 · 杂家代表</div>
+  </div>
+  <div class="figure-card">
+    <div class="figure-avatar">許</div>
+    <div class="figure-name">许行</div>
+    <div class="figure-meta">战国 · 农家贤者</div>
+  </div>
+  <div class="figure-card">
+    <div class="figure-avatar">劉</div>
+    <div class="figure-name">刘安</div>
+    <div class="figure-meta">西汉 · 《淮南子》</div>
+  </div>
+  <div class="figure-card">
+    <div class="figure-avatar">王</div>
+    <div class="figure-name">王充</div>
+    <div class="figure-meta">东汉 · 《论衡》</div>
+  </div>
+  <div class="figure-card">
+    <div class="figure-avatar">劉</div>
+    <div class="figure-name">刘向</div>
+    <div class="figure-meta">西汉 · 校书编目</div>
+  </div>
+</div>
+</div>
+
+<div class="section" id="ontology">
+<h2 class="section-title">構 本体架构（四轴×七层）</h2>
+<p style="color:var(--ink2);margin-bottom:1.5rem;">参考佛学本体论「四轴×七层」正交架构，子藏本体论以部类、义理、人物、事件四轴交织，构建诸子百家文献的知识组织体系。</p>
+<table class="matrix-table">
+<thead><tr><th>层级</th><th>A1 分类轴<br><small>部类·体裁·版本</small></th><th>A2 思想轴<br><small>道体·范畴·命题</small></th><th>A3 人物轴<br><small>诸子·弟子·注家</small></th><th>A4 事件轴<br><small>著述·争鸣·流传</small></th></tr></thead>
+<tbody>
+<tr><td class="cat"><b>L6 文化外延</b></td><td class="done">✓ 民间化文本</td><td class="done">✓ 谚语·典故</td><td class="done">✓ 民间人物</td><td class="done">✓ 民俗信仰</td></tr>
+<tr><td class="cat"><b>L5 人物传承</b></td><td class="plan">— 人物传记分类</td><td class="done">✓ 诸子18家</td><td class="done">✓ 189人关系网</td><td class="done">✓ 师承交游</td></tr>
+<tr><td class="cat"><b>L4 文本载体</b></td><td class="done">✓ 1463部典籍</td><td class="done">✓ 篇·章·句·注</td><td class="done">✓ 作者/注者标注</td><td class="plan">— 版本流传事件</td></tr>
+<tr><td class="cat"><b>L3 宗派流派</b></td><td class="done">✓ 子部7大类</td><td class="done">✓ 12家学派</td><td class="done">✓ 流派归属</td><td class="plan">— 学派争鸣事件</td></tr>
+<tr><td class="cat"><b>L2 义理范畴</b></td><td class="plan">— 范畴归类</td><td class="done">✓ 84个范畴</td><td class="plan">— 范畴提出者</td><td class="plan">— 义理演变</td></tr>
+<tr><td class="cat"><b>L1 道体本体</b></td><td class="plan">— 道体分类</td><td class="done">✓ 36核心概念</td><td class="plan">— 提出者链</td><td class="plan">— 概念演变史</td></tr>
+<tr><td class="cat"><b>L0 元模型层</b></td><td colspan="4" class="done">✓ 类/属性/关系/实例四元组 · 2300+三元组</td></tr>
+</tbody></table>
+</div>
+
+<!-- 义理工具 -->
+<div class="section">
+<h2 class="section-title">器 义理工具</h2>
+<a href="library.html" class="link-block">
+  <div class="link-block-icon">📜</div>
+  <div>
+    <h4>古籍全文库</h4>
+    <p>1463部子学典籍、约2亿字全文检索，支持分类筛选、主题切换、横竖排、字号调整，点击概念可查看释义。</p>
+  </div>
+</a>
+<a href="#schools" class="link-block" onclick="showModal('九流十家','<p>先秦至汉初诸子百家共分十家：儒、道、法、墨、名、阴阳、纵横、杂、农、小说。</p><p>其中儒家、道家、法家对后世中国政治思想影响最大；墨家在逻辑学、科学技术上有重要贡献；兵家影响古今军事学。</p><p>此分类出自班固《汉书·艺文志》，本源于刘向、刘歆父子《七略·诸子略》。</p>');return false;">
+  <div class="link-block-icon">流</div>
+  <div>
+    <h4>九流十家流派</h4>
+    <p>浏览儒、道、法、墨、名、阴阳、纵横、杂、农、小说、兵家十二流派的核心思想、代表人物与典籍。</p>
+  </div>
+</a>
+<a href="#" class="link-block" onclick="showModal('子学概念词典','<p style=\'margin-bottom:8px;\'>已收录子学核心概念 <b>36+</b> 个，阅读正文时点击红色标注的概念即可查看释义：</p><p>道、德、仁、义、礼、法、术、势、无为、自然、性、心、气、天、命、名实、阴阳、五行、兼爱、非攻、尚贤、齐物、逍遥、刑名、耕战、王道、霸道、中庸、诚、格物、良知、奇正、庙算、兵势……</p><p>在阅读器中点击任意概念，可弹出释义窗口。</p>');return false;">
+  <div class="link-block-icon">辭</div>
+  <div>
+    <h4>子学概念词典</h4>
+    <p>道、法、术、势、仁、义、无为、自然、阴阳、奇正等36+核心概念释义，阅读中点击即现。</p>
+  </div>
+</a>
+</div>
+
+<div class="section">
+<h2 class="section-title">源 数据来源</h2>
+<div class="zang-grid" style="grid-template-columns:1fr 1fr;">
+  <a href="https://daizhige.org/" target="_blank" class="zang-card">
+    <h3>殆知阁</h3>
+    <p>开放古籍文献数据库，本次子藏1463部典籍全文来源，覆盖诸子、兵家、法家、农家、算法、笔记、类书七大类。</p>
+  </a>
+  <a href="https://yejinlei.github.io/Buddhist" target="_blank" class="zang-card">
+    <h3>参考架构</h3>
+    <p>参考《佛学本体论》四轴×七层正交架构，以及《儒藏本体论》全文库组织方式，构建子部文献本体系统。</p>
+  </a>
+</div>
+</div>
+
+</div>
 </body>
 </html>

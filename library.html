@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>古籍全文库 · 子藏本体论</title>
+<link rel="stylesheet" href="style/common.css">
+</head>
+<body>
+<nav class="top-nav"></nav>
+<div class="main-content">
+  <div class="library-header">
+    <h1 class="page-title">古籍全文库</h1>
+    <p class="page-subtitle" id="libSubtitle">子藏1463部 · 按字数倒序排列 · 点击书名进入阅读</p>
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="检索书名 / 分类（如：老子、孙子、韩非子）…">
+    </div>
+    <div class="category-tabs" id="categoryTabs"></div>
+  </div>
+  <div class="book-list" id="bookList"></div>
+  <button class="load-more" id="loadMore">加载更多 ▾</button>
+</div>
+
+<script src="data/common.js"></script>
+<script src="data/books.js"></script>
+<script>
+let currentCategory = 'all';
+let currentPage = 0;
+const pageSize = 100;
+
+document.getElementById('libSubtitle').textContent =
+  `子藏${TOTAL_BOOKS}部 · ${TOTAL_CHARS_WAN}万字 · 按字数倒序排列 · 点击书名进入阅读`;
+
+function renderCategories() {
+  const tabs = document.getElementById('categoryTabs');
+  tabs.innerHTML = CATEGORIES.map(c => `
+    <button class="category-tab ${c.id===currentCategory?'active':''}" data-cat="${c.id}">
+      ${c.name}（${c.count}）
+    </button>`).join('');
+  tabs.querySelectorAll('.category-tab').forEach(tab=>{
+    tab.addEventListener('click',()=>{
+      currentCategory = tab.dataset.cat;
+      currentPage = 0;
+      document.getElementById('bookList').innerHTML='';
+      renderCategories();
+      renderBooks();
+    });
+  });
+}
+
+function formatChars(n){
+  if(n>=10000) return (n/10000).toFixed(1)+'万字';
+  return n+'字';
+}
+
+function renderBooks(){
+  const list = document.getElementById('bookList');
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  let filtered = ALL_BOOKS;
+  if(currentCategory!=='all') filtered = filtered.filter(b=>b.cat===currentCategory);
+  if(search) filtered = filtered.filter(b=>b.name.toLowerCase().includes(search)||b.cat.toLowerCase().includes(search));
+  const start = currentPage*pageSize;
+  const end = start+pageSize;
+  filtered.slice(start,end).forEach(book=>{
+    const item = document.createElement('a');
+    item.className='book-item';
+    item.href = `reader.html?b=${encodeURIComponent(book.path)}`;
+    item.innerHTML = `
+      <span class="book-cat">${book.cat}</span>
+      <span class="book-name">${book.name}${book.parts.length>1?' <small style="color:var(--ink3);">（'+book.parts.length+'卷）</small>':''}</span>
+      <span class="book-chars">${formatChars(book.chars)}</span>`;
+    list.appendChild(item);
+  });
+  document.getElementById('loadMore').style.display = end<filtered.length?'block':'none';
+}
+
+renderCategories();
+renderBooks();
+document.getElementById('searchInput').addEventListener('input',()=>{currentPage=0;document.getElementById('bookList').innerHTML='';renderBooks();});
+document.getElementById('loadMore').addEventListener('click',()=>{currentPage++;renderBooks();});
+</script>
+</body>
+</html>

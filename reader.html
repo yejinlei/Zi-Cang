@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>阅读 · 子藏本体论</title>
+<link rel="stylesheet" href="style/common.css">
+</head>
+<body>
+<nav class="top-nav"></nav>
+<div class="main-content">
+<div class="reader-wrap">
+  <div class="reader-toolbar">
+    <a href="library.html" class="back-btn">← 返回全文库</a>
+    <span class="reader-title" id="readerTitle"></span>
+    <select class="part-select" id="partSelect" style="display:none;"></select>
+    <label style="font-size:0.85rem;color:var(--ink3);display:flex;align-items:center;gap:4px;">
+      <input type="checkbox" id="verticalMode"> 竖排
+    </label>
+    <div class="font-btns">
+      <button class="font-btn">A-</button>
+      <button class="font-btn">A+</button>
+    </div>
+  </div>
+  <div class="reader-content loading" id="readerContent">正在加载典籍…</div>
+</div>
+</div>
+
+<script src="data/common.js"></script>
+<script src="data/books.js"></script>
+<script>
+const params = new URLSearchParams(location.search);
+const bookPath = params.get('b');
+const book = ALL_BOOKS.find(b=>b.path===bookPath);
+const contentEl = document.getElementById('readerContent');
+const titleEl = document.getElementById('readerTitle');
+const partSel = document.getElementById('partSelect');
+
+let currentPart = 0;
+
+if(!book){
+  titleEl.textContent='未找到典籍';
+  contentEl.textContent='未找到对应的典籍文件，请返回全文库重新选择。';
+  contentEl.classList.remove('loading');
+}else{
+  document.title = book.name + ' · 子藏全文库';
+  titleEl.textContent = `【${book.cat}】${book.name}`;
+
+  if(book.parts.length>1){
+    partSel.style.display = 'block';
+    partSel.innerHTML = book.parts.map((p,i)=>`<option value="${i}">卷${i+1}</option>`).join('');
+    partSel.onchange = () => { currentPart = +partSel.value; loadPart(); };
+  }
+
+  function loadPart(){
+    const path = 'texts/' + book.parts[currentPart];
+    contentEl.textContent = '正在加载…';
+    contentEl.classList.add('loading');
+    fetch(path)
+      .then(r=>r.text())
+      .then(text=>{
+        contentEl.textContent = text;
+        contentEl.classList.remove('loading');
+        // 重新执行概念标注
+        setTimeout(annotateConcepts, 50);
+      })
+      .catch(err=>{
+        contentEl.textContent='加载失败：' + err.message;
+        contentEl.classList.remove('loading');
+      });
+  }
+  loadPart();
+}
+</script>
+</body>
+</html>
