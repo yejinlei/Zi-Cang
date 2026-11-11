@@ -38,7 +38,7 @@ function buildNav() {
   const links = [
     { h: 'index.html',    t: '☰ 首頁' },
     { h: 'library.html',  t: '📚 全文庫' },
-    { h: 'ontology.html', t: '⬡ RDF本體' }
+    { h: 'ontology.html', t: '⬡ 諸子本體' }
   ];
   let linkHtml = links.map(l =>
     `<a href="${l.h}" class="nav-link ${here===l.h?'active':''}">${l.t}</a>`
