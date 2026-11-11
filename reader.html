@@ -1,75 +1,451 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>阅读 · 子藏本体论</title>
-<link rel="stylesheet" href="style/common.css">
+<title>典籍閱讀 | 子藏本體論</title>
+<link rel="stylesheet" href="css/common.css">
+<style>
+  body { display:flex; flex-direction:column; min-height:100vh; }
+  #main { flex:1; padding:0; position:relative; }
+  
+  /* 顶部工具条 */
+  .toolbar {
+    position:sticky; top:var(--nav-h,56px); z-index:90;
+    background:var(--bg-card); border-bottom:1px solid var(--border);
+    padding:8px 20px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    backdrop-filter:blur(8px);
+  }
+  .toolbar a.back { color:var(--text-sub); text-decoration:none; font-size:14px; }
+  .toolbar a.back:hover { color:var(--accent); }
+  .toolbar .title { font-family:"STKaiti","KaiTi",serif; font-size:18px; color:var(--text-title); font-weight:600; flex:1; min-width:120px; }
+  .toolbar button {
+    background:transparent; border:1px solid var(--border); color:var(--text-sub);
+    border-radius:6px; padding:4px 10px; cursor:pointer; font-size:13px;
+    transition:all .2s;
+  }
+  .toolbar button:hover { border-color:var(--accent); color:var(--accent); }
+  .toolbar button.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .vol-select { padding:4px 8px; border:1px solid var(--border); border-radius:6px; background:var(--bg-card); color:var(--text-main); font-size:13px; cursor:pointer; }
+  
+  /* 正文区域 */
+  .content-wrap { padding:30px 40px 60px; max-width:900px; margin:0 auto; position:relative; }
+  .reading-content {
+    font-family:"STKaiti","KaiTi","Noto Serif SC",serif;
+    font-size:18px; line-height:2; color:var(--text-main);
+    white-space:pre-wrap; word-break:break-all;
+    transition:font-size .2s;
+  }
+  .reading-content.vertical {
+    writing-mode:vertical-rl; -webkit-writing-mode:vertical-rl;
+    max-width:none; height:calc(100vh - 160px); overflow-x:auto; overflow-y:hidden;
+    padding:40px 20px; letter-spacing:2px;
+  }
+  /* 概念高亮 */
+  .concept { color:var(--accent); cursor:pointer; border-bottom:1px dashed var(--accent-light); }
+  .concept:hover { background:rgba(196,76,58,.08); }
+  
+  /* 加载动画 */
+  .loading-overlay {
+    position:absolute; inset:0; background:var(--bg-main);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    z-index:100; gap:16px;
+  }
+  .loading-overlay.hidden { display:none; }
+  .loading-spinner {
+    width:48px; height:48px; border:3px solid var(--border); border-top-color:var(--accent);
+    border-radius:50%; animation:spin 0.8s linear infinite;
+  }
+  .loading-text { color:var(--text-sub); font-size:14px; font-family:"STKaiti",serif; }
+  .loading-progress {
+    width:240px; height:4px; background:var(--border); border-radius:2px; overflow:hidden;
+  }
+  .loading-bar {
+    height:100%; background:linear-gradient(90deg,var(--accent-light),var(--accent));
+    width:0%; border-radius:2px; transition:width .3s;
+    animation:pulse 1.5s infinite;
+  }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  @keyframes pulse { 0%,100%{opacity:.6} 50%{opacity:1} }
+  
+  /* 错误页 */
+  .error-page {
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:80px 40px; text-align:center; gap:16px;
+  }
+  .error-page .err-icon { font-size:64px; opacity:.4; }
+  .error-page .err-title { font-family:"STKaiti",serif; font-size:24px; color:var(--text-title); }
+  .error-page .err-desc { color:var(--text-sub); font-size:14px; max-width:500px; line-height:1.8; }
+  .error-page .err-actions { display:flex; gap:12px; margin-top:12px; }
+  .error-page .err-btn {
+    padding:8px 20px; border:1px solid var(--accent); color:var(--accent);
+    border-radius:8px; cursor:pointer; background:transparent; text-decoration:none; font-size:14px;
+    transition:all .2s;
+  }
+  .error-page .err-btn:hover { background:var(--accent); color:#fff; }
+  
+  /* 元信息条 */
+  .book-meta {
+    padding:20px 40px; border-bottom:1px solid var(--border-light);
+    background:var(--bg-card);
+    display:flex; align-items:center; gap:20px; flex-wrap:wrap;
+  }
+  .book-meta .book-title {
+    font-family:"STKaiti","KaiTi",serif; font-size:28px; font-weight:700;
+    color:var(--text-title);
+  }
+  .book-meta .book-info { color:var(--text-sub); font-size:13px; }
+  .book-meta .book-info span { margin-right:12px; }
+  .book-meta .cat-badge {
+    background:var(--accent); color:#fff; padding:2px 10px; border-radius:4px;
+    font-size:12px;
+  }
+  
+  @media (max-width:768px){
+    .content-wrap { padding:20px 16px 40px; }
+    .reading-content { font-size:16px; }
+    .book-meta { padding:16px; }
+    .book-meta .book-title { font-size:22px; }
+    .toolbar { padding:8px 12px; }
+    .toolbar .title { font-size:15px; }
+  }
+</style>
 </head>
 <body>
-<nav class="top-nav"></nav>
-<div class="main-content">
-<div class="reader-wrap">
-  <div class="reader-toolbar">
-    <a href="library.html" class="back-btn">← 返回全文库</a>
-    <span class="reader-title" id="readerTitle"></span>
-    <select class="part-select" id="partSelect" style="display:none;"></select>
-    <label style="font-size:0.85rem;color:var(--ink3);display:flex;align-items:center;gap:4px;">
-      <input type="checkbox" id="verticalMode"> 竖排
-    </label>
-    <div class="font-btns">
-      <button class="font-btn">A-</button>
-      <button class="font-btn">A+</button>
+<!-- 顶部导航 -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">☰ 子藏本體 · Zi-Cang Ontology</a>
+    <ul class="nav-links">
+      <li><a href="index.html">首頁</a></li>
+      <li><a href="library.html">全文庫</a></li>
+      <li><a href="ontology.html">本體論</a></li>
+      <li class="nav-item">
+        <button class="nav-dropbtn" onclick="toggleThemeMenu(event)">✦ 主題</button>
+        <div class="theme-dropdown" id="themeDropdown">
+          <div class="theme-item active" data-theme="paper" onclick="setTheme('paper')"><span class="theme-dot" style="background:#f5f0e1"></span>宣紙古籍<span class="check">●</span></div>
+          <div class="theme-item" data-theme="ink" onclick="setTheme('ink')"><span class="theme-dot" style="background:#2c2c2c"></span>水墨山水<span class="check"></span></div>
+          <div class="theme-item" data-theme="bamboo" onclick="setTheme('bamboo')"><span class="theme-dot" style="background:#c4a882"></span>竹簡漢簡<span class="check"></span></div>
+          <div class="theme-item" data-theme="bronze" onclick="setTheme('bronze')"><span class="theme-dot" style="background:#8b5a2b"></span>青銅吉金<span class="check"></span></div>
+          <div class="theme-item" data-theme="star" onclick="setTheme('star')"><span class="theme-dot" style="background:#0a0e27"></span>星象羅盤<span class="check"></span></div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div id="main">
+  <!-- 加载动画 -->
+  <div class="loading-overlay" id="loading">
+    <div class="loading-spinner"></div>
+    <div class="loading-text" id="loadingText">正在加载典籍…</div>
+    <div class="loading-progress"><div class="loading-bar" id="loadingBar"></div></div>
+  </div>
+  
+  <!-- 错误页（初始隐藏） -->
+  <div class="error-page" id="errorPage" style="display:none">
+    <div class="err-icon">📜</div>
+    <div class="err-title" id="errTitle">典籍暂不可用</div>
+    <div class="err-desc" id="errDesc"></div>
+    <div class="err-actions">
+      <a class="err-btn" href="library.html">返回全文庫</a>
+      <a class="err-btn" href="index.html">回到首頁</a>
+      <button class="err-btn" onclick="location.reload()">重試</button>
     </div>
   </div>
-  <div class="reader-content loading" id="readerContent">正在加载典籍…</div>
-</div>
+  
+  <!-- 内容区 -->
+  <div id="contentArea" style="display:none">
+    <div class="book-meta">
+      <span class="cat-badge" id="metaCat">子藏</span>
+      <div>
+        <div class="book-title" id="metaTitle">典籍</div>
+        <div class="book-info">
+          <span id="metaSize"></span>
+          <span id="metaChars"></span>
+          <span id="metaVol" style="display:none"></span>
+        </div>
+      </div>
+    </div>
+    <div class="toolbar">
+      <a href="library.html" class="back">← 返回書目</a>
+      <span class="title" id="toolbarTitle"></span>
+      <button onclick="changeFontSize(-1)" title="縮小字號">A-</button>
+      <button onclick="changeFontSize(1)" title="放大字號">A+</button>
+      <button id="verticalBtn" onclick="toggleVertical()">豎排</button>
+      <select class="vol-select" id="volSelect" style="display:none" onchange="switchVol(this.value)"></select>
+    </div>
+    <div class="content-wrap">
+      <div class="reading-content" id="textContent"></div>
+    </div>
+  </div>
 </div>
 
-<script src="data/common.js"></script>
-<script src="data/books.js"></script>
+<footer>
+  <div><strong>子藏本體論 (Zi-Cang Ontology)</strong></div>
+  <div>參考佛藏本體/儒藏本體/易經本體而建 · 文本來源殆知閣 · CC BY-SA 4.0</div>
+</footer>
+
+<script src="js/common.js"></script>
 <script>
-const params = new URLSearchParams(location.search);
-const bookPath = params.get('b');
-const book = ALL_BOOKS.find(b=>b.path===bookPath);
-const contentEl = document.getElementById('readerContent');
-const titleEl = document.getElementById('readerTitle');
-const partSel = document.getElementById('partSelect');
+// ===== 子学核心概念高亮
+const CONCEPTS = ["道","德","仁","義","禮","智","信","法","術","勢","刑","名","陰陽","五行",
+  "無為","自然","性","命","心","氣","理","天","鬼神","聖人","君子","小人",
+  "兼愛","非攻","尚賢","節用","奇正","虛實","勢利","權謀","耕戰","富國","強兵",
+  "天人","名實","形名","王霸","義利","經權","理氣","知行"];
 
-let currentPart = 0;
+const CHUNK_SIZE = 50000;  // 每块字符数
+let currentBook = null;    // 当前书籍元数据
+let currentVol = 1;
+let currentFontSize = 18;
+let isVertical = false;
 
-if(!book){
-  titleEl.textContent='未找到典籍';
-  contentEl.textContent='未找到对应的典籍文件，请返回全文库重新选择。';
-  contentEl.classList.remove('loading');
-}else{
-  document.title = book.name + ' · 子藏全文库';
-  titleEl.textContent = `【${book.cat}】${book.name}`;
-
-  if(book.parts.length>1){
-    partSel.style.display = 'block';
-    partSel.innerHTML = book.parts.map((p,i)=>`<option value="${i}">卷${i+1}</option>`).join('');
-    partSel.onchange = () => { currentPart = +partSel.value; loadPart(); };
+// ===== 初始化
+document.addEventListener('DOMContentLoaded', async () => {
+  const params = new URLSearchParams(location.search);
+  let fileParam = params.get('b');
+  
+  if(!fileParam){
+    showError('未指定典籍','请从全文库页面选择一部典籍打开阅读。');
+    return;
   }
-
-  function loadPart(){
-    const path = 'texts/' + book.parts[currentPart];
-    contentEl.textContent = '正在加载…';
-    contentEl.classList.add('loading');
-    fetch(path)
-      .then(r=>r.text())
-      .then(text=>{
-        contentEl.textContent = text;
-        contentEl.classList.remove('loading');
-        // 重新执行概念标注
-        setTimeout(annotateConcepts, 50);
-      })
-      .catch(err=>{
-        contentEl.textContent='加载失败：' + err.message;
-        contentEl.classList.remove('loading');
-      });
+  
+  try {
+    await loadBook(fileParam);
+  } catch(e) {
+    console.error(e);
+    showError('典籍加载失败',`文件路径：${decodeURIComponent(fileParam)}<br>错误信息：${e.message}<br>该典籍可能尚未入库，请稍后再试或返回书库选择其他典籍。`);
   }
-  loadPart();
+});
+
+// ===== 加载书籍
+async function loadBook(filePath){
+  showLoading();
+  
+  // 先尝试从books.json找元数据
+  let bookMeta = null;
+  try{
+    const resp = await fetch('books.json',{cache:'no-cache'});
+    if(resp.ok){
+      const books = await resp.json();
+      // 精确匹配
+      bookMeta = books.find(b=>b.file===filePath);
+      if(!bookMeta){
+        // 解码后匹配
+        const decoded = decodeURIComponent(filePath);
+        bookMeta = books.find(b=>decodeURIComponent(b.file)===decoded || b.file===decoded);
+        // 按文件名匹配（支持分卷）
+        if(!bookMeta){
+          const fname = decoded.split('/').pop();
+          bookMeta = books.find(b=>{
+            if(b.volFiles && b.volFiles.length){
+              return b.volFiles.some(vf=>vf===filePath || decodeURIComponent(vf)===decoded);
+            }
+            return b.file.endsWith(fname);
+          });
+          if(bookMeta && bookMeta.volFiles){
+            currentVol = bookMeta.volFiles.findIndex(vf=>vf===filePath || decodeURIComponent(vf)===decoded)+1 || 1;
+          }
+        }
+      }
+    }
+  }catch(e){ console.warn('books.json加载失败',e); }
+  
+  if(!bookMeta){
+    // 无元数据时构造基本信息
+    const parts = decodeURIComponent(filePath).split('/');
+    bookMeta = { title: parts.pop().replace('.txt',''), category: parts.pop() || '子藏', catName: '子部', size: 0, chars: 0 };
+  }
+  
+  currentBook = bookMeta;
+  
+  // 填充元信息
+  document.getElementById('metaTitle').textContent = bookMeta.title;
+  document.getElementById('metaCat').textContent = bookMeta.catName || bookMeta.category || '子藏';
+  document.getElementById('metaSize').textContent = bookMeta.size ? formatSize(bookMeta.size) : '';
+  document.getElementById('metaChars').textContent = bookMeta.chars ? formatChars(bookMeta.chars) + '字' : '';
+  document.getElementById('toolbarTitle').textContent = bookMeta.title;
+  
+  // 多卷选择器
+  const volSel = document.getElementById('volSelect');
+  if(bookMeta.volFiles && bookMeta.volFiles.length > 1){
+    volSel.style.display = 'inline-block';
+    volSel.innerHTML = '';
+    bookMeta.volFiles.forEach((vf,i)=>{
+      const opt = document.createElement('option');
+      opt.value = vf; opt.textContent = `第${i+1}卷`;
+      if(i+1 === currentVol) opt.selected = true;
+      volSel.appendChild(opt);
+    });
+    document.getElementById('metaVol').style.display = 'inline';
+    document.getElementById('metaVol').textContent = `共${bookMeta.volumes}卷，当前第${currentVol}卷`;
+  }
+  
+  // 加载文本内容
+  await fetchAndRender(filePath);
+}
+
+// ===== 抓取并分块渲染（防卡死）
+async function fetchAndRender(filePath){
+  const textEl = document.getElementById('textContent');
+  const loadingText = document.getElementById('loadingText');
+  const loadingBar = document.getElementById('loadingBar');
+  
+  textEl.innerHTML = '';
+  loadingText.textContent = '正在下载文本…';
+  loadingBar.style.width = '10%';
+  
+  // fetch带超时
+  const controller = new AbortController();
+  const timeout = setTimeout(()=>controller.abort(), 30000); // 30秒超时
+  
+  let response;
+  try{
+    response = await fetch('texts/'+filePath, {signal:controller.signal, cache:'no-cache'});
+  }catch(e){
+    clearTimeout(timeout);
+    if(e.name==='AbortError') throw new Error('下载超时（30秒），请检查网络后重试');
+    throw e;
+  }
+  clearTimeout(timeout);
+  
+  if(!response.ok){
+    throw new Error(`HTTP ${response.status} - 文件不存在或无法访问`);
+  }
+  
+  loadingBar.style.width = '30%';
+  loadingText.textContent = '正在解码文本…';
+  
+  const text = await response.text();
+  if(!text || text.length===0){
+    throw new Error('文件内容为空');
+  }
+  
+  // 去掉BOM
+  let content = text.replace(/^\uFEFF/,'');
+  
+  loadingBar.style.width = '50%';
+  loadingText.textContent = '正在排版渲染…';
+  
+  // 分块渲染：先处理高亮正则，再分批插入DOM，避免大文件阻塞主线程
+  const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  const pattern = new RegExp('('+CONCEPTS.map(esc).sort((a,b)=>b.length-a.length).join('|')+')','g');
+  
+  // 按块处理（不拆分段落）
+  const lines = content.split('\n');
+  const totalChunks = Math.ceil(content.length / CHUNK_SIZE);
+  let processed = 0;
+  let chunkHtml = '';
+  let chunkLen = 0;
+  
+  textEl.innerHTML = '';
+  
+  for(let i=0;i<lines.length;i++){
+    let line = lines[i];
+    if(!line.trim()){ chunkHtml += '\n'; chunkLen += 1; continue; }
+    // 高亮
+    const highlighted = line.replace(pattern,'<span class="concept">$1</span>');
+    chunkHtml += highlighted + '\n';
+    chunkLen += line.length;
+    
+    // 达到分块大小时，用requestAnimationFrame异步插入
+    if(chunkLen >= CHUNK_SIZE){
+      await appendChunk(textEl, chunkHtml);
+      chunkHtml = ''; chunkLen = 0; processed++;
+      loadingBar.style.width = (50 + 45*(processed/totalChunks)) + '%';
+      loadingText.textContent = `正在渲染…${Math.round(processed/totalChunks*100)}%`;
+    }
+  }
+  if(chunkHtml){
+    await appendChunk(textEl, chunkHtml);
+  }
+  
+  loadingBar.style.width = '100%';
+  loadingText.textContent = '加载完成';
+  
+  // 短暂延迟后隐藏loading，显示内容
+  setTimeout(()=>{
+    document.getElementById('loading').classList.add('hidden');
+    document.getElementById('contentArea').style.display = 'block';
+    window.scrollTo(0,0);
+  },200);
+}
+
+// 异步追加DOM块（给主线程喘息）
+function appendChunk(el, html){
+  return new Promise(resolve=>{
+    requestAnimationFrame(()=>{
+      const div = document.createTextNode ? null : null;
+      el.insertAdjacentHTML('beforeend', html);
+      // 让出主线程
+      setTimeout(resolve,0);
+    });
+  });
+}
+
+// ===== 切换卷
+async function switchVol(filePath){
+  if(!currentBook) return;
+  const idx = currentBook.volFiles.findIndex(v=>v===filePath);
+  currentVol = idx+1;
+  document.getElementById('metaVol').textContent = `共${currentBook.volumes}卷，当前第${currentVol}卷`;
+  document.getElementById('toolbarTitle').textContent = `${currentBook.title}（第${currentVol}卷）`;
+  try{
+    showLoading();
+    document.getElementById('contentArea').style.display = 'none';
+    await fetchAndRender(filePath);
+  }catch(e){
+    showError('卷加载失败',`第${currentVol}卷加载失败：${e.message}`);
+  }
+}
+
+// ===== UI控制
+function changeFontSize(delta){
+  currentFontSize = Math.max(14, Math.min(28, currentFontSize+delta*2));
+  document.getElementById('textContent').style.fontSize = currentFontSize+'px';
+}
+function toggleVertical(){
+  isVertical = !isVertical;
+  const el = document.getElementById('textContent');
+  const wrap = document.querySelector('.content-wrap');
+  el.classList.toggle('vertical', isVertical);
+  if(isVertical){
+    wrap.style.padding = '0';
+    wrap.style.maxWidth = 'none';
+  }else{
+    wrap.style.padding = '';
+    wrap.style.maxWidth = '';
+  }
+  document.getElementById('verticalBtn').classList.toggle('active',isVertical);
+  document.getElementById('verticalBtn').textContent = isVertical?'横排':'豎排';
+}
+
+// ===== 显示/隐藏工具
+function showLoading(){
+  document.getElementById('loading').classList.remove('hidden');
+  document.getElementById('contentArea').style.display = 'none';
+  document.getElementById('errorPage').style.display = 'none';
+  document.getElementById('loadingBar').style.width = '5%';
+}
+function showError(title, desc){
+  document.getElementById('loading').classList.add('hidden');
+  document.getElementById('contentArea').style.display = 'none';
+  document.getElementById('errorPage').style.display = 'flex';
+  document.getElementById('errTitle').textContent = title;
+  document.getElementById('errDesc').innerHTML = desc;
+}
+
+// ===== 工具函数
+function formatSize(bytes){
+  if(bytes<1024)return bytes+'B';
+  if(bytes<1024*1024)return (bytes/1024).toFixed(1)+'KB';
+  if(bytes<1024*1024*1024)return (bytes/1024/1024).toFixed(1)+'MB';
+  return (bytes/1024/1024/1024).toFixed(2)+'GB';
+}
+function formatChars(n){
+  if(n<10000)return n.toLocaleString();
+  if(n<100000000)return (n/10000).toFixed(1)+'万';
+  return (n/100000000).toFixed(2)+'亿';
 }
 </script>
 </body>

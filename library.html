@@ -1,83 +1,237 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>古籍全文库 · 子藏本体论</title>
-<link rel="stylesheet" href="style/common.css">
+<title>全文庫 | 子藏本體論</title>
+<link rel="stylesheet" href="css/common.css">
+<style>
+  .lib-wrap { max-width:1200px; margin:0 auto; padding:24px 20px 60px; }
+  .lib-title { font-family:"STKaiti","KaiTi",serif; font-size:32px; color:var(--text-title); margin-bottom:6px; }
+  .lib-sub { color:var(--text-sub); font-size:14px; margin-bottom:24px; }
+  
+  /* 检索区 */
+  .lib-tools { display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap; align-items:center; }
+  .lib-search {
+    flex:1; min-width:240px; padding:10px 16px; border:1px solid var(--border); border-radius:10px;
+    background:var(--bg-card); color:var(--text-main); font-size:15px; outline:none;
+    transition:border-color .2s;
+  }
+  .lib-search:focus { border-color:var(--accent); }
+  
+  /* 分类标签 */
+  .cat-tabs { display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; }
+  .cat-tab {
+    padding:8px 18px; border:1px solid var(--border); border-radius:999px; cursor:pointer;
+    background:var(--bg-card); color:var(--text-sub); font-size:14px; transition:all .2s;
+    font-family:"STKaiti",serif;
+  }
+  .cat-tab:hover { border-color:var(--accent); color:var(--accent); }
+  .cat-tab.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .cat-tab .count { font-size:12px; opacity:.7; margin-left:4px; }
+  
+  /* 书目列表 */
+  .book-list { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:10px; }
+  .book-item {
+    display:flex; align-items:center; gap:10px; padding:12px 16px;
+    background:var(--bg-card); border:1px solid var(--border); border-radius:10px;
+    text-decoration:none; color:var(--text-main); transition:all .2s; cursor:pointer;
+  }
+  .book-item:hover { border-color:var(--accent); transform:translateY(-1px); box-shadow:0 4px 16px var(--shadow); }
+  .book-cat {
+    display:inline-block; padding:2px 8px; border-radius:4px; font-size:11px;
+    background:var(--accent-light); color:var(--accent); white-space:nowrap;
+    font-family:"STSong",serif; min-width:32px; text-align:center;
+  }
+  .book-name {
+    flex:1; font-size:14px; color:var(--text-title); overflow:hidden;
+    text-overflow:ellipsis; white-space:nowrap; font-family:"STKaiti",serif;
+  }
+  .book-vol { color:var(--text-sub); font-size:12px; }
+  .book-chars { color:var(--text-sub); font-size:12px; white-space:nowrap; }
+  
+  /* 分页加载 */
+  .load-more {
+    margin:30px auto 0; display:block; padding:10px 32px; border:1px solid var(--accent);
+    background:transparent; color:var(--accent); border-radius:8px; cursor:pointer; font-size:14px;
+    font-family:"STKaiti",serif; transition:all .2s;
+  }
+  .load-more:hover { background:var(--accent); color:#fff; }
+  
+  /* 统计 */
+  .stat-bar {
+    padding:12px 16px; background:var(--bg-card); border-radius:10px; margin-bottom:16px;
+    display:flex; gap:20px; color:var(--text-sub); font-size:13px; flex-wrap:wrap;
+    border:1px solid var(--border-light);
+  }
+  .stat-bar strong { color:var(--text-title); font-size:18px; font-family:"STKaiti",serif; margin-right:4px; }
+  
+  /* 空状态 */
+  .empty { text-align:center; padding:60px 20px; color:var(--text-sub); }
+  
+  @media (max-width:768px){
+    .lib-title { font-size:24px; }
+    .book-list { grid-template-columns:1fr; }
+  }
+</style>
 </head>
 <body>
-<nav class="top-nav"></nav>
-<div class="main-content">
-  <div class="library-header">
-    <h1 class="page-title">古籍全文库</h1>
-    <p class="page-subtitle" id="libSubtitle">子藏1463部 · 按字数倒序排列 · 点击书名进入阅读</p>
-    <div class="search-box">
-      <input type="text" id="searchInput" placeholder="检索书名 / 分类（如：老子、孙子、韩非子）…">
-    </div>
-    <div class="category-tabs" id="categoryTabs"></div>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">☰ 子藏本體 · Zi-Cang Ontology</a>
+    <ul class="nav-links">
+      <li><a href="index.html">首頁</a></li>
+      <li><a href="library.html" style="color:var(--accent)">全文庫</a></li>
+      <li><a href="ontology.html">本體論</a></li>
+      <li class="nav-item">
+        <button class="nav-dropbtn" onclick="toggleThemeMenu(event)">✦ 主題</button>
+        <div class="theme-dropdown" id="themeDropdown">
+          <div class="theme-item active" data-theme="paper" onclick="setTheme('paper')"><span class="theme-dot" style="background:#f5f0e1"></span>宣紙古籍<span class="check">●</span></div>
+          <div class="theme-item" data-theme="ink" onclick="setTheme('ink')"><span class="theme-dot" style="background:#2c2c2c"></span>水墨山水<span class="check"></span></div>
+          <div class="theme-item" data-theme="bamboo" onclick="setTheme('bamboo')"><span class="theme-dot" style="background:#c4a882"></span>竹簡漢簡<span class="check"></span></div>
+          <div class="theme-item" data-theme="bronze" onclick="setTheme('bronze')"><span class="theme-dot" style="background:#8b5a2b"></span>青銅吉金<span class="check"></span></div>
+          <div class="theme-item" data-theme="star" onclick="setTheme('star')"><span class="theme-dot" style="background:#0a0e27"></span>星象羅盤<span class="check"></span></div>
+        </div>
+      </li>
+    </ul>
   </div>
+</nav>
+
+<div class="lib-wrap">
+  <h1 class="lib-title">📚 子部全文庫</h1>
+  <p class="lib-sub">按字數倒序排列 · 點擊典籍名進入閱讀 · 子學核心概念自動標註</p>
+  
+  <div class="lib-tools">
+    <input type="text" class="lib-search" id="searchInput" placeholder="🔍 搜索書名… 如：莊子、孫子兵法、太平御覽">
+  </div>
+  
+  <div class="stat-bar" id="statBar">正在加载書目…</div>
+  
+  <div class="cat-tabs" id="catTabs"></div>
+  
   <div class="book-list" id="bookList"></div>
-  <button class="load-more" id="loadMore">加载更多 ▾</button>
+  <button class="load-more" id="loadMore" style="display:none" onclick="loadMore()">加載更多 ▾</button>
 </div>
 
-<script src="data/common.js"></script>
-<script src="data/books.js"></script>
+<footer>
+  <div><strong>子藏本體論 (Zi-Cang Ontology)</strong></div>
+  <div>參考佛藏本體/儒藏本體/易經本體而建 · 文本來源殆知閣 · CC BY-SA 4.0</div>
+</footer>
+
+<script src="js/common.js"></script>
 <script>
+let ALL_BOOKS = [];
+const CAT_ORDER = ['all','诸子','兵家','法家','农家','算学','笔记','类书'];
+const CAT_NAMES = {all:'全部',诸子:'诸子',兵家:'兵家',法家:'法家',农家:'农家',算学:'算学',笔记:'笔记',类书:'类书'};
 let currentCategory = 'all';
 let currentPage = 0;
 const pageSize = 100;
 
-document.getElementById('libSubtitle').textContent =
-  `子藏${TOTAL_BOOKS}部 · ${TOTAL_CHARS_WAN}万字 · 按字数倒序排列 · 点击书名进入阅读`;
+async function init(){
+  try{
+    const resp = await fetch('books.json',{cache:'no-cache'});
+    if(!resp.ok) throw new Error('书目加载失败: '+resp.status);
+    ALL_BOOKS = await resp.json();
+    renderStats();
+    renderCategories();
+    renderBooks();
+  }catch(e){
+    document.getElementById('statBar').innerHTML = '<span style="color:var(--accent)">書目加載失敗：'+e.message+'，請刷新重試</span>';
+  }
+}
 
-function renderCategories() {
-  const tabs = document.getElementById('categoryTabs');
-  tabs.innerHTML = CATEGORIES.map(c => `
-    <button class="category-tab ${c.id===currentCategory?'active':''}" data-cat="${c.id}">
-      ${c.name}（${c.count}）
-    </button>`).join('');
-  tabs.querySelectorAll('.category-tab').forEach(tab=>{
-    tab.addEventListener('click',()=>{
-      currentCategory = tab.dataset.cat;
+function renderStats(){
+  const totalBooks = ALL_BOOKS.length;
+  const totalChars = ALL_BOOKS.reduce((s,b)=>s+(b.chars||0),0);
+  const multiVol = ALL_BOOKS.filter(b=>b.volumes>1).length;
+  let html = '<span><strong>'+totalBooks+'</strong>部典籍</span>';
+  html += '<span><strong>'+formatChars(totalChars)+'</strong>字</span>';
+  html += '<span><strong>'+multiVol+'</strong>部多卷本</span>';
+  html += '<span><strong>7</strong>個分類</span>';
+  document.getElementById('statBar').innerHTML = html;
+}
+
+function renderCategories(){
+  const tabs = document.getElementById('catTabs');
+  tabs.innerHTML = '';
+  CAT_ORDER.forEach(cat=>{
+    const count = cat==='all' ? ALL_BOOKS.length : ALL_BOOKS.filter(b=>b.catName===cat||b.category===cat).length;
+    const tab = document.createElement('div');
+    tab.className = 'cat-tab'+(cat===currentCategory?' active':'');
+    tab.innerHTML = CAT_NAMES[cat]+'<span class="count">'+count+'</span>';
+    tab.onclick = ()=>{
+      currentCategory = cat;
       currentPage = 0;
-      document.getElementById('bookList').innerHTML='';
-      renderCategories();
+      document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('bookList').innerHTML = '';
       renderBooks();
-    });
+    };
+    tabs.appendChild(tab);
   });
 }
 
-function formatChars(n){
-  if(n>=10000) return (n/10000).toFixed(1)+'万字';
-  return n+'字';
+function getFiltered(){
+  const search = document.getElementById('searchInput').value.trim().toLowerCase();
+  let filtered = ALL_BOOKS;
+  if(currentCategory!=='all'){
+    filtered = filtered.filter(b=>b.catName===currentCategory||b.category===currentCategory);
+  }
+  if(search){
+    filtered = filtered.filter(b=>b.title.toLowerCase().includes(search));
+  }
+  return filtered;
 }
 
 function renderBooks(){
   const list = document.getElementById('bookList');
-  const search = document.getElementById('searchInput').value.toLowerCase();
-  let filtered = ALL_BOOKS;
-  if(currentCategory!=='all') filtered = filtered.filter(b=>b.cat===currentCategory);
-  if(search) filtered = filtered.filter(b=>b.name.toLowerCase().includes(search)||b.cat.toLowerCase().includes(search));
+  const filtered = getFiltered();
   const start = currentPage*pageSize;
-  const end = start+pageSize;
-  filtered.slice(start,end).forEach(book=>{
+  const end = Math.min(start+pageSize, filtered.length);
+  for(let i=start;i<end;i++){
+    const b = filtered[i];
     const item = document.createElement('a');
-    item.className='book-item';
-    item.href = `reader.html?b=${encodeURIComponent(book.path)}`;
-    item.innerHTML = `
-      <span class="book-cat">${book.cat}</span>
-      <span class="book-name">${book.name}${book.parts.length>1?' <small style="color:var(--ink3);">（'+book.parts.length+'卷）</small>':''}</span>
-      <span class="book-chars">${formatChars(book.chars)}</span>`;
+    item.className = 'book-item';
+    item.href = 'reader.html?b='+b.file;
+    const volTag = b.volumes>1 ? '<span class="book-vol">'+b.volumes+'卷</span>' : '';
+    item.innerHTML =
+      '<span class="book-cat">'+(b.catName||b.category)+'</span>'+
+      '<span class="book-name">'+b.title+'</span>'+
+      volTag+
+      '<span class="book-chars">'+formatChars(b.chars)+'字</span>';
     list.appendChild(item);
-  });
-  document.getElementById('loadMore').style.display = end<filtered.length?'block':'none';
+  }
+  const loadBtn = document.getElementById('loadMore');
+  if(end < filtered.length){
+    loadBtn.style.display = 'block';
+    loadBtn.textContent = '加載更多 ▾ （'+(filtered.length-end)+'部未顯示）';
+  }else{
+    loadBtn.style.display = 'none';
+  }
+  if(filtered.length===0){
+    list.innerHTML = '<div class="empty">未找到匹配的典籍</div>';
+  }
 }
 
-renderCategories();
-renderBooks();
-document.getElementById('searchInput').addEventListener('input',()=>{currentPage=0;document.getElementById('bookList').innerHTML='';renderBooks();});
-document.getElementById('loadMore').addEventListener('click',()=>{currentPage++;renderBooks();});
+function loadMore(){
+  currentPage++;
+  renderBooks();
+}
+
+function formatChars(n){
+  if(!n) return '';
+  if(n<10000) return n.toLocaleString();
+  if(n<100000000) return (n/10000).toFixed(1)+'萬';
+  return (n/100000000).toFixed(2)+'億';
+}
+
+document.getElementById('searchInput').addEventListener('input',()=>{
+  currentPage=0;
+  document.getElementById('bookList').innerHTML='';
+  renderBooks();
+});
+
+init();
 </script>
 </body>
 </html>
