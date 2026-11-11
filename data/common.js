@@ -2,6 +2,7 @@
 const NAV_ITEMS = [
   {href:"index.html", label:"首頁"},
   {href:"library.html", label:"📜 全文庫"},
+  {href:"ontology.html", label:"⬡ RDF本體"},
   {href:"index.html#schools", label:"九流十家"},
   {href:"index.html#thinkers", label:"諸子人物"},
   {href:"index.html#ontology", label:"本體架構"},

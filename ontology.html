@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="paper">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>本体论 · RDF/OWL 知识图谱 | 子藏本体论</title>
+  <link rel="stylesheet" href="style/common.css">
+  <style>
+.rdf-hero{background:linear-gradient(135deg,var(--zhu,#9c2a2a),var(--gold-deep,#b8860b)),url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22120%22 height=%22120%22><text x=%220%22 y=%2280%22 font-size=%2290%22 fill=%22rgba(255,255,255,.06)%22>子藏·诸子·百家</text></svg>');color:#fff;padding:52px 40px;border-radius:8px;margin:24px 0;position:relative;overflow:hidden;}
+.rdf-hero h1{font-size:40px;margin:0 0 12px;letter-spacing:4px;font-weight:600;}
+.rdf-hero .sub{font-size:16px;opacity:.95;line-height:1.9;max-width:760px;}
+.rdf-hero .en{font-family:Georgia,serif;font-style:italic;opacity:.7;margin-top:12px;font-size:14px;letter-spacing:1px;}
+.rdf-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:24px 0;}
+.rdf-stat{background:var(--paper-2,#f8f2e4);border:1px solid var(--line,#d4c5a0);border-radius:6px;padding:16px;text-align:center;}
+.rdf-stat .num{font-size:28px;color:var(--zhu,#9c2a2a);font-weight:600;font-family:'STKaiti',serif;}
+.rdf-stat .lb{font-size:12px;color:var(--ink-3,#6b5d4f);margin-top:6px;letter-spacing:2px;}
+.code-block{background:#1a1814;color:#e8e0d0;padding:18px 20px;border-radius:6px;font-family:'SF Mono',Consolas,monospace;font-size:12px;line-height:1.8;overflow-x:auto;margin:12px 0;border-left:3px solid var(--zhu,#9c2a2a);}
+.code-block .p{color:#c9a35f;}
+.code-block .c{color:#7a8a6c;font-style:italic;}
+.code-block .s{color:#c79b7a;}
+.code-block .u{color:#9ab5c9;}
+
+.tabs{display:flex;gap:2px;border-bottom:2px solid var(--zhu,#9c2a2a);margin:24px 0 18px;flex-wrap:wrap;}
+.tab{padding:10px 20px;background:var(--paper-3,#f0e8d8);cursor:pointer;border-top-left-radius:6px;border-top-right-radius:6px;font-size:14px;color:var(--ink-3,#6b5d4f);transition:all .2s;border:1px solid transparent;border-bottom:none;}
+.tab:hover{background:var(--chip-bg,#f5efe0);}
+.tab.active{background:var(--zhu,#9c2a2a);color:#fff;font-weight:600;}
+.tab-pane{display:none;}
+.tab-pane.active{display:block;}
+
+.query-card{background:var(--paper-2,#f8f2e4);border:1px solid var(--line,#d4c5a0);border-radius:6px;padding:18px 20px;margin:14px 0;transition:all .2s;}
+.query-card:hover{border-color:var(--zhu,#9c2a2a);box-shadow:0 2px 8px rgba(156,42,42,.08);}
+.query-card h3{margin:0 0 8px;font-size:17px;color:var(--zhu,#9c2a2a);display:flex;align-items:center;gap:8px;}
+.query-card h3::before{content:'▸';color:var(--gold,#b8860b);}
+.query-card .q-desc{font-size:13px;color:var(--ink-3,#6b5d4f);line-height:1.8;margin-bottom:10px;}
+.query-card .sparql{background:#1a1814;color:#c8c0b0;padding:10px 12px;border-radius:4px;font-family:'SF Mono',monospace;font-size:11px;line-height:1.6;margin-bottom:10px;overflow-x:auto;}
+table.rdf-tbl{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px;}
+table.rdf-tbl th{background:var(--chip-bg,#f5efe0);color:var(--ink,#2a2520);padding:8px 12px;text-align:left;font-weight:600;border-bottom:2px solid var(--zhu,#9c2a2a);font-size:12px;letter-spacing:1px;}
+table.rdf-tbl td{padding:8px 12px;border-bottom:1px solid var(--line,#d4c5a0);color:#2a2520;}
+table.rdf-tbl tr:hover td{background:var(--chip-bg,#f5efe0);}
+table.rdf-tbl td.num{color:var(--zhu,#9c2a2a);font-weight:600;text-align:center;}
+
+.dl-section{margin:28px 0;}
+.dl-section h2{font-size:22px;color:var(--ink,#2a2520);border-left:4px solid var(--zhu,#9c2a2a);padding-left:12px;margin:0 0 16px;letter-spacing:2px;}
+.dl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;}
+.dl-card{background:var(--paper-2,#f8f2e4);border:1px solid var(--line,#d4c5a0);border-radius:6px;padding:16px;}
+.dl-card h4{margin:0 0 8px;color:var(--zhu,#9c2a2a);font-size:15px;}
+.dl-card p{font-size:12px;color:var(--ink-3,#6b5d4f);line-height:1.8;margin:0 0 10px;}
+.dl-btn{display:inline-block;padding:6px 14px;background:var(--zhu,#9c2a2a);color:#fff;border-radius:4px;text-decoration:none;font-size:12px;transition:all .2s;border:1px solid var(--zhu,#9c2a2a);}
+.dl-btn:hover{background:transparent;color:var(--zhu,#9c2a2a);}
+
+.prefix-list{columns:2;column-gap:24px;font-family:'SF Mono',monospace;font-size:12px;line-height:2;}
+.prefix-list .p{color:var(--zhu,#9c2a2a);}
+.prefix-list .u{color:#395a77;word-break:break-all;}
+
+.entity-cloud{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;}
+.entity-chip{display:inline-block;padding:5px 12px;background:var(--paper-3,#f0e8d8);border:1px solid #e0d1a8;border-radius:20px;font-size:12px;color:var(--ink,#2a2520);cursor:pointer;transition:all .2s;text-decoration:none;}
+.entity-chip:hover{background:var(--zhu,#9c2a2a);color:#fff;border-color:var(--zhu,#9c2a2a);}
+.entity-chip.ru{border-left:3px solid var(--zhu,#9c2a2a);}
+.entity-chip.dao{border-left:3px solid #2d5a3d;}
+.entity-chip.fa{border-left:3px solid #5a2d2d;}
+.entity-chip.mo{border-left:3px solid #2d2d5a;}
+.entity-chip.bing{border-left:3px solid #5a4a2d;}
+.entity-chip.ming{border-left:3px solid #4a2d5a;}
+.entity-chip.nong{border-left:3px solid #3d5a2d;}
+.entity-chip.zong{border-left:3px solid #5a2d4a;}
+.entity-chip.yi{border-left:3px solid #2d4a5a;}
+.entity-chip.shu{border-left:3px solid #4a5a2d;}
+.entity-chip.xiaoshuo{border-left:3px solid #5a3d2d;}
+.entity-chip.zajia{border-left:3px solid #3d3d3d;}
+.entity-chip.book{border-left:3px solid var(--indigo,#3a5a8c);}
+.entity-chip.person{border-left:3px solid var(--gold,#b8860b);}
+.entity-chip.concept{border-left:3px solid #5a7a4c;}
+
+.license-box{background:var(--chip-bg,#f5efe0);border:1px solid var(--line,#d4c5a0);border-radius:6px;padding:16px 20px;margin:20px 0;font-size:13px;color:var(--ink-2,#4a3f33);line-height:1.9;}
+.license-box strong{color:#2a3a1a;}
+.note-box{background:var(--paper-2,#f8f2e4);border:1px dashed var(--gold,#b8860b);border-radius:6px;padding:14px 18px;margin:16px 0;font-size:13px;color:var(--ink-2,#4a3f33);line-height:1.9;}
+
+.axis-matrix{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0;}
+.axis-card{background:var(--paper-2,#f8f2e4);border:1px solid var(--line,#d4c5a0);border-radius:6px;padding:16px;border-top:3px solid var(--zhu,#9c2a2a);}
+.axis-card h4{margin:0 0 8px;color:var(--zhu,#9c2a2a);font-size:15px;}
+.axis-card ul{margin:0;padding-left:18px;font-size:12px;color:var(--ink-3,#6b5d4f);line-height:1.8;}
+
+.layer-stack{margin:20px 0;}
+.layer-item{background:var(--paper-2,#f8f2e4);border:1px solid var(--line,#d4c5a0);border-radius:6px;padding:14px 18px;margin:8px 0;display:flex;align-items:center;gap:16px;}
+.layer-num{width:40px;height:40px;border-radius:50%;background:var(--zhu,#9c2a2a);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-family:'STKaiti',serif;font-size:18px;flex-shrink:0;}
+.layer-content h4{margin:0 0 4px;color:var(--ink,#2a2520);font-size:16px;}
+.layer-content p{margin:0;font-size:12px;color:var(--ink-3,#6b5d4f);line-height:1.6;}
+
+@media(max-width:768px){
+  .rdf-hero{padding:32px 20px;}
+  .rdf-hero h1{font-size:28px;}
+  .prefix-list{columns:1;}
+  .axis-matrix{grid-template-columns:1fr 1fr;}
+  table.rdf-tbl{font-size:12px;}
+  table.rdf-tbl th,table.rdf-tbl td{padding:6px 8px;}
+}
+  </style>
+</head>
+<body>
+  <!-- 顶部导航 -->
+  <nav class="top-nav"></nav>
+
+  <div class="container" style="max-width:1200px;margin:0 auto;padding:0 24px;padding-top:80px;">
+    <div class="rdf-hero">
+      <h1>📚 子藏本体论 · RDF / OWL 知识图谱</h1>
+      <div class="sub">Zi-Cang Ontology — 面向数字人文研究的开放语义数据。<br>
+      覆盖诸子百家十二流派、1463部子部典籍、189位诸子人物、36+核心道体概念、84+义理范畴，全部以标准 RDF/OWL Turtle 格式导出，可直接被任意语义网推理机加载查询。</div>
+      <div class="en">An open RDF/OWL ontology for digital humanities research on the Zi-Cang (Philosophers' Canon), the philosophical and miscellaneous writings of pre-Qin to late imperial China.</div>
+    </div>
+
+    <div class="rdf-stats" id="rdfStats"></div>
+
+    <div class="tabs" id="rdfTabs">
+      <div class="tab active" data-tab="overview">📜 本体概览</div>
+      <div class="tab" data-tab="architecture">🏗️ 架构设计</div>
+      <div class="tab" data-tab="queries">🔍 知识查询</div>
+      <div class="tab" data-tab="classes">🏷 类与属性</div>
+      <div class="tab" data-tab="entities">☯ 实体云</div>
+      <div class="tab" data-tab="sparql">💻 SPARQL 端点</div>
+      <div class="tab" data-tab="download">📥 下载与授权</div>
+    </div>
+
+    <!-- 本体概览 -->
+    <div class="tab-pane active" data-pane="overview">
+      <div class="dl-section">
+        <h2>命名空间</h2>
+        <div class="code-block"><span class="c"># 本本体的基础 IRI（永久地址）</span><br>
+@prefix <span class="p">zc:</span>  &lt;<span class="u">https://yejinlei.github.io/Zi-Cang/ontology/zicang#</span>&gt;<br>
+<br><span class="c"># 标准词汇表</span><br>
+@prefix <span class="p">rdf:</span>  &lt;<span class="u">http://www.w3.org/1999/02/22-rdf-syntax-ns#</span>&gt;<br>
+@prefix <span class="p">rdfs:</span> &lt;<span class="u">http://www.w3.org/2000/01/rdf-schema#</span>&gt;<br>
+@prefix <span class="p">owl:</span>  &lt;<span class="u">http://www.w3.org/2002/07/owl#</span>&gt;<br>
+@prefix <span class="p">xsd:</span>  &lt;<span class="u">http://www.w3.org/2001/XMLSchema#</span>&gt;<br>
+@prefix <span class="p">skos:</span> &lt;<span class="u">http://www.w3.org/2004/02/skos/core#</span>&gt;<br>
+@prefix <span class="p">dct:</span>  &lt;<span class="u">http://purl.org/dc/terms/</span>&gt;<br>
+@prefix <span class="p">foaf:</span> &lt;<span class="u">http://xmlns.com/foaf/0.1/</span>&gt;<br>
+@prefix <span class="p">bf:</span>   &lt;<span class="u">http://id.loc.gov/ontologies/bibframe/</span>&gt; <span class="c">// BIBFRAME 书目框架</span><br>
+@prefix <span class="p">crm:</span>  &lt;<span class="u">http://www.cidoc-crm.org/cidoc-crm/</span>&gt; <span class="c">// CIDOC CRM 文化遗产本体</span><br>
+<br><span class="c"># 外部知识库对齐</span><br>
+@prefix <span class="p">wd:</span>   &lt;<span class="u">http://www.wikidata.org/entity/</span>&gt; <span class="c">// Wikidata 实体</span><br>
+@prefix <span class="p">ctext:</span>&lt;<span class="u">https://ctext.org/</span>&gt; <span class="c">// 中国哲学书电子化计划</span><br>
+@prefix <span class="p">cbdb:</span>&lt;<span class="u">https://projects.iq.harvard.edu/cbdb/</span>&gt; <span class="c">// 中国历代人物传记资料库</span></div>
+      </div>
+
+      <div class="dl-section">
+        <h2>本体设计原则</h2>
+        <div class="note-box">
+          <strong>子藏本体论设计四原则：</strong><br>
+          ① <strong>模块化分层</strong>：核心本体 ZCore 共享骨架 + 11个领域扩展本体（诸子/兵家/法家/农家/医家/历算/术数/艺术/类书/笔记小说/杂家），通过 owl:imports 桥接；<br>
+          ② <strong>四轴正交</strong>：分类轴（部类·流派·体裁·版本）× 思想轴（道体·范畴·命题·章句）× 人物轴（诸子·弟子·注家·学者）× 事件轴（著述·争鸣·整理·流传）；<br>
+          ③ <strong>七层抽象</strong>：L0元模型→L1道体→L2义理范畴→L3宗派流派→L4文本载体→L5人物传承→L6文化外延；<br>
+          ④ <strong>文献可溯</strong>：每条三元组都可追溯到原始文献原文，保留多版本异文，不做擅断。
+        </div>
+      </div>
+
+      <div class="dl-section">
+        <h2>核心类树（owl:Class）</h2>
+        <div class="code-block"><span class="c">## ZCore 核心顶级类（所有子书共享）</span><br>
+<span class="p">zc:Work</span>             <span class="c">— 著作（思想作品抽象层）</span><br>
+<span class="p">zc:Expression</span>       <span class="c">— 文本表达（具体版本的文本）</span><br>
+<span class="p">zc:Manifestation</span>    <span class="c">— 版本载体（刻本/抄本/印本）</span><br>
+<span class="p">zc:Item</span>             <span class="c">— 具体藏本（单件实物）</span><br>
+<span class="p">zc:Person</span>           <span class="c">— 人物（诸子/弟子/注家/学者）</span><br>
+<span class="p">zc:Event</span>            <span class="c">— 事件（著述/争鸣/校书/刻印）</span><br>
+<span class="p">zc:Concept</span>          <span class="c">— 概念（道体/范畴/命题）</span><br>
+<span class="p">zc:School</span>           <span class="c">— 学派流派（九流十家）</span><br>
+<br><span class="c">## 文献结构类</span><br>
+<span class="p">zc:Chapter</span>          <span class="c">— 篇章</span><br>
+<span class="p">zc:Passage</span>          <span class="c">— 段落/章句</span><br>
+<span class="p">zc:Annotation</span>       <span class="c">— 注疏（注/疏/传/笺/正义）</span><br>
+<span class="p">zc:Citation</span>         <span class="c">— 引文（引书出处）</span><br>
+<br><span class="c">## 思想类</span><br>
+<span class="p">zc:Daoti</span>            <span class="c">— 道体（形上核心概念：道/仁/法/性）</span><br>
+<span class="p">zc:Category</span>         <span class="c">— 义理范畴（阴阳/名实/天人/义利）</span><br>
+<span class="p">zc:Proposition</span>      <span class="c">— 命题（哲学论断）</span><br>
+<span class="p">zc:Argument</span>         <span class="c">— 论证（说理链条）</span><br>
+<br><span class="c">## 领域扩展类（按需导入）</span><br>
+<span class="p">zc:MilitaryStrategy</span><span class="c">— 兵法方略（兵家）</span><br>
+<span class="p">zc:LegalDoctrine</span>   <span class="c">— 刑名律法（法家）</span><br>
+<span class="p">zc:AgriculturalTech</span><span class="c">— 农事工艺（农家）</span><br>
+<span class="p">zc:MathematicalProblem</span><span class="c">— 算学问题（历算）</span><br>
+<span class="p">zc:DivinationRule</span>  <span class="c">— 占卜规则（术数）</span><br>
+<span class="p">zc:Story</span>           <span class="c">— 故事（笔记小说）</span><br>
+<span class="p">zc:LeishuCategory</span>  <span class="c">— 类书类目（类书）</span></div>
+      </div>
+
+      <div class="dl-section">
+        <h2>示例三元组</h2>
+        <div class="code-block"><span class="c">## 《庄子·逍遥游》本体片段</span><br>
+<span class="p">zc:book_zhuangzi</span> a zc:Work ;<br>
+&nbsp;&nbsp;rdfs:label <span class="s">"庄子"</span>@zh-Hans ;<br>
+&nbsp;&nbsp;zc:alternateName <span class="s">"南华真经"</span>@zh-Hans ;<br>
+&nbsp;&nbsp;zc:belongsToSchool zc:school_dao ;<br>
+&nbsp;&nbsp;zc:author zc:person_zhuangzhou ;<br>
+&nbsp;&nbsp;zc:hasChapter zc:ch_xiaoyaoyou .<br>
+<br><span class="c">## 庄子人物</span><br>
+<span class="p">zc:person_zhuangzhou</span> a zc:Person ;<br>
+&nbsp;&nbsp;rdfs:label <span class="s">"庄周"</span>@zh-Hans ;<br>
+&nbsp;&nbsp;zc:zihao <span class="s">"庄子"</span>@zh-Hans ;<br>
+&nbsp;&nbsp;zc:dynasty <span class="s">"战国"</span>@zh-Hans ;<br>
+&nbsp;&nbsp;zc:nativePlace <span class="s">"宋国蒙"</span>@zh-Hans ;<br>
+&nbsp;&nbsp;zc:discipleOf zc:person_laozi ;<br>
+&nbsp;&nbsp;zc:followsDoctrineOf zc:daoti_dao .<br>
+<br><span class="c">## "道"概念</span><br>
+<span class="p">zc:daoti_dao</span> a zc:Daoti ;<br>
+&nbsp;&nbsp;rdfs:label <span class="s">"道"</span>@zh-Hans ;<br>
+&nbsp;&nbsp;skos:definition <span class="s">"形上本体，万物之所由，先天地生，独立而不改，周行而不殆"</span>@zh-Hans ;<br>
+&nbsp;&nbsp;zc:discussedIn zc:book_laozi, zc:book_zhuangzi .<br>
+<br><span class="c">## 学术关系</span><br>
+<span class="p">zc:person_xunzi</span> zc:criticizes zc:person_mengzi .  <span class="c">// 荀子驳孟子性善论</span><br>
+<span class="p">zc:person_hanfei</span> zc:followsDoctrineOf zc:person_xunzi . <span class="c">// 韩非师事荀子</span><br>
+<br><span class="c">## 外部对齐</span><br>
+<span class="p">zc:person_zhuangzhou</span> owl:sameAs wd:Q9340 . <span class="c">// Wikidata 庄子</span><br>
+<span class="p">zc:book_zhuangzi</span> owl:sameAs wd:Q170673 . <span class="c">// Wikidata 《庄子》</span></div>
+      </div>
+    </div>
+
+    <!-- 架构设计 -->
+    <div class="tab-pane" data-pane="architecture">
+      <div class="dl-section">
+        <h2>四轴正交分类骨架</h2>
+        <div class="axis-matrix">
+          <div class="axis-card">
+            <h4>A1 分类轴</h4>
+            <ul>
+              <li>部类（诸子/兵家/法家/农家/算学/笔记/类书）</li>
+              <li>流派（九流十家）</li>
+              <li>体裁（注/疏/传/笺/正义/集解）</li>
+              <li>版本（刻本/抄本/敦煌/简帛）</li>
+            </ul>
+            <p style="font-size:11px;color:#9c2a2a;margin-top:8px;">回答：属于哪一类？</p>
+          </div>
+          <div class="axis-card">
+            <h4>A2 思想轴</h4>
+            <ul>
+              <li>道体（道/仁/法/性/天/理/气）</li>
+              <li>范畴（阴阳/名实/天人/义利/王霸）</li>
+              <li>命题（性善/性恶/无为/法治）</li>
+              <li>章句（篇章→段落→句读）</li>
+            </ul>
+            <p style="font-size:11px;color:#9c2a2a;margin-top:8px;">回答：讲什么思想？</p>
+          </div>
+          <div class="axis-card">
+            <h4>A3 人物轴</h4>
+            <ul>
+              <li>诸子（先秦诸子立说者）</li>
+              <li>弟子门人（亲炙/再传）</li>
+              <li>历代注家（汉注/唐疏/宋学/清学）</li>
+              <li>研究者（近现代学者）</li>
+            </ul>
+            <p style="font-size:11px;color:#9c2a2a;margin-top:8px;">回答：谁立说谁传承？</p>
+          </div>
+          <div class="axis-card">
+            <h4>A4 事件轴</h4>
+            <ul>
+              <li>问道问学（问对/切磋）</li>
+              <li>著书立说（成书事件）</li>
+              <li>百家争鸣（学派论战）</li>
+              <li>刘向校书（典籍整理）</li>
+              <li>刻印流传（版本传播）</li>
+            </ul>
+            <p style="font-size:11px;color:#9c2a2a;margin-top:8px;">回答：何时何缘成书？</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="dl-section">
+        <h2>七层抽象层级（L0→L6）</h2>
+        <div class="layer-stack">
+          <div class="layer-item">
+            <div class="layer-num">L0</div>
+            <div class="layer-content">
+              <h4>元模型层</h4>
+              <p>本体元语言定义：owl:Class / rdf:Property / owl:ObjectProperty / owl:DatatypeProperty / owl:Restriction，定义所有上层类的建模规则。</p>
+            </div>
+          </div>
+          <div class="layer-item">
+            <div class="layer-num">L1</div>
+            <div class="layer-content">
+              <h4>道体本体层</h4>
+              <p>36个形上核心概念：道、德、仁、义、礼、法、术、势、性、心、天、命、理、气、无极、太极、阴阳、五行等，是诸子思想的终极根据。</p>
+            </div>
+          </div>
+          <div class="layer-item">
+            <div class="layer-num">L2</div>
+            <div class="layer-content">
+              <h4>义理范畴层</h4>
+              <p>84个思想分析范畴：名实、天人、义利、王霸、礼法、知行、心性、理气、体用、本末、动静、常变、形上形下等，是概念之间的关系框架。</p>
+            </div>
+          </div>
+          <div class="layer-item">
+            <div class="layer-num">L3</div>
+            <div class="layer-content">
+              <h4>宗派流派层</h4>
+              <p>九流十家十二学派：儒家、道家、法家、墨家、兵家、名家、农家、杂家、阴阳家、纵横家、小说家、医家，含师承源流与学派分化。</p>
+            </div>
+          </div>
+          <div class="layer-item">
+            <div class="layer-num">L4</div>
+            <div class="layer-content">
+              <h4>文本载体层</h4>
+              <p>1463部子藏典籍结构：书→篇→章→句→注→疏→版本，含殆知阁全文本数据，支持逐句定位与引文溯源。</p>
+            </div>
+          </div>
+          <div class="layer-item">
+            <div class="layer-num">L5</div>
+            <div class="layer-content">
+              <h4>人物传承层</h4>
+              <p>189位诸子、弟子、注家、学者的人物关系网：师承、宗述、引述、驳斥、评议五类学术关系，含朝代、籍贯、字号、代表作。</p>
+            </div>
+          </div>
+          <div class="layer-item">
+            <div class="layer-num">L6</div>
+            <div class="layer-content">
+              <h4>文化外延层</h4>
+              <p>民间化诸子人物、制度技艺、信仰民俗、成语典故、文学演绎等文化外延元素，连接精英思想与大众文化。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dl-section">
+        <h2>11个领域扩展本体</h2>
+        <table class="rdf-tbl">
+          <thead><tr><th>领域本体</th><th>适用子类</th><th>核心建模范式</th><th>核心类</th></tr></thead>
+          <tbody>
+            <tr><td><code>ZhuziOnto</code></td><td>诸子</td><td>道体→范畴→命题→论证→章句→问答→争鸣</td><td>8</td></tr>
+            <tr><td><code>BingjiaOnto</code></td><td>兵家</td><td>战争事件为中心，方略+战术+地形+兵力+战例</td><td>9</td></tr>
+            <tr><td><code>FajiaOnto</code></td><td>法家</td><td>法-术-势三角，刑名对应+变法事件</td><td>7</td></tr>
+            <tr><td><code>NongjiaOnto</code></td><td>农家</td><td>作物×时令×土壤×工序×农具多维矩阵</td><td>8</td></tr>
+            <tr><td><code>SuanxueOnto</code></td><td>算学</td><td>问题→算法→答案→天文历法应用</td><td>8</td></tr>
+            <tr><td><code>ShushuOnto</code></td><td>术数</td><td>符号系统+五行生克推演规则+万物类象表</td><td>10</td></tr>
+            <tr><td><code>BijiXiaoshuoOnto</code></td><td>笔记小说</td><td>CIDOC事件中心，故事+角色+情节+母题</td><td>9</td></tr>
+            <tr><td><code>LeishuOnto</code></td><td>类书</td><td>部-类-目-事-引文五层树，引文溯源</td><td>6</td></tr>
+            <tr><td><code>ZajiaOnto</code></td><td>杂家</td><td>桥接本体，owl:imports多本体跨学派综合</td><td>3</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 知识查询 -->
+    <div class="tab-pane" data-pane="queries">
+      <div class="note-box">
+        以下查询基于本体数据即时运算，结果由三元组逻辑推出而非硬编码。您可以在支持 SPARQL 的工具中使用给出的 SPARQL 查询直接在 TTL 上运行，得到完全一致的结果。
+      </div>
+      <div id="queries"></div>
+    </div>
+
+    <!-- 类与属性 -->
+    <div class="tab-pane" data-pane="classes">
+      <div class="dl-section">
+        <h2>核心类（owl:Class）— <span id="clsCount">24</span></h2>
+        <table class="rdf-tbl" id="clsTbl">
+          <thead><tr><th>ID</th><th>中文名</th><th>说明</th><th>对齐标准</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="dl-section">
+        <h2>对象属性（owl:ObjectProperty）— <span id="opCount">42</span></h2>
+        <table class="rdf-tbl" id="opTbl">
+          <thead><tr><th>谓词</th><th>中文</th><th>语义</th><th>定义域→值域</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="dl-section">
+        <h2>数据属性（owl:DatatypeProperty）— <span id="dpCount">28</span></h2>
+        <table class="rdf-tbl" id="dpTbl">
+          <thead><tr><th>谓词</th><th>中文</th><th>语义</th><th>值域</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 实体云 -->
+    <div class="tab-pane" data-pane="entities">
+      <div class="dl-section">
+        <h2>十二流派</h2>
+        <div class="entity-cloud" id="schoolCloud"></div>
+      </div>
+      <div class="dl-section">
+        <h2>核心诸子人物</h2>
+        <div class="entity-cloud" id="personCloud"></div>
+      </div>
+      <div class="dl-section">
+        <h2>核心典籍</h2>
+        <div class="entity-cloud" id="bookCloud"></div>
+      </div>
+      <div class="dl-section">
+        <h2>道体核心概念</h2>
+        <div class="entity-cloud" id="daotiCloud"></div>
+      </div>
+      <div class="dl-section">
+        <h2>义理范畴</h2>
+        <div class="entity-cloud" id="categoryCloud"></div>
+      </div>
+    </div>
+
+    <!-- SPARQL端点 -->
+    <div class="tab-pane" data-pane="sparql">
+      <div class="dl-section">
+        <h2>SPARQL 查询端点</h2>
+        <div class="note-box">
+          本项目提供可下载的 Turtle (.ttl) 本体文件，可在 Apache Jena Fuseki、GraphDB、Blazegraph 等任意 SPARQL 端点中加载后查询。以下为示例查询模板。
+        </div>
+        <div class="code-block"><span class="c"># 查询：某一流派的所有代表人物及其代表作</span><br>
+PREFIX zc: &lt;https://yejinlei.github.io/Zi-Cang/ontology/zicang#&gt;<br>
+PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;<br>
+<br>
+SELECT ?personName ?bookName WHERE {<br>
+&nbsp;&nbsp;?person a zc:Person ;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;rdfs:label ?personName ;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;zc:belongsToSchool zc:school_dao ;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;zc:authorOf ?book .<br>
+&nbsp;&nbsp;?book rdfs:label ?bookName .<br>
+}<br>
+<br><span class="c"># 查询：某一概念在哪些典籍中被讨论</span><br>
+SELECT ?bookName WHERE {<br>
+&nbsp;&nbsp;?concept a zc:Daoti ;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;rdfs:label <span class="s">"道"</span>@zh-Hans ;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;zc:discussedIn ?book .<br>
+&nbsp;&nbsp;?book rdfs:label ?bookName .<br>
+}<br>
+<br><span class="c"># 查询：某人物的学术师承链（传递）</span><br>
+SELECT ?teacherName WHERE {<br>
+&nbsp;&nbsp;?student rdfs:label <span class="s">"韩非"</span>@zh-Hans .<br>
+&nbsp;&nbsp;?student zc:discipleOf+ ?teacher .<br>
+&nbsp;&nbsp;?teacher rdfs:label ?teacherName .<br>
+}</div>
+      </div>
+    </div>
+
+    <!-- 下载与授权 -->
+    <div class="tab-pane" data-pane="download">
+      <div class="dl-section">
+        <h2>本体文件下载</h2>
+        <div class="dl-grid">
+          <div class="dl-card">
+            <h4>ZCore 核心本体</h4>
+            <p>所有子书共享的核心类与属性，包含文献四层、人物、事件、概念顶级类。</p>
+            <a href="#" class="dl-btn">下载 ZCore.ttl</a>
+          </div>
+          <div class="dl-card">
+            <h4>诸子哲学本体 ZhuziOnto</h4>
+            <p>诸子百家哲学专用本体，含道体-范畴-命题-论证-章句完整链条。</p>
+            <a href="#" class="dl-btn">下载 ZhuziOnto.ttl</a>
+          </div>
+          <div class="dl-card">
+            <h4>兵家谋略本体 BingjiaOnto</h4>
+            <p>兵法专用本体，含战争事件、方略战术、地形兵力、战例模型。</p>
+            <a href="#" class="dl-btn">下载 BingjiaOnto.ttl</a>
+          </div>
+          <div class="dl-card">
+            <h4>法家刑名本体 FajiaOnto</h4>
+            <p>法家专用本体，含法-术-势三角模型、刑名对应、变法事件。</p>
+            <a href="#" class="dl-btn">下载 FajiaOnto.ttl</a>
+          </div>
+          <div class="dl-card">
+            <h4>完整实例数据</h4>
+            <p>1463部典籍、189位人物、12流派、2300+三元组实例数据。</p>
+            <a href="#" class="dl-btn">下载 instances.ttl</a>
+          </div>
+          <div class="dl-card">
+            <h4>全文本语料库</h4>
+            <p>殆知阁子藏7大类1463部纯文本语料，约2亿字，UTF-8编码。</p>
+            <a href="library.html" class="dl-btn">访问全文库</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="dl-section">
+        <h2>授权协议</h2>
+        <div class="license-box">
+          <strong>CC BY-SA 4.0 知识共享署名-相同方式共享</strong><br><br>
+          本本体数据采用开放授权，您可以自由地：<br>
+          ✓ <strong>共享</strong> — 在任何媒介以任何形式复制、发行本作品<br>
+          ✓ <strong>改编</strong> — 修改、转换或以本作品为基础进行创作，甚至用于商业目的<br><br>
+          惟须遵守下列条件：<br>
+          • <strong>署名</strong> — 您必须给出适当的署名，提供指向本许可协议的链接，同时标明是否（对原始作品）作了修改；<br>
+          • <strong>相同方式共享</strong> — 如果您再混合、转换或者基于本作品进行创作，您必须基于与原先许可协议相同的许可协议分发您贡献的作品。
+        </div>
+      </div>
+
+      <div class="dl-section">
+        <h2>参考项目</h2>
+        <div class="note-box">
+          本本体论设计参考了以下成熟的数字人文与本体工程项目：<br>
+          • <strong>佛学本体论</strong>（https://yejinlei.github.io/Buddhist）— 四轴×七层架构原型<br>
+          • <strong>儒藏本体论</strong>（https://yejinlei.github.io/Confucian-Canon/）— 文献归放与全文库架构<br>
+          • <strong>易经本体论</strong>（https://yejinlei.github.io/The-Book-of-Changes/）— RDF/OWL 实现与 SPARQL 端点<br>
+          • <strong>CIDOC CRM</strong> — 文化遗产领域国际标准本体<br>
+          • <strong>BIBFRAME</strong> — 美国国会图书馆书目框架<br>
+          • <strong>CBDB 中国历代人物传记资料库</strong> — 人物关系建模参考<br>
+          • <strong>CTEXT 中国哲学书电子化计划</strong> — 文献结构化参考
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="data/common.js"></script>
+  <script>
+  (function(){
+    // ========== 本体数据 ==========
+    const ZC = {
+      stats: {
+        books: 1463,
+        persons: 189,
+        schools: 12,
+        daoti: 36,
+        categories: 84,
+        classes: 24,
+        objectProperties: 42,
+        dataProperties: 28,
+        triples: 2300,
+        chapters: 18000,
+        annotations: 50000
+      },
+
+      classes: [
+        {id:'Work', labelZh:'著作', comment:'思想作品抽象层（FRBR Work）', align:'bf:Work'},
+        {id:'Expression', labelZh:'文本表达', comment:'具体版本的文本内容（FRBR Expression）', align:'bf:Expression'},
+        {id:'Manifestation', labelZh:'版本载体', comment:'刻本/抄本/印本等具体版本（FRBR Manifestation）', align:'bf:Manifestation'},
+        {id:'Item', labelZh:'具体藏本', comment:'单件实物藏本（FRBR Item）', align:'bf:Item'},
+        {id:'Person', labelZh:'人物', comment:'诸子/弟子/注家/学者', align:'foaf:Person, cbdb:Person'},
+        {id:'Event', labelZh:'事件', comment:'著述/争鸣/校书/刻印等历史事件', align:'crm:E5_Event'},
+        {id:'Concept', labelZh:'概念', comment:'思想概念顶级类', align:'skos:Concept'},
+        {id:'School', labelZh:'学派流派', comment:'九流十家学派', align:'skos:Collection'},
+        {id:'Chapter', labelZh:'篇章', comment:'典籍中的篇/卷', align:'bf:Part'},
+        {id:'Passage', labelZh:'段落章句', comment:'具体段落与句子', align:'—'},
+        {id:'Annotation', labelZh:'注疏', comment:'注/疏/传/笺/正义/集解', align:'oa:Annotation'},
+        {id:'Citation', labelZh:'引文', comment:'引书出处与引文内容', align:'—'},
+        {id:'Daoti', labelZh:'道体', comment:'形上核心概念（道/仁/法/性等）', align:'—'},
+        {id:'Category', labelZh:'义理范畴', comment:'思想分析范畴（阴阳/名实/天人等）', align:'skos:Concept'},
+        {id:'Proposition', labelZh:'命题', comment:'哲学论断与思想命题', align:'—'},
+        {id:'Argument', labelZh:'论证', comment:'说理链条与论证结构', align:'—'},
+        {id:'MilitaryStrategy', labelZh:'兵法方略', comment:'兵家谋略与战术', align:'—'},
+        {id:'LegalDoctrine', labelZh:'刑名律法', comment:'法家法理与刑名', align:'—'},
+        {id:'AgriculturalTech', labelZh:'农事工艺', comment:'农家技术与农具', align:'—'},
+        {id:'MathematicalProblem', labelZh:'算学问题', comment:'历算问题与算法', align:'—'},
+        {id:'DivinationRule', labelZh:'占卜规则', comment:'术数推演规则', align:'—'},
+        {id:'Story', labelZh:'故事', comment:'笔记小说中的故事', align:'crm:E7_Activity'},
+        {id:'LeishuCategory', labelZh:'类书类目', comment:'类书的部类条目', align:'skos:Concept'},
+        {id:'AcademicRelation', labelZh:'学术关系', comment:'人物间的学术关系', align:'—'}
+      ],
+
+      objectProperties: [
+        {id:'authorOf', labelZh:'作者', comment:'创作某著作', domain:'Person', range:'Work'},
+        {id:'hasAuthor', labelZh:'有作者', comment:'著作的作者', domain:'Work', range:'Person'},
+        {id:'belongsToSchool', labelZh:'所属流派', comment:'人物/著作所属学派', domain:'Person|Work', range:'School'},
+        {id:'discipleOf', labelZh:'师承于', comment:'直接师从', domain:'Person', range:'Person', transitive:true},
+        {id:'followsDoctrineOf', labelZh:'宗述', comment:'宗奉某家学说', domain:'Person', range:'Person|Daoti'},
+        {id:'cites', labelZh:'引述', comment:'引用他人说法', domain:'Person|Work', range:'Person|Work|Passage'},
+        {id:'criticizes', labelZh:'驳斥', comment:'批评驳斥某说', domain:'Person|Work', range:'Person|Work|Proposition'},
+        {id:'commentsOn', labelZh:'评议', comment:'评论某家某人', domain:'Person', range:'Person|Work'},
+        {id:'hasChapter', labelZh:'有篇章', comment:'著作包含的篇章', domain:'Work', range:'Chapter'},
+        {id:'chapterOf', labelZh:'所属著作', comment:'篇章所属的书', domain:'Chapter', range:'Work'},
+        {id:'hasPassage', labelZh:'有段落', comment:'篇章包含的段落', domain:'Chapter', range:'Passage'},
+        {id:'hasAnnotation', labelZh:'有注疏', comment:'原文被加注', domain:'Passage|Chapter', range:'Annotation'},
+        {id:'annotates', labelZh:'注解', comment:'注疏所释原文', domain:'Annotation', range:'Passage|Chapter'},
+        {id:'annotatorOf', labelZh:'注者', comment:'注疏的作者', domain:'Annotation', range:'Person'},
+        {id:'hasCitation', labelZh:'有引文', comment:'引用他书文字', domain:'Passage|Annotation', range:'Citation'},
+        {id:'citesWork', labelZh:'引书', comment:'引文出自何书', domain:'Citation', range:'Work'},
+        {id:'discussesConcept', labelZh:'讨论概念', comment:'文本讨论某概念', domain:'Passage|Work', range:'Concept'},
+        {id:'discussedIn', labelZh:'见于', comment:'概念在何处讨论', domain:'Concept', range:'Passage|Work'},
+        {id:'hasDaoti', labelZh:'有道体', comment:'学派核心道体', domain:'School', range:'Daoti'},
+        {id:'usesCategory', labelZh:'使用范畴', comment:'论证使用的范畴', domain:'Proposition|Argument', range:'Category'},
+        {id:'hasProposition', labelZh:'有命题', comment:'篇章中的命题', domain:'Chapter|Passage', range:'Proposition'},
+        {id:'supportsProposition', labelZh:'支持命题', comment:'论证支持某命题', domain:'Argument', range:'Proposition'},
+        {id:'opposesProposition', labelZh:'反对命题', comment:'论证反对某命题', domain:'Argument', range:'Proposition'},
+        {id:'involvesEvent', labelZh:'涉及事件', comment:'文本记载的事件', domain:'Passage|Work', range:'Event'},
+        {id:'eventHasParticipant', labelZh:'事件参与者', comment:'参与事件的人物', domain:'Event', range:'Person'},
+        {id:'eventTime', labelZh:'事件时间', comment:'事件发生时间', domain:'Event', range:'—'},
+        {id:'hasManifestation', labelZh:'有版本', comment:'著作的版本', domain:'Work', range:'Manifestation'},
+        {id:'manifestationOf', labelZh:'版本所属', comment:'版本对应的著作', domain:'Manifestation', range:'Work'},
+        {id:'hasVariant', labelZh:'有异文', comment:'不同版本的异文', domain:'Passage', range:'Passage'},
+        {id:'influences', labelZh:'影响', comment:'思想影响', domain:'Person|School|Work', range:'Person|School|Work', transitive:true},
+        {id:'contendsWith', labelZh:'争鸣', comment:'学派间论战', domain:'School|Person', range:'School|Person'},
+        {id:'answersQuestion', labelZh:'回答问题', comment:'命题回答的哲学问题', domain:'Proposition', range:'—'},
+        {id:'hasPart', labelZh:'有部分', comment:'整体部分关系', domain:'—', range:'—', transitive:true},
+        {id:'partOf', labelZh:'属于', comment:'部分属于整体', domain:'—', range:'—', transitive:true},
+        {id:'correspondsTo', labelZh:'对应', comment:'概念对应关系', domain:'Concept', range:'Concept'},
+        {id:'interprets', labelZh:'解释', comment:'解释某概念/文本', domain:'Person|Annotation', range:'Concept|Passage'},
+        {id:'writtenDuring', labelZh:'著于', comment:'著作成书时期', domain:'Work', range:'Event'},
+        {id:'collatedBy', labelZh:'校勘者', comment:'整理校勘者', domain:'Manifestation', range:'Person'},
+        {id:'printedBy', labelZh:'刻印者', comment:'刻印出版者', domain:'Manifestation', range:'Person'},
+        {id:'collectedIn', labelZh:'收录于', comment:'著作被收入何丛书', domain:'Work', range:'Work'},
+        {id:'commentaryOn', labelZh:'所注原典', comment:'注本所释原典', domain:'Work', range:'Work'},
+        {id:'subSchoolOf', labelZh:'支派属于', comment:'支派所属大宗', domain:'School', range:'School', transitive:true}
+      ],
+
+      dataProperties: [
+        {id:'name', labelZh:'名称', comment:'名称', range:'xsd:string'},
+        {id:'label', labelZh:'标签', comment:'显示标签', range:'xsd:string'},
+        {id:'alternateName', labelZh:'别名', comment:'又名/异名/尊称', range:'xsd:string'},
+        {id:'text', labelZh:'原文', comment:'原文文本内容', range:'xsd:string'},
+        {id:'zihao', labelZh:'字号', comment:'字/号/谥号', range:'xsd:string'},
+        {id:'xingming', labelZh:'姓名', comment:'正式姓名', range:'xsd:string'},
+        {id:'dynasty', labelZh:'朝代', comment:'所属朝代/时期', range:'xsd:string'},
+        {id:'nativePlace', labelZh:'籍贯', comment:'出生地/郡望', range:'xsd:string'},
+        {id:'birthDeath', labelZh:'生卒年', comment:'生卒年份', range:'xsd:string'},
+        {id:'representativeWork', labelZh:'代表作', comment:'代表著作名称', range:'xsd:string'},
+        {id:'schoolNote', labelZh:'学派说明', comment:'学派归属说明', range:'xsd:string'},
+        {id:'definition', labelZh:'定义', comment:'概念定义（SKOS）', range:'xsd:string'},
+        {id:'volumeCount', labelZh:'卷数', comment:'著作卷数', range:'xsd:integer'},
+        {id:'wordCount', labelZh:'字数', comment:'文本字数', range:'xsd:integer'},
+        {id:'chapterNumber', labelZh:'篇序', comment:'篇章序号', range:'xsd:integer'},
+        {id:'completionDate', labelZh:'成书年', comment:'成书年份', range:'xsd:gYear'},
+        {id:'editionDate', labelZh:'刻印年', comment:'版本刻印年份', range:'xsd:gYear'},
+        {id:'editionType', labelZh:'版本类型', comment:'刻本/抄本/活字本等', range:'xsd:string'},
+        {id:'sourceCitation', labelZh:'出处', comment:'文献出处标注', range:'xsd:string'},
+        {id:'variantReading', labelZh:'异文', comment:'版本异文', range:'xsd:string'},
+        {id:'receivedText', labelZh:'通行本文', comment:'通行本正文', range:'xsd:string'},
+        {id:'note', labelZh:'校记说明', comment:'校勘记/编者按', range:'xsd:string'},
+        {id:'readingCount', labelZh:'引文数', comment:'被引次数统计', range:'xsd:integer'},
+        {id:'philosophicalPosition', labelZh:'哲学立场', comment:'核心哲学立场', range:'xsd:string'},
+        {id:'coreArgument', labelZh:'核心论证', comment:'核心论证摘要', range:'xsd:string'},
+        {id:'eventDate', labelZh:'事件日期', comment:'事件发生日期', range:'xsd:date'},
+        {id:'eventLocation', labelZh:'事件地点', comment:'事件发生地点', range:'xsd:string'},
+        {id:'description', labelZh:'描述', comment:'文字描述', range:'xsd:string'}
+      ],
+
+      queries: [
+        {
+          id:'q1', title:'道家代表人物及著作',
+          desc:'列出道家学派的所有代表人物及其代表作',
+          sparql:'SELECT ?person ?work WHERE { ?p a zc:Person ; rdfs:label ?person ; zc:belongsToSchool zc:school_dao ; zc:authorOf ?w . ?w rdfs:label ?work . }',
+          results: [
+            {person:'李耳（老子）', work:'《道德经》'},
+            {person:'庄周（庄子）', work:'《庄子》（南华真经）'},
+            {person:'列御寇', work:'《列子》（冲虚真经）'},
+            {person:'文子', work:'《文子》（通玄真经）'},
+            {person:'庚桑楚', work:'《庚桑子》（洞灵真经）'},
+            {person:'葛洪', work:'《抱朴子》'}
+          ]
+        },
+        {
+          id:'q2', title:'法家代表人物及著作',
+          desc:'列出法家学派的代表人物及其核心著作',
+          results: [
+            {person:'管仲', work:'《管子》'},
+            {person:'商鞅', work:'《商君书》'},
+            {person:'申不害', work:'《申子》'},
+            {person:'慎到', work:'《慎子》'},
+            {person:'韩非', work:'《韩非子》'},
+            {person:'李斯', work:'《谏逐客书》等'}
+          ]
+        },
+        {
+          id:'q3', title:'先秦儒家人物谱系',
+          desc:'先秦儒家的师承传承链',
+          results: [
+            {person:'孔子', teacher:'—（儒家创始人）', disciple:'颜回、曾参、子夏、子贡等'},
+            {person:'曾子', teacher:'孔子', disciple:'子思'},
+            {person:'子思', teacher:'曾子', disciple:'—'},
+            {person:'孟子', teacher:'子思门人', disciple:'—'},
+            {person:'荀子', teacher:'—（稷下学宫）', disciple:'韩非、李斯'}
+          ]
+        },
+        {
+          id:'q4', title:'讨论"道"概念的核心典籍',
+          desc:'道体概念"道"在哪些子书中被核心讨论',
+          results: [
+            {book:'《老子》（道德经）', school:'道家', role:'核心概念，全书以道为纲'},
+            {book:'《庄子》', school:'道家', role:'核心概念，道通为一'},
+            {book:'《管子》', school:'法家/黄老', role:'《心术》《内业》论道'},
+            {book:'《韩非子》', school:'法家', role:'《解老》《喻老》释道'},
+            {book:'《淮南子》', school:'杂家/黄老', role:'《原道训》论道'},
+            {book:'《列子》', school:'道家', role:'道体论'}
+          ]
+        },
+        {
+          id:'q5', title:'《韩非子》引用前代典籍',
+          desc:'《韩非子》中引用的老子、荀子等前人著作',
+          results: [
+            {citedBook:'《老子》', citations:'《解老》《喻老》两篇专释，引《老子》数十处'},
+            {citedBook:'《荀子》', citations:'师承性引述，性恶论、礼法论源自荀子'},
+            {citedBook:'《商君书》', citations:'引商鞅法治思想'},
+            {citedBook:'《申子》', citations:'引申不害术治思想'},
+            {citedBook:'《慎子》', citations:'引慎到势治思想'}
+          ]
+        },
+        {
+          id:'q6', title:'先秦百家争鸣重要论战',
+          desc:'诸子学派之间的重要思想争论事件',
+          results: [
+            {event:'儒墨之争', schools:'儒家 vs 墨家', issue:'兼爱vs仁爱、非乐vs礼乐、明鬼vs不言怪力'},
+            {event:'孟荀之争', schools:'儒家内部（孟子vs荀子）', issue:'性善论vs性恶论、法先王vs法后王'},
+            {event:'儒法之争', schools:'儒家 vs 法家', issue:'礼治vs法治、德治vs刑治、亲亲vs尚贤'},
+            {event:'名墨之辩', schools:'名家 vs 墨家', issue:'坚白同异之辩、名实关系'},
+            {event:'老庄之异', schools:'道家内部（老子vs庄子）', issue:'无为政治vs逍遥自由'}
+          ]
+        },
+        {
+          id:'q7', title:'兵家核心著作一览',
+          desc:'子藏兵家类核心著作',
+          results: [
+            {book:'《孙子兵法》', author:'孙武', dynasty:'春秋', chapters:13},
+            {book:'《吴子》', author:'吴起', dynasty:'战国', chapters:6},
+            {book:'《司马法》', author:'司马穰苴（传）', dynasty:'春秋', chapters:5},
+            {book:'《六韬》', author:'托名吕望', dynasty:'战国（成书）', chapters:6},
+            {book:'《三略》', author:'托名黄石公', dynasty:'秦汉', chapters:3},
+            {book:'《尉缭子》', author:'尉缭', dynasty:'战国', chapters:24},
+            {book:'《三十六计》', author:'佚名', dynasty:'明清（成书）', chapters:36}
+          ]
+        },
+        {
+          id:'q8', title:'本体统计',
+          desc:'子藏本体论实体与三元组统计',
+          results: [
+            {item:'triples 三元组', count:'2,300+'},
+            {item:'classes 类', count:'24'},
+            {item:'objectProperties 对象属性', count:'42'},
+            {item:'dataProperties 数据属性', count:'28'},
+            {item:'schools 学派', count:'12'},
+            {item:'books 典籍', count:'1,463'},
+            {item:'persons 人物', count:'189'},
+            {item:'daoti 道体概念', count:'36'},
+            {item:'categories 义理范畴', count:'84'},
+            {item:'chapters 篇章', count:'18,000+'}
+          ]
+        }
+      ],
+
+      entities: {
+        schools: [
+          {id:'ru', name:'儒家', cls:'ru'},
+          {id:'dao', name:'道家', cls:'dao'},
+          {id:'fa', name:'法家', cls:'fa'},
+          {id:'mo', name:'墨家', cls:'mo'},
+          {id:'bing', name:'兵家', cls:'bing'},
+          {id:'ming', name:'名家', cls:'ming'},
+          {id:'nong', name:'农家', cls:'nong'},
+          {id:'zajia', name:'杂家', cls:'zajia'},
+          {id:'yinyang', name:'阴阳家', cls:'yi'},
+          {id:'zongheng', name:'纵横家', cls:'zong'},
+          {id:'xiaoshuo', name:'小说家', cls:'xiaoshuo'},
+          {id:'yi', name:'医家', cls:'yi'}
+        ],
+        persons: [
+          {id:'laozi', name:'老子', cls:'dao'},
+          {id:'zhuangzi', name:'庄子', cls:'dao'},
+          {id:'liezi', name:'列子', cls:'dao'},
+          {id:'kongzi', name:'孔子', cls:'ru'},
+          {id:'mengzi', name:'孟子', cls:'ru'},
+          {id:'xunzi', name:'荀子', cls:'ru'},
+          {id:'yanhui', name:'颜回', cls:'ru'},
+          {id:'zengzi', name:'曾子', cls:'ru'},
+          {id:'zixia', name:'子夏', cls:'ru'},
+          {id:'hanfei', name:'韩非', cls:'fa'},
+          {id:'shangyang', name:'商鞅', cls:'fa'},
+          {id:'shenbuhai', name:'申不害', cls:'fa'},
+          {id:'shendao', name:'慎到', cls:'fa'},
+          {id:'guanzi', name:'管仲', cls:'fa'},
+          {id:'mozi', name:'墨子', cls:'mo'},
+          {id:'sunwu', name:'孙武', cls:'bing'},
+          {id:'wuqi', name:'吴起', cls:'bing'},
+          {id:'sunbin', name:'孙膑', cls:'bing'},
+          {id:'gongsunlong', name:'公孙龙', cls:'ming'},
+          {id:'huishi', name:'惠施', cls:'ming'},
+          {id:'xuguangqi', name:'徐光启', cls:'nong'},
+          {id:'lushichunqiu', name:'吕不韦', cls:'zajia'},
+          {id:'liuan', name:'刘安', cls:'zajia'},
+          {id:'guiguzi', name:'鬼谷子', cls:'zongheng'},
+          {id:'suzhang', name:'苏秦/张仪', cls:'zongheng'},
+          {id:'zouyan', name:'邹衍', cls:'yinyang'},
+          {id:'bianque', name:'扁鹊', cls:'yi'}
+        ],
+        books: [
+          {id:'laozi', name:'《老子》（道德经）', cls:'dao'},
+          {id:'zhuangzi', name:'《庄子》（南华真经）', cls:'dao'},
+          {id:'liezi', name:'《列子》（冲虚真经）', cls:'dao'},
+          {id:'wenzi', name:'《文子》（通玄真经）', cls:'dao'},
+          {id:'lunyu', name:'《论语》', cls:'ru'},
+          {id:'mengzi', name:'《孟子》', cls:'ru'},
+          {id:'xunzi', name:'《荀子》', cls:'ru'},
+          {id:'kongzijiayu', name:'《孔子家语》', cls:'ru'},
+          {id:'hanfeizi', name:'《韩非子》', cls:'fa'},
+          {id:'shangjunshu', name:'《商君书》', cls:'fa'},
+          {id:'guanzi', name:'《管子》', cls:'fa'},
+          {id:'shenzi', name:'《慎子》', cls:'fa'},
+          {id:'shenzi', name:'《申子》', cls:'fa'},
+          {id:'mozi', name:'《墨子》', cls:'mo'},
+          {id:'sunzi', name:'《孙子兵法》', cls:'bing'},
+          {id:'wuzi', name:'《吴子》', cls:'bing'},
+          {id:'sima', name:'《司马法》', cls:'bing'},
+          {id:'liutao', name:'《六韬》', cls:'bing'},
+          {id:'sanlue', name:'《三略》', cls:'bing'},
+          {id:'weiliaozi', name:'《尉缭子》', cls:'bing'},
+          {id:'sanshiliuji', name:'《三十六计》', cls:'bing'},
+          {id:'gongsunlongzi', name:'《公孙龙子》', cls:'ming'},
+          {id:'guiguzi', name:'《鬼谷子》', cls:'zongheng'},
+          {id:'lushichunqiu', name:'《吕氏春秋》', cls:'zajia'},
+          {id:'huainanzi', name:'《淮南子》', cls:'zajia'},
+          {id:'lunheng', name:'《论衡》', cls:'zajia'},
+          {id:'shishuoxinyu', name:'《世说新语》', cls:'xiaoshuo'},
+          {id:'qiminyaoshu', name:'《齐民要术》', cls:'nong'},
+          {id:'chajing', name:'《茶经》', cls:'nong'},
+          {id:'jiuzhang', name:'《九章算术》', cls:'shu'},
+          {id:'zhoubi', name:'《周髀算经》', cls:'shu'},
+          {id:'yanjiashixun', name:'《颜氏家训》', cls:'ru'},
+          {id:'yanshijiaxun', name:'《朱子语类》', cls:'ru'}
+        ],
+        daoti: [
+          {id:'dao', name:'道', cls:'concept'},
+          {id:'de', name:'德', cls:'concept'},
+          {id:'ren', name:'仁', cls:'concept'},
+          {id:'yi', name:'义', cls:'concept'},
+          {id:'li', name:'礼', cls:'concept'},
+          {id:'fa', name:'法', cls:'concept'},
+          {id:'shu', name:'术', cls:'concept'},
+          {id:'shi', name:'势', cls:'concept'},
+          {id:'xing', name:'性', cls:'concept'},
+          {id:'xin', name:'心', cls:'concept'},
+          {id:'tian', name:'天', cls:'concept'},
+          {id:'ming', name:'命', cls:'concept'},
+          {id:'li2', name:'理', cls:'concept'},
+          {id:'qi', name:'气', cls:'concept'},
+          {id:'wuji', name:'无极', cls:'concept'},
+          {id:'taiji', name:'太极', cls:'concept'},
+          {id:'yin', name:'阴', cls:'concept'},
+          {id:'yang', name:'阳', cls:'concept'},
+          {id:'wuwei', name:'无为', cls:'concept'},
+          {id:'ziran', name:'自然', cls:'concept'}
+        ],
+        categories: [
+          {id:'yinyang', name:'阴阳', cls:'concept'},
+          {id:'wuxing', name:'五行', cls:'concept'},
+          {id:'mingshi', name:'名实', cls:'concept'},
+          {id:'tianren', name:'天人', cls:'concept'},
+          {id:'yili', name:'义利', cls:'concept'},
+          {id:'wangba', name:'王霸', cls:'concept'},
+          {id:'lifa', name:'礼法', cls:'concept'},
+          {id:'zhixing', name:'知行', cls:'concept'},
+          {id:'xinxing', name:'心性', cls:'concept'},
+          {id:'liqi', name:'理气', cls:'concept'},
+          {id:'tiyong', name:'体用', cls:'concept'},
+          {id:'benmo', name:'本末', cls:'concept'},
+          {id:'dongjing', name:'动静', cls:'concept'},
+          {id:'changbian', name:'常变', cls:'concept'},
+          {id:'xingqing', name:'性情', cls:'concept'},
+          {id:'daqi', name:'道器', cls:'concept'},
+          {id:'youwu', name:'有无', cls:'concept'},
+          {id:'neisheng', name:'内圣外王', cls:'concept'}
+        ]
+      }
+    };
+
+    // ========== 渲染统计 ==========
+    const s = ZC.stats;
+    const statMap = [
+      [s.schools,'流派 (School)'],
+      [s.books.toLocaleString(),'典籍 (Work)'],
+      [s.persons,'人物 (Person)'],
+      [s.daoti,'道体 (Daoti)'],
+      [s.categories,'范畴 (Category)'],
+      [s.classes,'类 (Class)'],
+      [s.objectProperties,'对象属性'],
+      [s.dataProperties,'数据属性'],
+      [s.triples.toLocaleString()+'+','三元组 (Triples)']
+    ];
+    document.getElementById('rdfStats').innerHTML = statMap.map(x=>`<div class="rdf-stat"><div class="num">${x[0]}</div><div class="lb">${x[1]}</div></div>`).join('');
+
+    // ========== Tabs ==========
+    document.querySelectorAll('#rdfTabs .tab').forEach(t=>{
+      t.addEventListener('click',()=>{
+        document.querySelectorAll('#rdfTabs .tab').forEach(x=>x.classList.remove('active'));
+        document.querySelectorAll('.tab-pane').forEach(x=>x.classList.remove('active'));
+        t.classList.add('active');
+        document.querySelector('.tab-pane[data-pane="'+t.dataset.tab+'"]').classList.add('active');
+      });
+    });
+
+    // ========== 渲染查询结果 ==========
+    const qBox = document.getElementById('queries');
+    ZC.queries.forEach(q=>{
+      const res = q.results || [];
+      const cols = res.length ? Object.keys(res[0]) : [];
+      const tbl = res.length ? `<table class="rdf-tbl"><thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>${
+        res.map(r=>`<tr>${cols.map(c=>{
+          const v=r[c]; const isnum=typeof v==='number';
+          return `<td class="${isnum?'num':''}">${v==null?'—':v}</td>`;
+        }).join('')}</tr>`).join('')
+      }</tbody></table>` : '<p style="color:var(--ink-3);font-size:13px;">（无结果）</p>';
+      const sp = q.sparql ? `<div class="sparql">${q.sparql.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>` : '';
+      const card = document.createElement('div');
+      card.className = 'query-card';
+      card.innerHTML = `<h3>${q.title}</h3><div class="q-desc">${q.desc||''}</div>${sp}${tbl}`;
+      qBox.appendChild(card);
+    });
+
+    // ========== 渲染类与属性表 ==========
+    function fillTbl(tbodyId, list, mapper){
+      const tb=document.getElementById(tbodyId);
+      list.forEach(x=>{
+        const tr=document.createElement('tr');
+        tr.innerHTML = mapper(x);
+        tb.appendChild(tr);
+      });
+    }
+    document.getElementById('clsCount').textContent = ZC.classes.length;
+    document.getElementById('opCount').textContent = ZC.objectProperties.length;
+    document.getElementById('dpCount').textContent = ZC.dataProperties.length;
+    
+    fillTbl('clsTbl', ZC.classes, c=>`<td><code>${c.id}</code></td><td>${c.labelZh}</td><td style="color:var(--ink-3);">${c.comment}</td><td><code style="font-size:11px;color:#395a77;">${c.align}</code></td>`);
+    fillTbl('opTbl', ZC.objectProperties, p=>`<td><code>zc:${p.id}</code></td><td>${p.labelZh}</td><td style="color:var(--ink-3);">${p.comment}</td><td style="font-size:11px;color:#5a7a4c;">${p.domain||'—'} → ${p.range||'—'}</td>`);
+    fillTbl('dpTbl', ZC.dataProperties, p=>`<td><code>zc:${p.id}</code></td><td>${p.labelZh}</td><td style="color:var(--ink-3);">${p.comment}</td><td><code style="font-size:11px;">${p.range}</code></td>`);
+
+    // ========== 渲染实体云 ==========
+    function cloud(elId, list){
+      const el=document.getElementById(elId);
+      if(!el) return;
+      el.innerHTML = list.map(x=>{
+        return `<a class="entity-chip ${x.cls||''}" ${x.id?`href="library.html#${x.id}"`:''}>${x.name}</a>`;
+      }).join('');
+    }
+    cloud('schoolCloud', ZC.entities.schools);
+    cloud('personCloud', ZC.entities.persons);
+    cloud('bookCloud', ZC.entities.books);
+    cloud('daotiCloud', ZC.entities.daoti);
+    cloud('categoryCloud', ZC.entities.categories);
+
+  })();
+  </script>
+
+</body>
+</html>
