@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>本体论 · RDF/OWL 知识图谱 | 子藏本体论</title>
-  <link rel="stylesheet" href="style/common.css">
+  <link rel="stylesheet" href="css/common.css">
   <style>
 .rdf-hero{background:linear-gradient(135deg,var(--zhu,#9c2a2a),var(--gold-deep,#b8860b)),url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22120%22 height=%22120%22><text x=%220%22 y=%2280%22 font-size=%2290%22 fill=%22rgba(255,255,255,.06)%22>子藏·诸子·百家</text></svg>');color:#fff;padding:52px 40px;border-radius:8px;margin:24px 0;position:relative;overflow:hidden;}
 .rdf-hero h1{font-size:40px;margin:0 0 12px;letter-spacing:4px;font-weight:600;}
@@ -98,7 +98,7 @@ table.rdf-tbl td.num{color:var(--zhu,#9c2a2a);font-weight:600;text-align:center;
 </head>
 <body>
   <!-- 顶部导航 -->
-  <nav class="top-nav"></nav>
+  <div id="siteNav"></div>
 
   <div class="container" style="max-width:1200px;margin:0 auto;padding:0 24px;padding-top:80px;">
     <div class="rdf-hero">
@@ -496,7 +496,7 @@ SELECT ?teacherName WHERE {<br>
     </div>
   </div>
 
-  <script src="data/common.js"></script>
+  <script src="css/common.js"></script>
   <script>
   (function(){
     // ========== 本体数据 ==========
@@ -921,5 +921,6 @@ SELECT ?teacherName WHERE {<br>
   })();
   </script>
 
+<div id="siteFooter"></div>
 </body>
 </html>

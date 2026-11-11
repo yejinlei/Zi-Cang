@@ -12,27 +12,27 @@
   /* 顶部工具条 */
   .toolbar {
     position:sticky; top:var(--nav-h,56px); z-index:90;
-    background:var(--bg-card); border-bottom:1px solid var(--border);
+    background:var(--paper); border-bottom:1px solid var(--border);
     padding:8px 20px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;
     backdrop-filter:blur(8px);
   }
-  .toolbar a.back { color:var(--text-sub); text-decoration:none; font-size:14px; }
+  .toolbar a.back { color:var(--ink-soft); text-decoration:none; font-size:14px; }
   .toolbar a.back:hover { color:var(--accent); }
-  .toolbar .title { font-family:"STKaiti","KaiTi",serif; font-size:18px; color:var(--text-title); font-weight:600; flex:1; min-width:120px; }
+  .toolbar .title { font-family:"STKaiti","KaiTi",serif; font-size:18px; color:var(--ink); font-weight:600; flex:1; min-width:120px; }
   .toolbar button {
-    background:transparent; border:1px solid var(--border); color:var(--text-sub);
+    background:transparent; border:1px solid var(--border); color:var(--ink-soft);
     border-radius:6px; padding:4px 10px; cursor:pointer; font-size:13px;
     transition:all .2s;
   }
   .toolbar button:hover { border-color:var(--accent); color:var(--accent); }
   .toolbar button.active { background:var(--accent); color:#fff; border-color:var(--accent); }
-  .vol-select { padding:4px 8px; border:1px solid var(--border); border-radius:6px; background:var(--bg-card); color:var(--text-main); font-size:13px; cursor:pointer; }
+  .vol-select { padding:4px 8px; border:1px solid var(--border); border-radius:6px; background:var(--paper); color:var(--ink); font-size:13px; cursor:pointer; }
   
   /* 正文区域 */
   .content-wrap { padding:30px 40px 60px; max-width:900px; margin:0 auto; position:relative; }
   .reading-content {
     font-family:"STKaiti","KaiTi","Noto Serif SC",serif;
-    font-size:18px; line-height:2; color:var(--text-main);
+    font-size:18px; line-height:2; color:var(--ink);
     white-space:pre-wrap; word-break:break-all;
     transition:font-size .2s;
   }
@@ -42,7 +42,7 @@
     padding:40px 20px; letter-spacing:2px;
   }
   /* 概念高亮 */
-  .concept { color:var(--accent); cursor:pointer; border-bottom:1px dashed var(--accent-light); }
+  .concept { color:var(--accent); cursor:pointer; border-bottom:1px dashed var(--bg-soft); }
   .concept:hover { background:rgba(196,76,58,.08); }
   
   /* 加载动画 */
@@ -56,12 +56,12 @@
     width:48px; height:48px; border:3px solid var(--border); border-top-color:var(--accent);
     border-radius:50%; animation:spin 0.8s linear infinite;
   }
-  .loading-text { color:var(--text-sub); font-size:14px; font-family:"STKaiti",serif; }
+  .loading-text { color:var(--ink-soft); font-size:14px; font-family:"STKaiti",serif; }
   .loading-progress {
     width:240px; height:4px; background:var(--border); border-radius:2px; overflow:hidden;
   }
   .loading-bar {
-    height:100%; background:linear-gradient(90deg,var(--accent-light),var(--accent));
+    height:100%; background:linear-gradient(90deg,var(--bg-soft),var(--accent));
     width:0%; border-radius:2px; transition:width .3s;
     animation:pulse 1.5s infinite;
   }
@@ -74,8 +74,8 @@
     padding:80px 40px; text-align:center; gap:16px;
   }
   .error-page .err-icon { font-size:64px; opacity:.4; }
-  .error-page .err-title { font-family:"STKaiti",serif; font-size:24px; color:var(--text-title); }
-  .error-page .err-desc { color:var(--text-sub); font-size:14px; max-width:500px; line-height:1.8; }
+  .error-page .err-title { font-family:"STKaiti",serif; font-size:24px; color:var(--ink); }
+  .error-page .err-desc { color:var(--ink-soft); font-size:14px; max-width:500px; line-height:1.8; }
   .error-page .err-actions { display:flex; gap:12px; margin-top:12px; }
   .error-page .err-btn {
     padding:8px 20px; border:1px solid var(--accent); color:var(--accent);
@@ -86,15 +86,15 @@
   
   /* 元信息条 */
   .book-meta {
-    padding:20px 40px; border-bottom:1px solid var(--border-light);
-    background:var(--bg-card);
+    padding:20px 40px; border-bottom:1px solid var(--border);
+    background:var(--paper);
     display:flex; align-items:center; gap:20px; flex-wrap:wrap;
   }
   .book-meta .book-title {
     font-family:"STKaiti","KaiTi",serif; font-size:28px; font-weight:700;
-    color:var(--text-title);
+    color:var(--ink);
   }
-  .book-meta .book-info { color:var(--text-sub); font-size:13px; }
+  .book-meta .book-info { color:var(--ink-soft); font-size:13px; }
   .book-meta .book-info span { margin-right:12px; }
   .book-meta .cat-badge {
     background:var(--accent); color:#fff; padding:2px 10px; border-radius:4px;
@@ -113,26 +113,7 @@
 </head>
 <body>
 <!-- 顶部导航 -->
-<nav class="navbar" id="navbar">
-  <div class="nav-inner">
-    <a href="index.html" class="logo">☰ 子藏本體 · Zi-Cang Ontology</a>
-    <ul class="nav-links">
-      <li><a href="index.html">首頁</a></li>
-      <li><a href="library.html">全文庫</a></li>
-      <li><a href="ontology.html">本體論</a></li>
-      <li class="nav-item">
-        <button class="nav-dropbtn" onclick="toggleThemeMenu(event)">✦ 主題</button>
-        <div class="theme-dropdown" id="themeDropdown">
-          <div class="theme-item active" data-theme="paper" onclick="setTheme('paper')"><span class="theme-dot" style="background:#f5f0e1"></span>宣紙古籍<span class="check">●</span></div>
-          <div class="theme-item" data-theme="ink" onclick="setTheme('ink')"><span class="theme-dot" style="background:#2c2c2c"></span>水墨山水<span class="check"></span></div>
-          <div class="theme-item" data-theme="bamboo" onclick="setTheme('bamboo')"><span class="theme-dot" style="background:#c4a882"></span>竹簡漢簡<span class="check"></span></div>
-          <div class="theme-item" data-theme="bronze" onclick="setTheme('bronze')"><span class="theme-dot" style="background:#8b5a2b"></span>青銅吉金<span class="check"></span></div>
-          <div class="theme-item" data-theme="star" onclick="setTheme('star')"><span class="theme-dot" style="background:#0a0e27"></span>星象羅盤<span class="check"></span></div>
-        </div>
-      </li>
-    </ul>
-  </div>
-</nav>
+<div id="siteNav"></div>
 
 <div id="main">
   <!-- 加载动画 -->
@@ -181,12 +162,9 @@
   </div>
 </div>
 
-<footer>
-  <div><strong>子藏本體論 (Zi-Cang Ontology)</strong></div>
-  <div>參考佛藏本體/儒藏本體/易經本體而建 · 文本來源殆知閣 · CC BY-SA 4.0</div>
-</footer>
+<div id="siteFooter"></div>
 
-<script src="js/common.js"></script>
+<script src="css/common.js"></script>
 <script>
 // ===== 子学核心概念高亮
 const CONCEPTS = ["道","德","仁","義","禮","智","信","法","術","勢","刑","名","陰陽","五行",

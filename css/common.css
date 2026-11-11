@@ -1,0 +1,317 @@
+/* ===== 子藏本体论 · 全局通用样式 ===== */
+
+/* ---- 5 套主题 CSS 变量 ---- */
+:root {
+  --bg: #F5ECD7;
+  --bg-soft: #EDE3C8;
+  --paper: #FBF6E4;
+  --ink: #2C1810;
+  --ink-soft: #5C4033;
+  --accent: #8B2500;
+  --accent-soft: #C0522F;
+  --gold: #B8860B;
+  --border: #C9B896;
+  --shadow: rgba(139,37,0,0.12);
+}
+[data-theme="ink"] {
+  --bg: #e8ece4; --bg-soft: #d9e0d3; --paper: #f2f5ee;
+  --ink: #1a2f26; --ink-soft: #3a5548;
+  --accent: #1a3a2e; --accent-soft: #2d5c48;
+  --gold: #6b5e3a; --border: #b5c2ac; --shadow: rgba(26,58,46,0.12);
+}
+[data-theme="bamboo"] {
+  --bg: #e8dcc8; --bg-soft: #d9ccb3; --paper: #f0e9da;
+  --ink: #3a2610; --ink-soft: #6b4a28;
+  --accent: #5d2d0c; --accent-soft: #8a4a20;
+  --gold: #a67c3d; --border: #c4b090; --shadow: rgba(93,45,12,0.12);
+}
+[data-theme="bronze"] {
+  --bg: #d8d3c0; --bg-soft: #c9c3ac; --paper: #e7e3d4;
+  --ink: #1f2a22; --ink-soft: #3f4a42;
+  --accent: #3d5a45; --accent-soft: #5b7a62;
+  --gold: #8b7440; --border: #a8a38c; --shadow: rgba(61,90,69,0.12);
+}
+[data-theme="star"] {
+  --bg: #e4dfec; --bg-soft: #d3cde0; --paper: #eeeaf3;
+  --ink: #2a2240; --ink-soft: #4a4060;
+  --accent: #4a3c6e; --accent-soft: #6b5a90;
+  --gold: #8a7a40; --border: #b0a8c4; --shadow: rgba(74,60,110,0.12);
+}
+
+/* ---- 基础 reset ---- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: "Noto Serif SC", "Songti SC", "STSong", "SimSun", Georgia, serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.8;
+  font-size: 16px;
+  min-height: 100vh;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--accent-soft); text-decoration: underline; }
+img { max-width: 100%; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+input, select, textarea { font-family: inherit; font-size: 15px; }
+
+/* ---- 顶部导航 ---- */
+.site-nav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--paper);
+  border-bottom: 2px solid var(--border);
+  box-shadow: 0 2px 12px var(--shadow);
+}
+.nav-inner {
+  max-width: 1280px; margin: 0 auto;
+  display: flex; align-items: center; gap: 16px;
+  padding: 12px 28px;
+}
+.nav-brand {
+  display: flex; align-items: center; gap: 10px;
+  color: var(--ink); text-decoration: none;
+  font-size: 20px; font-weight: 700;
+}
+.nav-brand:hover { text-decoration: none; color: var(--accent); }
+.brand-char {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 38px; height: 38px;
+  background: var(--accent); color: var(--paper);
+  border-radius: 8px;
+  font-size: 22px; font-weight: 900;
+  box-shadow: 0 2px 6px var(--shadow);
+}
+.brand-text { letter-spacing: 1px; }
+.nav-links {
+  display: flex; align-items: center; gap: 6px;
+  margin-left: 20px; flex: 1;
+}
+.nav-link {
+  padding: 8px 16px; border-radius: 8px;
+  color: var(--ink-soft); font-weight: 500;
+  text-decoration: none; transition: all .2s;
+  position: relative;
+}
+.nav-link:hover { background: var(--bg-soft); color: var(--accent); text-decoration: none; }
+.nav-link.active {
+  color: var(--accent); font-weight: 700;
+}
+.nav-link.active::after {
+  content: ''; position: absolute; left: 20%; right: 20%; bottom: 2px;
+  height: 3px; background: var(--accent); border-radius: 2px;
+}
+
+/* ---- 主题切换器 ---- */
+.theme-switcher { position: relative; }
+.theme-btn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 18px;
+  background: var(--bg);
+  border: 1.5px solid var(--gold);
+  border-radius: 999px;
+  color: var(--ink); font-weight: 600;
+  cursor: pointer; transition: all .2s;
+  position: relative;
+}
+.theme-btn::before {
+  content: ''; position: absolute;
+  top: -1.5px; left: 20%; right: 20%; height: 4px;
+  background: var(--accent); border-radius: 2px;
+  opacity: 0;
+}
+.theme-btn:hover { background: var(--bg-soft); }
+.theme-switcher:hover .theme-btn::before,
+.theme-btn[aria-open="true"]::before { opacity: 1; }
+.theme-ico { color: var(--ink); font-size: 18px; }
+.theme-btn-txt { letter-spacing: 2px; }
+.theme-arrow { font-size: 11px; opacity: .7; transition: transform .2s; }
+.theme-switcher:hover .theme-arrow { transform: rotate(180deg); }
+
+.theme-panel {
+  position: absolute; right: 0; top: calc(100% + 8px);
+  min-width: 260px;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 8px 30px var(--shadow);
+  padding: 10px; z-index: 200;
+}
+.theme-panel-title {
+  font-size: 12px; color: var(--ink-soft);
+  padding: 6px 10px 8px; letter-spacing: 2px;
+  border-bottom: 1px dashed var(--border);
+  margin-bottom: 6px;
+}
+.theme-option {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 8px;
+  cursor: pointer; transition: background .15s;
+}
+.theme-option:hover { background: var(--bg-soft); }
+.theme-option.active { background: var(--bg-soft); }
+.theme-dot {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.5);
+  box-shadow: 0 1px 3px rgba(0,0,0,.2);
+}
+.theme-name { font-weight: 700; color: var(--ink); }
+.theme-desc { font-size: 12px; color: var(--ink-soft); margin-left: auto; }
+.theme-option.active::after {
+  content: '●'; color: var(--accent); font-size: 10px; margin-left: 4px;
+}
+
+/* ---- 页脚 ---- */
+.site-footer {
+  margin-top: 80px;
+  background: var(--bg-soft);
+  border-top: 2px solid var(--border);
+  padding: 40px 0 0;
+}
+.footer-inner {
+  max-width: 1280px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+  gap: 32px; padding: 0 28px 32px;
+}
+.footer-title {
+  font-size: 16px; font-weight: 700;
+  color: var(--accent); margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.footer-desc {
+  font-size: 13px; color: var(--ink-soft);
+  line-height: 1.7;
+}
+.footer-desc a { color: var(--accent); }
+.footer-bottom {
+  text-align: center;
+  padding: 14px 28px;
+  border-top: 1px solid var(--border);
+  font-size: 13px; color: var(--ink-soft);
+  letter-spacing: 1px;
+}
+
+/* ---- 通用容器 ---- */
+.container {
+  max-width: 1280px; margin: 0 auto; padding: 32px 28px;
+}
+.page-title {
+  font-size: 32px; font-weight: 900;
+  color: var(--ink);
+  margin: 20px 0 8px;
+  letter-spacing: 4px;
+}
+.page-subtitle {
+  color: var(--ink-soft); font-size: 15px;
+  margin-bottom: 28px; letter-spacing: 1px;
+}
+.section-title {
+  font-size: 22px; font-weight: 800;
+  color: var(--accent);
+  margin: 36px 0 16px;
+  padding-left: 12px;
+  border-left: 4px solid var(--accent);
+  letter-spacing: 2px;
+}
+
+/* ---- 卡片通用 ---- */
+.card {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px var(--shadow);
+  transition: transform .2s, box-shadow .2s;
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px var(--shadow);
+}
+
+/* ---- 按钮 ---- */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 10px 20px;
+  background: var(--accent); color: var(--paper);
+  border-radius: 8px; font-weight: 600;
+  cursor: pointer; transition: all .2s;
+  text-decoration: none;
+}
+.btn:hover { background: var(--accent-soft); color: var(--paper); text-decoration: none; }
+.btn-ghost {
+  background: transparent; color: var(--accent);
+  border: 1.5px solid var(--accent);
+}
+.btn-ghost:hover { background: var(--accent); color: var(--paper); }
+
+/* ---- KPI 统计数字卡片 ---- */
+.kpi-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr));
+  gap: 16px; margin: 24px 0;
+}
+.kpi {
+  background: var(--paper); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px;
+  text-align: center;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+.kpi-num {
+  font-size: 28px; font-weight: 900;
+  color: var(--accent); letter-spacing: 1px;
+}
+.kpi-label {
+  font-size: 13px; color: var(--ink-soft);
+  margin-top: 4px; letter-spacing: 1px;
+}
+
+/* ---- 标签 ---- */
+.tag {
+  display: inline-block;
+  padding: 3px 10px;
+  background: var(--bg-soft);
+  color: var(--accent);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 13px; margin: 2px;
+}
+
+/* ---- 加载动画 ---- */
+.loader {
+  display: inline-block;
+  width: 32px; height: 32px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-box {
+  text-align: center; padding: 60px 20px;
+  color: var(--ink-soft);
+}
+.loading-box .loader { display: block; margin: 0 auto 16px; }
+
+/* ---- 错误页 ---- */
+.error-box {
+  text-align: center; padding: 80px 20px;
+}
+.error-code {
+  font-size: 64px; font-weight: 900;
+  color: var(--accent); opacity: .4;
+  letter-spacing: 4px;
+}
+.error-msg { font-size: 18px; color: var(--ink); margin: 12px 0; }
+.error-detail { font-size: 13px; color: var(--ink-soft); margin-bottom: 24px; }
+
+/* ---- 响应式 ---- */
+@media (max-width: 860px) {
+  .nav-inner { padding: 10px 16px; flex-wrap: wrap; }
+  .brand-text { display: none; }
+  .nav-links { margin-left: 8px; overflow-x: auto; }
+  .nav-link { padding: 6px 10px; font-size: 14px; }
+  .theme-btn-txt { display: none; }
+  .container { padding: 20px 16px; }
+  .page-title { font-size: 24px; }
+}
+
+/* 主容器避免被导航压住 */
+.lib-wrap, .reader-wrap, .onto-wrap, .index-hero { margin-top: 8px; }

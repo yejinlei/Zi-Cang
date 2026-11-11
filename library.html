@@ -7,14 +7,14 @@
 <link rel="stylesheet" href="css/common.css">
 <style>
   .lib-wrap { max-width:1200px; margin:0 auto; padding:24px 20px 60px; }
-  .lib-title { font-family:"STKaiti","KaiTi",serif; font-size:32px; color:var(--text-title); margin-bottom:6px; }
-  .lib-sub { color:var(--text-sub); font-size:14px; margin-bottom:24px; }
+  .lib-title { font-family:"STKaiti","KaiTi",serif; font-size:32px; color:var(--ink); margin-bottom:6px; }
+  .lib-sub { color:var(--ink-soft); font-size:14px; margin-bottom:24px; }
   
   /* 检索区 */
   .lib-tools { display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap; align-items:center; }
   .lib-search {
     flex:1; min-width:240px; padding:10px 16px; border:1px solid var(--border); border-radius:10px;
-    background:var(--bg-card); color:var(--text-main); font-size:15px; outline:none;
+    background:var(--paper); color:var(--ink); font-size:15px; outline:none;
     transition:border-color .2s;
   }
   .lib-search:focus { border-color:var(--accent); }
@@ -23,7 +23,7 @@
   .cat-tabs { display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; }
   .cat-tab {
     padding:8px 18px; border:1px solid var(--border); border-radius:999px; cursor:pointer;
-    background:var(--bg-card); color:var(--text-sub); font-size:14px; transition:all .2s;
+    background:var(--paper); color:var(--ink-soft); font-size:14px; transition:all .2s;
     font-family:"STKaiti",serif;
   }
   .cat-tab:hover { border-color:var(--accent); color:var(--accent); }
@@ -34,21 +34,21 @@
   .book-list { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:10px; }
   .book-item {
     display:flex; align-items:center; gap:10px; padding:12px 16px;
-    background:var(--bg-card); border:1px solid var(--border); border-radius:10px;
-    text-decoration:none; color:var(--text-main); transition:all .2s; cursor:pointer;
+    background:var(--paper); border:1px solid var(--border); border-radius:10px;
+    text-decoration:none; color:var(--ink); transition:all .2s; cursor:pointer;
   }
   .book-item:hover { border-color:var(--accent); transform:translateY(-1px); box-shadow:0 4px 16px var(--shadow); }
   .book-cat {
     display:inline-block; padding:2px 8px; border-radius:4px; font-size:11px;
-    background:var(--accent-light); color:var(--accent); white-space:nowrap;
+    background:var(--bg-soft); color:var(--accent); white-space:nowrap;
     font-family:"STSong",serif; min-width:32px; text-align:center;
   }
   .book-name {
-    flex:1; font-size:14px; color:var(--text-title); overflow:hidden;
+    flex:1; font-size:14px; color:var(--ink); overflow:hidden;
     text-overflow:ellipsis; white-space:nowrap; font-family:"STKaiti",serif;
   }
-  .book-vol { color:var(--text-sub); font-size:12px; }
-  .book-chars { color:var(--text-sub); font-size:12px; white-space:nowrap; }
+  .book-vol { color:var(--ink-soft); font-size:12px; }
+  .book-chars { color:var(--ink-soft); font-size:12px; white-space:nowrap; }
   
   /* 分页加载 */
   .load-more {
@@ -60,14 +60,14 @@
   
   /* 统计 */
   .stat-bar {
-    padding:12px 16px; background:var(--bg-card); border-radius:10px; margin-bottom:16px;
-    display:flex; gap:20px; color:var(--text-sub); font-size:13px; flex-wrap:wrap;
-    border:1px solid var(--border-light);
+    padding:12px 16px; background:var(--paper); border-radius:10px; margin-bottom:16px;
+    display:flex; gap:20px; color:var(--ink-soft); font-size:13px; flex-wrap:wrap;
+    border:1px solid var(--border);
   }
-  .stat-bar strong { color:var(--text-title); font-size:18px; font-family:"STKaiti",serif; margin-right:4px; }
+  .stat-bar strong { color:var(--ink); font-size:18px; font-family:"STKaiti",serif; margin-right:4px; }
   
   /* 空状态 */
-  .empty { text-align:center; padding:60px 20px; color:var(--text-sub); }
+  .empty { text-align:center; padding:60px 20px; color:var(--ink-soft); }
   
   @media (max-width:768px){
     .lib-title { font-size:24px; }
@@ -76,26 +76,7 @@
 </style>
 </head>
 <body>
-<nav class="navbar" id="navbar">
-  <div class="nav-inner">
-    <a href="index.html" class="logo">☰ 子藏本體 · Zi-Cang Ontology</a>
-    <ul class="nav-links">
-      <li><a href="index.html">首頁</a></li>
-      <li><a href="library.html" style="color:var(--accent)">全文庫</a></li>
-      <li><a href="ontology.html">本體論</a></li>
-      <li class="nav-item">
-        <button class="nav-dropbtn" onclick="toggleThemeMenu(event)">✦ 主題</button>
-        <div class="theme-dropdown" id="themeDropdown">
-          <div class="theme-item active" data-theme="paper" onclick="setTheme('paper')"><span class="theme-dot" style="background:#f5f0e1"></span>宣紙古籍<span class="check">●</span></div>
-          <div class="theme-item" data-theme="ink" onclick="setTheme('ink')"><span class="theme-dot" style="background:#2c2c2c"></span>水墨山水<span class="check"></span></div>
-          <div class="theme-item" data-theme="bamboo" onclick="setTheme('bamboo')"><span class="theme-dot" style="background:#c4a882"></span>竹簡漢簡<span class="check"></span></div>
-          <div class="theme-item" data-theme="bronze" onclick="setTheme('bronze')"><span class="theme-dot" style="background:#8b5a2b"></span>青銅吉金<span class="check"></span></div>
-          <div class="theme-item" data-theme="star" onclick="setTheme('star')"><span class="theme-dot" style="background:#0a0e27"></span>星象羅盤<span class="check"></span></div>
-        </div>
-      </li>
-    </ul>
-  </div>
-</nav>
+<div id="siteNav"></div>
 
 <div class="lib-wrap">
   <h1 class="lib-title">📚 子部全文庫</h1>
@@ -113,12 +94,9 @@
   <button class="load-more" id="loadMore" style="display:none" onclick="loadMore()">加載更多 ▾</button>
 </div>
 
-<footer>
-  <div><strong>子藏本體論 (Zi-Cang Ontology)</strong></div>
-  <div>參考佛藏本體/儒藏本體/易經本體而建 · 文本來源殆知閣 · CC BY-SA 4.0</div>
-</footer>
+<div id="siteFooter"></div>
 
-<script src="js/common.js"></script>
+<script src="css/common.js"></script>
 <script>
 let ALL_BOOKS = [];
 const CAT_ORDER = ['all','诸子','兵家','法家','农家','算学','笔记','类书'];
