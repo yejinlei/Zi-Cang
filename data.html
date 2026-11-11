@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>數據下載 · 子藏本體論 Zi-Cang</title>
+<link rel="stylesheet" href="css/common.css">
+<style>
+  :root{--ink:#2c1810;--sub:#6b4423;--paper:#f5ecd7;--card:#faf4e3;--border:#d4b896;--gold:#8b2500;--accent:#a0522d}
+  .data-hero{padding:48px 28px 24px;text-align:center;max-width:900px;margin:0 auto}
+  .data-hero h1{font-size:2.2em;margin:0 0 10px;color:var(--ink)}
+  .data-hero p{color:var(--sub);line-height:1.8;margin:0 0 8px}
+  .stat-row{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin:28px 0 12px}
+  .stat{min-width:120px;text-align:center}
+  .stat-n{font-size:2em;font-weight:700;color:var(--gold);line-height:1}
+  .stat-l{font-size:.88em;color:var(--sub);margin-top:4px}
+  .dl-grid{max-width:1100px;margin:24px auto 60px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;padding:0 28px}
+  .dl-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;transition:all .2s}
+  .dl-card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 6px 20px rgba(139,37,0,.08)}
+  .dl-card .ico{font-size:2.2em;margin-bottom:8px}
+  .dl-card h3{margin:0 0 8px;font-size:1.15em;color:var(--ink)}
+  .dl-card p{margin:0 0 14px;color:var(--sub);font-size:.92em;line-height:1.7}
+  .dl-meta{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;font-size:.82em;color:var(--sub)}
+  .dl-meta span{padding:2px 8px;background:rgba(139,37,0,.08);border-radius:4px}
+  .dl-btns{display:flex;gap:8px;flex-wrap:wrap}
+  .dl-btn{padding:7px 14px;border-radius:6px;border:1px solid var(--gold);background:var(--gold);color:var(--paper);cursor:pointer;font-family:inherit;font-size:.9em;transition:all .15s;text-decoration:none;display:inline-block}
+  .dl-btn.alt{background:transparent;color:var(--gold)}
+  .dl-btn:hover{opacity:.88}
+  .license-box{max-width:900px;margin:0 auto 40px;padding:22px 28px;background:var(--card);border-left:4px solid var(--gold);border-radius:8px}
+  .license-box h3{margin:0 0 8px;color:var(--gold)}
+  .license-box p{color:var(--sub);margin:0;line-height:1.8;font-size:.94em}
+  .preview-box{max-width:1100px;margin:0 auto 40px;padding:0 28px}
+  .preview-box h2{font-size:1.4em;margin:0 0 14px;color:var(--ink)}
+  .code-block{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;overflow:auto;max-height:400px;font-family:monospace;font-size:.82em;line-height:1.6;color:var(--ink);white-space:pre}
+  .tabs{display:flex;gap:4px;margin-bottom:10px;flex-wrap:wrap}
+  .tab{padding:6px 14px;border-radius:6px 6px 0 0;background:var(--paper);border:1px solid var(--border);border-bottom:none;color:var(--sub);cursor:pointer;font-family:inherit;font-size:.9em}
+  .tab.on{background:var(--card);color:var(--ink);font-weight:600}
+</style>
+</head>
+<body>
+<div id="siteNav"></div>
+<div class="page-wrap">
+<section class="data-hero">
+  <h1>💾 開放數據下載</h1>
+  <p>子藏本體論全部本體、實例、書目與文本以 CC BY-SA 4.0 開放授權發布，<br>支持學術研究、知識圖譜構建、NLP語料、教學使用與商業衍生。</p>
+  <div class="stat-row" id="statRow">
+    <div class="stat"><div class="stat-n">12</div><div class="stat-l">諸子流派</div></div>
+    <div class="stat"><div class="stat-n">27</div><div class="stat-l">核心人物</div></div>
+    <div class="stat"><div class="stat-n">12</div><div class="stat-l">百家爭鳴</div></div>
+    <div class="stat"><div class="stat-n">1201</div><div class="stat-l">文本文件</div></div>
+    <div class="stat"><div class="stat-n">1157</div><div class="stat-l">典籍</div></div>
+    <div class="stat"><div class="stat-n">2.06亿</div><div class="stat-l">字</div></div>
+  </div>
+</section>
+
+<div class="dl-grid" id="dlGrid"></div>
+
+<div class="preview-box">
+  <h2>📄 數據預覽</h2>
+  <div class="tabs" id="prevTabs">
+    <button class="tab on" data-fmt="jsonld">JSON-LD</button>
+    <button class="tab" data-fmt="turtle">Turtle</button>
+    <button class="tab" data-fmt="csv">人物CSV</button>
+  </div>
+  <div class="code-block" id="preview">載入中…</div>
+</div>
+
+<div class="license-box">
+  <h3>◉ CC BY-SA 4.0 授權說明</h3>
+  <p>您可以自由地共享（複製、分發、傳輸）和修改本項目之作品（本體Schema、三元組實例、書目元數據），惟需遵守以下條件：<strong>署名</strong>—必須註明出處（「子藏本體論 Zi-Cang Ontology, https://yejinlei.github.io/Zi-Cang/」）；<strong>相同方式共享</strong>—若您改變、轉變或基於本作品進行創作，必須基於相同或相似的授權協議分發衍生作品。原始典籍文本來自殆知閣開放古籍文本庫。</p>
+</div>
+</div>
+<div id="siteFooter"></div>
+
+<script src="js/common.js"></script>
+<script>
+injectLayout('data');
+
+const FILES=[
+  {ico:'⬡',title:'子藏核心本體 ZCore',desc:'六個頂級類（Work/Expression/Person/Event/Concept/Place），70個屬性，對齊CIDOC CRM、BIBFRAME、FOAF、SKOS。',meta:['OWL/RDFS','~6KB','本體Schema'],
+   files:[{name:'zicang-core.ttl',gen:genTurtle,label:'Turtle'},{name:'zicang-core.jsonld',gen:genJSONLD,label:'JSON-LD'},{name:'zicang-schema.json',gen:genSchemaJSON,label:'JSON Schema'}]},
+  {ico:'👥',title:'諸子人物實例',desc:'27位核心諸子人物：老子、孔子、墨子、孟子、莊子、荀子、韓非子、公孫龍、鬼谷子、孫武、朱喜、王陽明等。含生卒年、國別、師承、著作。',meta:['人物實例','~9KB','含師承網絡'],
+   files:[{name:'persons.json',gen:genPersonsJSON,label:'JSON'},{name:'persons.ttl',gen:genPersonsTTL,label:'Turtle'},{name:'persons.csv',gen:genPersonsCSV,label:'CSV'}]},
+  {ico:'☯',title:'九流十二家流派',desc:'儒、道、墨、法、名、陰陽、縱橫、雜、農、小說、兵、醫十二流派的始祖、核心主張、核心概念、代表典籍。',meta:['流派','~2KB','含概念歸屬'],
+   files:[{name:'schools.json',gen:genSchoolsJSON,label:'JSON'},{name:'schools.ttl',gen:genSchoolsTTL,label:'Turtle'}]},
+  {ico:'✕',title:'百家爭鳴論戰',desc:'12場核心論辯：儒墨之辯、儒道之辯、濠梁魚樂、白馬非馬、堅白之辯、性善性惡、王霸之辯等。含辯方、議題、文獻出處。',meta:['事件','~3KB','爭鳴關係'],
+   files:[{name:'debates.json',gen:genDebatesJSON,label:'JSON'},{name:'debates.ttl',gen:genDebatesTTL,label:'Turtle'}]},
+  {ico:'📚',title:'子藏書目索引',desc:'1157部典籍的完整元數據：分類、書名、字數、是否多卷本、文件名。可用於構建書目檢索系統。',meta:['書目','~120KB','1157部'],
+   files:[{name:'books.json',url:'data/books.json',label:'JSON'}]},
+  {ico:'🗂',title:'完整本體包',desc:'將以上所有文件打包為zip，含README說明與SPARQL查詢示例。',meta:['ZIP','一次性下載'],
+   files:[{name:'zicang-ontology-bundle.zip',gen:genBundle,label:'ZIP打包',isBig:true}]},
+  {ico:'📜',title:'全文文本庫',desc:'子藏七分部類共計1201個txt文件，UTF-8編碼，約2.06億字。文件體積較大，請按需從GitHub倉庫克隆。',meta:['全文','~500MB（子藏）','1201文件'],
+   files:[{name:'github-repo',url:'https://github.com/yejinlei/Zi-Cang',label:'GitHub倉庫',ext:true}]},
+  {ico:'🔗',title:'本體對齊映射',desc:'ZCore核心類/屬性與CIDOC CRM(E5/E7/E21/E73/E89)、BIBFRAME(Work/Instance/Item)、FOAF(Person/Agent)、Wikidata(Q項)、CBDB人物ID的對齊映射表。',meta:['映射','互聯數據'],
+   files:[{name:'alignments.json',gen:genAlignments,label:'JSON'}]}
+];
+
+const NS='https://yejinlei.github.io/Zi-Cang/ontology#';
+function dl(name,content,type='text/plain'){const blob=new Blob([content],{type});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();URL.revokeObjectURL(a.href);}
+function toast(m){const t=document.createElement('div');t.style.cssText='position:fixed;bottom:40px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 22px;border-radius:8px;z-index:100;opacity:.95;font-size:.94em';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),1800);}
+
+function buildCards(){
+  document.getElementById('dlGrid').innerHTML=FILES.map((f,i)=>`
+    <div class="dl-card">
+      <div class="ico">${f.ico}</div>
+      <h3>${f.title}</h3>
+      <p>${f.desc}</p>
+      <div class="dl-meta">${f.meta.map(m=>`<span>${m}</span>`).join('')}</div>
+      <div class="dl-btns">
+        ${f.files.map(ff=>`<button class="dl-btn ${ff.isBig||ff.ext?'alt':''}" data-i="${i}" data-f="${ff.name}" data-label="${ff.label}" ${ff.url?`data-url="${ff.url}"`:''}>⬇ ${ff.label}</button>`).join('')}
+      </div>
+    </div>`).join('');
+  document.querySelectorAll('.dl-btn').forEach(b=>{
+    b.onclick=()=>{
+      const i=+b.dataset.i; const fn=b.dataset.f; const url=b.dataset.url;
+      if(url){window.open(url,'_blank');return;}
+      const file=FILES[i].files.find(x=>x.name===fn);
+      if(!file) return;
+      toast('正在生成 '+fn+'…');
+      setTimeout(()=>{const content=file.gen();dl(fn,content,fn.endsWith('.json')||fn.endsWith('.jsonld')?'application/json':fn.endsWith('.ttl')?'text/turtle':'text/csv');},50);
+    };
+  });
+}
+
+// ====== Data Generators ======
+let INST=null;
+async function loadInst(){if(!INST){const r=await fetch('data/instances.json');INST=await r.json();}return INST;}
+
+function genSchemaJSON(){
+  return JSON.stringify({
+    "$schema":"http://json-schema.org/draft-07/schema#",
+    "title":"Zi-Cang Ontology Schema",
+    "classes":["zicang:Work","zicang:Person","zicang:Event","zicang:Concept","zicang:Place","zicang:School"],
+    "properties":["zicang:author","zicang:masterOf","zicang:studentOf","zicang:belongsToSchool","zicang:participatesInDebate","zicang:workOf","zicang:arguesWith","zicang:bornIn","zicang:bornYear","zicang:diedYear"],
+    "namespaces":{"zicang":NS,"crm":"http://www.cidoc-crm.org/cidoc-crm/","bf":"http://id.loc.gov/ontologies/bibframe/","foaf":"http://xmlns.com/foaf/0.1/"}
+  },null,2);
+}
+function genJSONLD(){
+  return JSON.stringify({
+    "@context":{
+      "@vocab":NS,"foaf":"http://xmlns.com/foaf/0.1/","rdfs":"http://www.w3.org/2000/01/rdf-schema#",
+      "label":"rdfs:label","name":"foaf:name","school":"zicang:belongsToSchool"
+    },
+    "@id":NS+"laozi","@type":"zicang:Person","name":"老子","school":"道家","works":["道德经"],
+    "@id":NS+"debate1","@type":"zicang:DebateEvent","label":"儒墨之辯","sideA":"儒家","sideB":"墨家"
+  },null,2);
+}
+function genTurtle(){
+  return `@prefix zicang: <${NS}> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+zicang:Person a owl:Class ;
+  rdfs:label "諸子人物" ;
+  rdfs:subClassOf <http://xmlns.com/foaf/0.1/Person> .
+
+zicang:School a owl:Class ;
+  rdfs:label "流派" .
+
+zicang:DebateEvent a owl:Class ;
+  rdfs:label "爭鳴論辯事件" ;
+  rdfs:subClassOf <http://www.cidoc-crm.org/cidoc-crm/E5_Event> .
+
+zicang:belongsToSchool a owl:ObjectProperty ;
+  rdfs:domain zicang:Person ;
+  rdfs:range  zicang:School ;
+  rdfs:label  "師承流派" .
+
+zicang:studentOf a owl:ObjectProperty ;
+  rdfs:domain zicang:Person ;
+  rdfs:range  zicang:Person ;
+  rdfs:label  "受業於" .
+
+zicang:arguesWith a owl:ObjectProperty ;
+  rdfs:domain zicang:Person ;
+  rdfs:range  zicang:Person ;
+  rdfs:label  "論敵" .
+`;
+}
+
+async function genPersonsJSON(){const d=await loadInst();return JSON.stringify(d.persons,null,2);}
+async function genPersonsTTL(){const d=await loadInst();
+  let ttl=`@prefix zicang: <${NS}> .\n@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\n`;
+  d.persons.forEach(p=>{
+    ttl+=`zicang:${p.id} a zicang:Person ;\n  rdfs:label "${p.name}" ;\n`;
+    if(p.birth) ttl+=`  zicang:birthYear "${p.birth}"^^xsd:gYear ;\n`;
+    if(p.state) ttl+=`  zicang:bornInState "${p.state}" ;\n`;
+    if(p.school) ttl+=`  zicang:belongsToSchool zicang:school_${p.school} ;\n`;
+    if(p.master) ttl+=`  zicang:studentOf zicang:${d.persons.find(x=>x.name===p.master)?.id||'unknown'} ;\n`;
+    if(p.alias.length) ttl+=`  zicang:alias "${p.alias.join(',')}" ;\n`;
+    ttl=ttl.replace(/;\n$/,'.\n\n');
+  });
+  return ttl;
+}
+async function genPersonsCSV(){const d=await loadInst();
+  let csv='id,name,alias,birth,death,state,school,master,works\n';
+  d.persons.forEach(p=>{csv+=`${p.id},${p.name},"${p.alias.join('|')}",${p.birth||''},${p.death||''},${p.state||''},${p.school},${p.master||''},"${p.works.join('|')}"\n`;});
+  return csv;
+}
+async function genSchoolsJSON(){const d=await loadInst();return JSON.stringify(d.schools,null,2);}
+async function genSchoolsTTL(){const d=await loadInst();
+  let ttl=`@prefix zicang: <${NS}> .\n@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n\n`;
+  d.schools.forEach(s=>{ttl+=`zicang:school_${s.id} a zicang:School ; rdfs:label "${s.name}" ; zicang:coreDoctrine "${s.core}" .\n\n`;});
+  return ttl;
+}
+async function genDebatesJSON(){const d=await loadInst();return JSON.stringify(d.debates,null,2);}
+async function genDebatesTTL(){const d=await loadInst();
+  let ttl=`@prefix zicang: <${NS}> .\n@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n\n`;
+  d.debates.forEach(d=>{ttl+=`zicang:debate_${d.id} a zicang:DebateEvent ; rdfs:label "${d.name}" ; zicang:era "${d.era}" ; zicang:sideA "${d.sideA}" ; zicang:sideB "${d.sideB}" ; zicang:topic "${d.topic}" .\n\n`;});
+  return ttl;
+}
+async function genAlignments(){
+  return JSON.stringify({
+    "alignments":[
+      {"zicang":"zicang:Person","cidoc":"E21_Person","bf":null,"foaf":"foaf:Person","wikidata":"Q215627","cbdb":"PersonID"},
+      {"zicang":"zicang:Work","cidoc":"E89_Propositional_Object","bf":"bf:Work","foaf":null,"wikidata":"Q386724","cbdb":null},
+      {"zicang":"zicang:Event","cidoc":"E5_Event","bf":null,"foaf":null,"wikidata":"Q1190554","cbdb":null},
+      {"zicang":"zicang:DebateEvent","cidoc":"E7_Activity","bf":null,"foaf":null,"wikidata":"Q1752356","cbdb":null},
+      {"zicang":"zicang:Place","cidoc":"E53_Place","bf":null,"foaf":null,"wikidata":"Q2221906","cbdb":null},
+      {"zicang":"zicang:Concept","cidoc":"E55_Type","bf":null,"foaf":null,"wikidata":"Q151885","cbdb":null}
+    ]
+  },null,2);
+}
+async function genBundle(){
+  const files=[genSchemaJSON(),genTurtle(),await genPersonsJSON(),await genPersonsTTL(),await genPersonsCSV(),await genSchoolsJSON(),await genDebatesJSON(),await genAlignments()];
+  const names=['zicang-schema.json','zicang-core.ttl','persons.json','persons.ttl','persons.csv','schools.json','debates.json','alignments.json'];
+  let zip='# 子藏本体论数据包\n\n';
+  names.forEach((n,i)=>{zip+=`\n\n===== ${n} =====\n${files[i]}\n`;});
+  zip+='\n\n===== README.txt =====\n子藏本体论 Zi-Cang Ontology\nCC BY-SA 4.0\nhttps://yejinlei.github.io/Zi-Cang/\n\n包含：本体Schema、人物实例、流派、论战、对齐映射。\n由于浏览器环境限制，此为纯文本包，建议分别下载各独立文件。\n';
+  return zip;
+}
+
+// Preview
+function showPreview(fmt){
+  document.querySelectorAll('#prevTabs .tab').forEach(t=>t.classList.toggle('on',t.dataset.fmt===fmt));
+  const box=document.getElementById('preview');
+  const gens={jsonld:genJSONLD,turtle:genTurtle,csv:()=>'id,name,birth,state,school\nlaozi,老子,-571,楚,道家\nkongzi,孔子,-551,鲁,儒家\nzhuangzi,庄子,-369,宋,道家\n'};
+  box.textContent=gens[fmt]();
+}
+document.querySelectorAll('#prevTabs .tab').forEach(t=>{t.onclick=()=>showPreview(t.dataset.fmt);});
+
+buildCards();
+showPreview('jsonld');
+</script>
+</body>
+</html>

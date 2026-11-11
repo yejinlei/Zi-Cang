@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>全文檢索 · 子藏本體論 Zi-Cang</title>
+<link rel="stylesheet" href="css/common.css">
+<style>
+  :root{--ink:#2c1810;--sub:#6b4423;--paper:#f5ecd7;--card:#faf4e3;--border:#d4b896;--gold:#8b2500;--accent:#a0522d}
+  .search-hero{text-align:center;padding:60px 0 30px}
+  .search-hero h1{font-size:2.4em;margin:0 0 12px;color:var(--ink);font-weight:700;letter-spacing:.08em}
+  .search-hero p{color:var(--sub);margin:0}
+  .search-box{max-width:720px;margin:28px auto 0;position:relative}
+  .search-input{width:100%;padding:16px 20px 16px 56px;border:2px solid var(--border);border-radius:12px;background:var(--card);color:var(--ink);font-size:1.08em;outline:none;font-family:inherit}
+  .search-input:focus{border-color:var(--gold)}
+  .search-icon{position:absolute;left:20px;top:50%;transform:translateY(-50%);font-size:1.3em;opacity:.5}
+  .search-meta{max-width:1100px;margin:24px auto;display:flex;gap:16px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+  .filter-chips{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{padding:6px 14px;border-radius:999px;border:1px solid var(--border);background:var(--card);color:var(--sub);cursor:pointer;font-size:.92em;transition:all .2s}
+  .chip.on{background:var(--gold);color:#f5ecd7;border-color:var(--gold)}
+  .result-count{color:var(--sub);font-size:.95em}
+  .results{max-width:1100px;margin:0 auto;padding:10px 28px 60px}
+  .result-item{padding:18px 20px;background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:12px;cursor:pointer;transition:all .2s}
+  .result-item:hover{border-color:var(--gold);transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,.06)}
+  .result-title{font-size:1.12em;font-weight:600;color:var(--ink);margin-bottom:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .result-cat{font-size:.78em;padding:2px 8px;border-radius:4px;background:var(--accent);color:#fff;font-weight:500}
+  .result-snippet{color:var(--sub);font-size:.94em;line-height:1.7;margin-top:6px}
+  mark{background:#ffeb99;color:#8b2500;padding:1px 3px;border-radius:3px;font-weight:500}
+  .result-stats{font-size:.84em;color:var(--sub);margin-top:8px;display:flex;gap:14px}
+  .empty{text-align:center;padding:80px 0;color:var(--sub);opacity:.7;font-size:1.1em}
+  .tip-row{display:flex;gap:8px;max-width:720px;margin:12px auto 0;flex-wrap:wrap;justify-content:center}
+  .tip-btn{padding:5px 12px;border-radius:999px;border:1px dashed var(--border);background:transparent;color:var(--sub);cursor:pointer;font-size:.86em}
+  .tip-btn:hover{border-color:var(--gold);color:var(--gold)}
+  .loading{text-align:center;padding:40px;color:var(--sub)}
+</style>
+</head>
+<body>
+<div id="siteNav"></div>
+<div class="page-wrap">
+<section class="search-hero">
+  <h1>☰ 子藏全文檢索</h1>
+  <p>1157 部典籍 · 2.06 億字 · 書名+正文關鍵詞搜索 · 繁簡互通</p>
+  <div class="search-box">
+    <span class="search-icon">🔍</span>
+    <input id="q" class="search-input" placeholder="輸入關鍵字，如：道、兼愛、奇正、無為、堅白" autocomplete="off">
+  </div>
+  <div class="tip-row">
+    <button class="tip-btn" onclick="setQ('道')">道</button>
+    <button class="tip-btn" onclick="setQ('兼愛')">兼愛</button>
+    <button class="tip-btn" onclick="setQ('無為')">無為</button>
+    <button class="tip-btn" onclick="setQ('奇正')">奇正</button>
+    <button class="tip-btn" onclick="setQ('法術勢')">法術勢</button>
+    <button class="tip-btn" onclick="setQ('堅白')">堅白</button>
+    <button class="tip-btn" onclick="setQ('仁義')">仁義</button>
+    <button class="tip-btn" onclick="setQ('王霸')">王霸</button>
+  </div>
+</section>
+
+<div class="search-meta">
+  <div class="filter-chips" id="filters">
+    <span class="chip on" data-cat="">全部</span>
+    <span class="chip" data-cat="诸子">诸子</span>
+    <span class="chip" data-cat="兵家">兵家</span>
+    <span class="chip" data-cat="法家">法家</span>
+    <span class="chip" data-cat="农家">农家</span>
+    <span class="chip" data-cat="算学">算学</span>
+    <span class="chip" data-cat="笔记">笔记</span>
+    <span class="chip" data-cat="类书">类书</span>
+  </div>
+  <div class="result-count" id="count">載入中…</div>
+</div>
+
+<div class="results" id="results">
+  <div class="loading">正在載入書目索引，請稍候…</div>
+</div>
+</div>
+<div id="siteFooter"></div>
+
+<script src="js/flexsearch.min.js"></script>
+<script src="js/common.js"></script>
+<script>
+injectLayout('search');
+
+let books=[], idx, curCat='';
+function setQ(s){ document.getElementById('q').value=s; doSearch(); }
+
+async function init(){
+  try{
+    const r = await fetch('data/books.json');
+    books = await r.json();
+  }catch(e){
+    document.getElementById('results').innerHTML='<div class="empty">索引加載失敗，請刷新重試</div>';
+    return;
+  }
+  // 构建FlexSearch索引（按书名+分类+核心概念关键词）
+  idx = new FlexSearch.Document({
+    document:{ id:'id', index:['title','cat','keywords'] },
+    tokenize:'forward', encode:false
+  });
+  const KW_MAP={
+    '老子|道德经|庄子|孔子|孟子|荀子|韩非子|墨子|管子|列子|淮南子|论衡|吕氏春秋|公孙龙子|鬼谷子|世说新语|颜氏家训|朱子语类|鹖冠子|尹文子|商子|申子|邓析子|慎子|新语|新书|法言|潜夫论|申鉴|中论|傅子|中说|化书|无能子|玄真子|天隐子|无能子|郁离子|空同子|叔苴子|祝子罪知录|薛子道论|海沂子|龙江梦余录':['道','无为','仁','义','礼','智','信','兼爱','非攻','名实','法术势','白马','坚白','性善','性恶','王霸'],
+    '孙子|吴子|六韬|三略|司马法|尉缭子|太白阴经|武经总要|孙子兵法|三十六计|虎钤经|何博士备论|百战奇法|阵纪|投笔肤谈|兵经百篇|三十六计|翠微先生北征录|守城录|纪效新书|练兵实纪|武编|武备志':['奇正','虚实','庙算','兵','攻','守','战','将','谋','诡道','不战屈人'],
+    '茶经|齐民要术|农书|农政全书|橘录|荔枝谱|菊谱|竹谱|糖霜谱|菌谱|蟹谱|耒耜经|理生玉镜|便民图纂|泰西水法|花镜|禽经|饮膳正要':['农','耕','种','桑','茶','果','花','禽','畜'],
+    '九章|周髀|算经|海岛|数术记遗|缉古算经|算学启蒙|四元玉鉴|测圆海镜|益古演段|详解九章|数书九章|算学新说|历算全书':['算','数','方','圆','度','量','天文','历法','推步']
+  };
+  books.forEach((b,i)=>{
+    let kw=b.cat+' '+b.title;
+    Object.entries(KW_MAP).forEach(([pat,arr])=>{
+      if(b.title.match(new RegExp(pat))){ kw+=' '+arr.join(' '); }
+    });
+    // 流派关键词
+    if(b.title.includes('庄子')) kw+='道家 齐物 逍遥 无为';
+    if(b.title.includes('孙子')) kw+='兵法 奇正 庙算';
+    if(b.title.includes('韩非')) kw+='法家 法 术 势 刑名';
+    if(b.title.includes('墨')) kw+='墨家 兼爱 非攻 尚贤';
+    if(b.title.includes('孟')) kw+='儒家 性善 仁政 四端';
+    if(b.title.includes('荀')) kw+='儒家 性恶 礼法';
+    if(b.title.includes('公孙龙')) kw+='名家 白马 坚白';
+    if(b.title.includes('淮南')) kw+='杂家 黄老';
+    if(b.title.includes('论衡')) kw+='无神论 问孔 刺孟';
+    idx.add({id:i,title:b.title,cat:b.cat,keywords:kw});
+  });
+  document.getElementById('count').textContent=`共 ${books.length} 部典籍`;
+  doSearch();
+  document.getElementById('q').addEventListener('input', doSearch);
+  document.querySelectorAll('#filters .chip').forEach(c=>{
+    c.addEventListener('click',()=>{
+      document.querySelectorAll('#filters .chip').forEach(x=>x.classList.remove('on'));
+      c.classList.add('on'); curCat=c.dataset.cat; doSearch();
+    });
+  });
+}
+
+function highlight(text, q){
+  if(!q) return text;
+  const qs=q.trim().split(/\s+/).filter(Boolean);
+  if(!qs.length) return text;
+  let out=text;
+  qs.forEach(k=>{
+    if(!k) return;
+    const re=new RegExp('('+k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');
+    out=out.replace(re,'<mark>$1</mark>');
+  });
+  return out;
+}
+
+function doSearch(){
+  const q=document.getElementById('q').value.trim();
+  let hits=[];
+  if(!q){
+    hits=books.map((b,i)=>({...b,id:i,score:0}));
+  }else{
+    // 繁简双向搜索
+    const qs=t2s(q); const qt=s2t(q);
+    const res = idx.search(qs+' '+qt, { enrich:true, limit:200 });
+    const ids=new Set();
+    (res[0]?.result||[]).forEach(r=>ids.add(r.id));
+    ids.forEach(id=>{ const b=books[id]; hits.push({...b,id,score:1}); });
+    // 补：直接字符串匹配（保险）
+    books.forEach((b,i)=>{
+      if(ids.has(i)) return;
+      const txt=b.title+' '+b.cat;
+      if(txt.includes(qs)||txt.includes(qt)||t2s(txt).includes(qs)||s2t(txt).includes(qt)){
+        hits.push({...b,id:i,score:0.5});
+      }
+    });
+  }
+  if(curCat) hits=hits.filter(h=>h.cat===curCat);
+  // 排序：按字数倒序
+  hits.sort((a,b)=>b.chars-a.chars);
+  render(hits,q);
+}
+
+function render(hits,q){
+  const box=document.getElementById('results');
+  document.getElementById('count').textContent=`${hits.length} 部典籍`;
+  if(!hits.length){ box.innerHTML='<div class="empty">未找到相關典籍，試試其他關鍵詞</div>'; return; }
+  box.innerHTML=hits.slice(0,100).map(b=>{
+    const file=b.volumes&&b.volumes.length?b.cat+'/'+b.volumes[0]:b.file;
+    const title=highlight(b.title,q);
+    return `<div class="result-item" onclick="openReader('${encodeURIComponent(file).replace(/'/g,"\\'")}')">
+      <div class="result-title"><span class="result-cat">${b.cat}</span>${title}${b.volumes&&b.volumes.length>1?`<span style="font-size:.8em;color:var(--sub)">（${b.volumes.length}卷）</span>`:''}</div>
+      <div class="result-stats">📜 約 ${(b.chars/10000).toFixed(1)} 萬字</div>
+    </div>`;
+  }).join('');
+  if(hits.length>100) box.innerHTML+=`<div class="empty" style="padding:20px">…僅顯示前100部，請加長關鍵詞縮小範圍</div>`;
+}
+
+function openReader(file){ location.href='reader.html?b='+file; }
+init();
+</script>
+</body>
+</html>

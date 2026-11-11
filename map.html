@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>諸子時空地圖 · 子藏本體論 Zi-Cang</title>
+<link rel="stylesheet" href="css/common.css">
+<style>
+  :root{--ink:#2c1810;--sub:#6b4423;--paper:#f5ecd7;--card:#faf4e3;--border:#d4b896;--gold:#8b2500;--accent:#a0522d}
+  .map-hero{text-align:center;padding:40px 28px 16px;max-width:900px;margin:0 auto}
+  .map-hero h1{font-size:2.2em;margin:0 0 10px}
+  .map-hero p{color:var(--sub);margin:0;line-height:1.7}
+  .map-wrap{max-width:1100px;margin:20px auto;padding:0 20px;position:relative}
+  .map-svg{width:100%;height:auto;background:linear-gradient(135deg,var(--card),var(--paper));border:2px solid var(--border);border-radius:12px;display:block}
+  .map-svg .state{fill:var(--card);stroke:var(--border);stroke-width:1.5;cursor:pointer;transition:fill .2s}
+  .map-svg .state:hover{fill:rgba(139,37,0,.12);stroke:var(--gold)}
+  .map-svg .state-label{fill:var(--sub);font-size:14px;text-anchor:middle;pointer-events:none;font-family:inherit;letter-spacing:.1em}
+  .map-svg .state.ru{fill:rgba(180,50,30,.08)}.map-svg .state.dao{fill:rgba(80,100,160,.08)}
+  .map-svg .state.fa{fill:rgba(60,50,40,.1)}.map-svg .state.mo{fill:rgba(40,100,60,.08)}
+  .map-svg .state.bing{fill:rgba(160,100,50,.1)}.map-svg .state.zh{fill:rgba(120,60,140,.08)}
+  .person-dot{cursor:pointer;transition:all .2s}
+  .person-dot circle{stroke:var(--paper);stroke-width:2;transition:r .2s}
+  .person-dot:hover circle{r:10}
+  .person-dot text{fill:var(--ink);font-size:12px;text-anchor:middle;font-family:inherit;pointer-events:none}
+  .jixia{fill:rgba(200,160,80,.2);stroke:var(--gold);stroke-width:1.5;stroke-dasharray:4 3}
+  .legend{max-width:1100px;margin:20px auto;padding:0 28px;display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+  .legend-item{display:flex;align-items:center;gap:6px;font-size:.88em;color:var(--sub)}
+  .legend-dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--paper)}
+  .timeline-wrap{max-width:1100px;margin:30px auto 60px;padding:0 28px}
+  .timeline-wrap h2{font-size:1.4em;color:var(--ink);margin:0 0 16px}
+  .timeline{position:relative;padding:20px 0;border-top:2px solid var(--border)}
+  .tl-row{display:flex;gap:16px;margin-bottom:18px;position:relative;padding-left:20px}
+  .tl-row::before{content:'';position:absolute;left:-2px;top:8px;width:14px;height:14px;border-radius:50%;background:var(--card);border:3px solid var(--gold);z-index:2}
+  .tl-row:not(:last-child)::after{content:'';position:absolute;left:4px;top:20px;bottom:-18px;width:2px;background:var(--border)}
+  .tl-year{min-width:110px;color:var(--gold);font-weight:600;font-size:.95em;padding-top:2px}
+  .tl-body{flex:1}
+  .tl-title{font-weight:600;color:var(--ink);margin-bottom:4px}
+  .tl-desc{color:var(--sub);font-size:.92em;line-height:1.7}
+  .sch-row{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0}
+  .sch-tag{padding:3px 10px;border-radius:6px;font-size:.84em;color:#fff;cursor:pointer}
+  .sch-ru{background:#a52a2a}.sch-dao{background:#4a6fa5}.sch-fa{background:#3d3528}.sch-mo{background:#2d8a5a}.sch-ming{background:#8a6a2c}.sch-bing{background:#b07040}.sch-zh{background:#7a4a9c}.sch-zongheng{background:#6a8a6a}
+  .detail-pop{position:absolute;background:var(--card);border:2px solid var(--gold);border-radius:10px;padding:14px 18px;box-shadow:0 8px 24px rgba(0,0,0,.18);pointer-events:none;opacity:0;transition:opacity .2s;z-index:10;min-width:200px;max-width:300px}
+  .detail-pop.show{opacity:1}
+  .detail-pop h4{margin:0 0 6px;color:var(--gold);font-size:1.05em}
+  .detail-pop p{margin:0;color:var(--sub);font-size:.88em;line-height:1.6}
+  @media(max-width:720px){.tl-row{flex-direction:column;gap:4px}.tl-year{min-width:auto}}
+</style>
+</head>
+<body>
+<div id="siteNav"></div>
+<div class="page-wrap">
+
+<section class="map-hero">
+  <h1>🗺 諸子時空分佈</h1>
+  <p>春秋戰國時期主要諸子的出生地/活動地、學派地理分佈與稷下學宮；下方時間軸呈現百家爭鳴的歷時脈絡。<br>鼠標懸停地圖人物點可查看詳情，點擊流派標籤可高亮。</p>
+</section>
+
+<div class="legend">
+  <span style="color:var(--sub);font-size:.9em">流派圖例：</span>
+  <span class="legend-item"><span class="legend-dot sch-ru"></span>儒家</span>
+  <span class="legend-item"><span class="legend-dot sch-dao"></span>道家</span>
+  <span class="legend-item"><span class="legend-dot sch-fa"></span>法家</span>
+  <span class="legend-item"><span class="legend-dot sch-mo"></span>墨家</span>
+  <span class="legend-item"><span class="legend-dot sch-ming"></span>名家</span>
+  <span class="legend-item"><span class="legend-dot sch-bing"></span>兵家</span>
+  <span class="legend-item"><span class="legend-dot sch-zh"></span>縱橫家</span>
+  <span class="legend-item"><span class="legend-dot" style="background:var(--gold)"></span>稷下學宮</span>
+</div>
+
+<div class="map-wrap">
+  <svg class="map-svg" viewBox="0 0 900 700" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景装饰 -->
+    <defs>
+      <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(139,37,0,.06)" stroke-width="1"/>
+      </pattern>
+    </defs>
+    <rect width="900" height="700" fill="url(#grid)"/>
+
+    <!-- 周代主要诸侯国轮廓（手绘风格） -->
+    <!-- 燕 -->
+    <path class="state" d="M 480,40 Q 580,30 700,60 Q 760,80 780,140 Q 790,200 740,230 Q 680,260 600,220 Q 520,180 490,130 Z"/>
+    <text class="state-label" x="640" y="140">燕</text>
+    <!-- 赵 -->
+    <path class="state" d="M 380,180 Q 480,170 560,200 Q 620,230 600,290 Q 540,320 470,300 Q 400,280 380,240 Z"/>
+    <text class="state-label" x="490" y="250">趙</text>
+    <!-- 齐 -->
+    <path class="state" d="M 620,200 Q 720,190 800,240 Q 840,300 800,370 Q 740,410 670,380 Q 620,330 620,270 Z"/>
+    <text class="state-label" x="730" y="310">齊</text>
+    <!-- 稷下学宫（齐都临淄） -->
+    <circle class="jixia" cx="720" cy="290" r="35"/>
+    <text x="720" y="295" text-anchor="middle" fill="var(--gold)" font-size="11" font-weight="600">稷下</text>
+    <!-- 魏 -->
+    <path class="state" d="M 400,280 Q 500,270 560,310 Q 580,370 520,400 Q 450,410 410,370 Q 380,320 400,280 Z"/>
+    <text class="state-label" x="480" y="345">魏</text>
+    <!-- 韩 -->
+    <path class="state" d="M 420,380 Q 490,370 530,400 Q 540,450 490,470 Q 440,475 420,440 Z"/>
+    <text class="state-label" x="470" y="425">韓</text>
+    <!-- 卫/郑 -->
+    <path class="state" d="M 490,400 Q 540,390 570,420 Q 575,460 540,480 Q 500,480 490,450 Z"/>
+    <text class="state-label" x="530" y="445">衛</text>
+    <!-- 周 -->
+    <path class="state" d="M 380,380 Q 420,375 430,400 Q 425,425 390,430 Q 370,415 380,385 Z"/>
+    <text class="state-label" x="400" y="405" fill="var(--gold)" font-size="10">周</text>
+    <!-- 鲁 -->
+    <path class="state" d="M 570,370 Q 630,360 660,400 Q 670,450 610,470 Q 560,460 560,420 Z"/>
+    <text class="state-label" x="610" y="420">魯</text>
+    <!-- 宋 -->
+    <path class="state" d="M 520,430 Q 580,425 600,470 Q 590,510 540,515 Q 500,500 510,460 Z"/>
+    <text class="state-label" x="555" y="475">宋</text>
+    <!-- 楚 -->
+    <path class="state dao" d="M 200,400 Q 330,380 420,440 Q 500,500 480,580 Q 400,640 280,650 Q 150,640 100,560 Q 80,480 140,430 Z"/>
+    <text class="state-label" x="280" y="530" style="font-size:18px">楚</text>
+    <!-- 秦 -->
+    <path class="state fa" d="M 80,240 Q 180,220 280,270 Q 350,320 330,400 Q 250,440 170,420 Q 90,390 70,320 Z"/>
+    <text class="state-label" x="200" y="330" style="font-size:18px">秦</text>
+    <!-- 晋（春秋早期）/ 中山 -->
+    <path class="state" d="M 330,240 Q 400,230 410,270 Q 390,310 340,300 Q 310,280 330,245 Z"/>
+    <!-- 吴 -->
+    <path class="state" d="M 520,520 Q 600,510 640,560 Q 640,610 570,620 Q 510,610 510,570 Z"/>
+    <text class="state-label" x="575" y="575">吳</text>
+    <!-- 越 -->
+    <path class="state" d="M 600,560 Q 690,550 720,610 Q 700,660 630,660 Q 570,640 590,590 Z"/>
+    <text class="state-label" x="660" y="620">越</text>
+    <!-- 齐文化区（儒）淡色 -->
+    <rect x="570" y="360" width="100" height="120" fill="rgba(180,50,30,.04)" rx="20"/>
+    <!-- 海/河 -->
+    <path d="M 780,40 Q 830,200 830,400 Q 820,600 720,680" fill="none" stroke="rgba(80,120,180,.3)" stroke-width="3" stroke-dasharray="6 4"/>
+    <text x="840" y="200" fill="rgba(80,120,180,.6)" font-size="12" transform="rotate(90 840 200)">東海</text>
+    <path d="M 100,250 Q 200,240 330,300 Q 450,360 530,430 Q 600,490 580,540" fill="none" stroke="rgba(80,120,180,.25)" stroke-width="2"/>
+    <text x="250" y="258" fill="rgba(80,120,180,.5)" font-size="10">黃河</text>
+    <text x="350" y="520" fill="rgba(80,120,180,.4)" font-size="12">長江</text>
+    <path d="M 200,500 Q 340,510 480,560 Q 560,590 570,630" fill="none" stroke="rgba(80,120,180,.25)" stroke-width="2"/>
+
+    <!-- 诸子出生地/活动地 -->
+    <!-- 坐标(x,y) 大致对应诸侯国位置 -->
+    <g class="person-group">
+      <!-- 儒家 -->
+      <g class="person-dot" data-name="孔子" data-school="儒家" data-birth="-551" data-place="魯國陬邑（今山東曲阜）" data-works="《論語》" data-color="#a52a2a" transform="translate(615,410)">
+        <circle r="7" fill="#a52a2a"/><text y="-12">孔子</text>
+      </g>
+      <g class="person-dot" data-name="孟子" data-school="儒家" data-birth="-372" data-place="鄒國（今山東鄒城）" data-works="《孟子》" data-color="#a52a2a" transform="translate(590,445)">
+        <circle r="7" fill="#a52a2a"/><text y="-12">孟子</text>
+      </g>
+      <g class="person-dot" data-name="荀子" data-school="儒家" data-birth="-313" data-place="趙國，後遊歷齊楚" data-works="《荀子》" data-color="#a52a2a" transform="translate(485,280)">
+        <circle r="7" fill="#a52a2a"/><text y="-12">荀子</text>
+      </g>
+      <g class="person-dot" data-name="子思" data-school="儒家" data-birth="-483" data-place="魯國" data-works="《中庸》" data-color="#a52a2a" transform="translate(600,395)">
+        <circle r="5" fill="#a52a2a"/>
+      </g>
+      <!-- 道家 -->
+      <g class="person-dot" data-name="老子" data-school="道家" data-birth="-571" data-place="楚國苦縣（今河南鹿邑）" data-works="《道德經》" data-color="#4a6fa5" transform="translate(380,500)">
+        <circle r="8" fill="#4a6fa5"/><text y="-12">老子</text>
+      </g>
+      <g class="person-dot" data-name="庄子" data-school="道家" data-birth="-369" data-place="宋國蒙（今河南商丘東北）" data-works="《莊子》" data-color="#4a6fa5" transform="translate(545,465)">
+        <circle r="7" fill="#4a6fa5"/><text y="-12">莊子</text>
+      </g>
+      <g class="person-dot" data-name="列子" data-school="道家" data-birth="-450" data-place="鄭國圃田" data-works="《列子》" data-color="#4a6fa5" transform="translate(525,440)">
+        <circle r="6" fill="#4a6fa5"/>
+      </g>
+      <g class="person-dot" data-name="杨朱" data-school="道家" data-birth="-440" data-place="魏國" data-works="" data-color="#4a6fa5" transform="translate(470,340)">
+        <circle r="5" fill="#4a6fa5"/>
+      </g>
+      <!-- 墨家 -->
+      <g class="person-dot" data-name="墨子" data-school="墨家" data-birth="-468" data-place="宋國（一說魯國）" data-works="《墨子》" data-color="#2d8a5a" transform="translate(555,470)">
+        <circle r="7" fill="#2d8a5a"/><text y="-12">墨子</text>
+      </g>
+      <!-- 法家 -->
+      <g class="person-dot" data-name="商鞅" data-school="法家" data-birth="-390" data-place="衛國，入秦變法" data-works="《商君書》" data-color="#3d3528" transform="translate(240,340)">
+        <circle r="7" fill="#3d3528"/><text y="-12">商鞅</text>
+      </g>
+      <g class="person-dot" data-name="韩非子" data-school="法家" data-birth="-280" data-place="韓國，入秦" data-works="《韓非子》" data-color="#3d3528" transform="translate(470,430)">
+        <circle r="7" fill="#3d3528"/><text y="-12">韓非</text>
+      </g>
+      <g class="person-dot" data-name="申不害" data-school="法家" data-birth="-385" data-place="鄭國，相韓" data-works="《申子》" data-color="#3d3528" transform="translate(530,440)">
+        <circle r="5" fill="#3d3528"/>
+      </g>
+      <g class="person-dot" data-name="李斯" data-school="法家" data-birth="-284" data-place="楚國上蔡，入秦為相" data-works="" data-color="#3d3528" transform="translate(360,480)">
+        <circle r="6" fill="#3d3528"/>
+      </g>
+      <!-- 名家 -->
+      <g class="person-dot" data-name="惠施" data-school="名家" data-birth="-370" data-place="宋國，為魏相" data-works="" data-color="#8a6a2c" transform="translate(500,360)">
+        <circle r="6" fill="#8a6a2c"/><text y="-12">惠施</text>
+      </g>
+      <g class="person-dot" data-name="公孙龙" data-school="名家" data-birth="-320" data-place="趙國" data-works="《公孫龍子》" data-color="#8a6a2c" transform="translate(480,260)">
+        <circle r="6" fill="#8a6a2c"/><text y="-12">公孫龍</text>
+      </g>
+      <!-- 兵家 -->
+      <g class="person-dot" data-name="孙武" data-school="兵家" data-birth="-545" data-place="齊國，入吳為將" data-works="《孫子兵法》" data-color="#b07040" transform="translate(565,580)">
+        <circle r="7" fill="#b07040"/><text y="-12">孫武</text>
+      </g>
+      <g class="person-dot" data-name="吴起" data-school="兵家/法家" data-birth="-440" data-place="衛國，歷仕魯魏楚" data-works="《吳子》" data-color="#b07040" transform="translate(450,400)">
+        <circle r="6" fill="#b07040"/>
+      </g>
+      <g class="person-dot" data-name="孙膑" data-school="兵家" data-birth="-380" data-place="齊國" data-works="《孫臏兵法》" data-color="#b07040" transform="translate(700,330)">
+        <circle r="6" fill="#b07040"/>
+      </g>
+      <!-- 纵横家 -->
+      <g class="person-dot" data-name="鬼谷子" data-school="縱橫家" data-birth="-400" data-place="雲夢山（傳說）" data-works="《鬼谷子》" data-color="#7a4a9c" transform="translate(370,340)">
+        <circle r="7" fill="#7a4a9c"/><text y="-12" style="font-size:11px">鬼谷子</text>
+      </g>
+      <g class="person-dot" data-name="苏秦" data-school="縱橫家" data-birth="-337" data-place="東周洛陽，佩六國相印" data-works="" data-color="#7a4a9c" transform="translate(400,405)">
+        <circle r="6" fill="#7a4a9c"/>
+      </g>
+      <g class="person-dot" data-name="张仪" data-school="縱橫家" data-birth="-378" data-place="魏國，入秦為相" data-works="" data-color="#7a4a9c" transform="translate(470,320)">
+        <circle r="6" fill="#7a4a9c"/>
+      </g>
+    </g>
+
+    <!-- 稷下学宫标注 -->
+    <text x="720" y="270" text-anchor="middle" fill="var(--gold)" font-size="10" font-weight="600">稷下學宮</text>
+    <text x="720" y="260" text-anchor="middle" fill="var(--sub)" font-size="9">百家講學聖地</text>
+    <!-- 都城标记 周王城 -->
+    <g transform="translate(395,395)">
+      <rect x="-3" y="-3" width="6" height="6" fill="var(--gold)" transform="rotate(45)"/>
+    </g>
+  </svg>
+  <div class="detail-pop" id="pop"></div>
+</div>
+
+<div class="timeline-wrap">
+  <h2>📅 百家爭鳴時間軸</h2>
+  <div class="timeline">
+    <div class="tl-row"><div class="tl-year">前770年</div><div class="tl-body"><div class="tl-title">周平王東遷，春秋時代開啟</div><div class="tl-desc">王室衰微，諸侯並起，王官之學散於四方，為私學興起與諸子百家提供了歷史土壤。</div></div></div>
+    <div class="tl-row"><div class="tl-year">前551年</div><div class="tl-body"><div class="tl-title">孔子生於魯國</div><div class="tl-desc">儒家學派創立，開私人講學之風，弟子三千，主張「仁」「禮」「正名」「德治」。</div><div class="sch-row"><span class="sch-tag sch-ru">儒家</span></div></div></div>
+    <div class="tl-row"><div class="tl-year">前545年</div><div class="tl-body"><div class="tl-title">孫武生於齊</div><div class="tl-desc">兵家成型，後入吳著《孫子兵法》十三篇，為百世談兵之祖。</div><div class="sch-row"><span class="sch-tag sch-bing">兵家</span></div></div></div>
+    <div class="tl-row"><div class="tl-year">前516年</div><div class="tl-body"><div class="tl-title">老子出函谷關著《道德經》</div><div class="tl-desc">道家學說奠基，提出「道可道非常道」「道法自然」「無為而治」等核心命題。</div><div class="sch-row"><span class="sch-tag sch-dao">道家</span></div></div></div>
+    <div class="tl-row"><div class="tl-year">前479年</div><div class="tl-body"><div class="tl-title">孔子卒，儒分為八</div><div class="tl-desc">孔子去世後，儒家一分為八（子張、子思、顏氏、孟氏、漆雕氏、仲良氏、孫氏、樂正氏），戰國時孟子、荀子各成大宗。</div></div></div>
+    <div class="tl-row"><div class="tl-year">前468年</div><div class="tl-body"><div class="tl-title">墨子生，墨家興起</div><div class="tl-desc">墨子創立墨家，主張「兼愛、非攻、尚賢、節用」，與儒家並稱當世「顯學」，形成儒墨對峙格局。</div><div class="sch-row"><span class="sch-tag sch-mo">墨家</span></div></div></div>
+    <div class="tl-row"><div class="tl-year">前4世紀中</div><div class="tl-body"><div class="tl-title">稷下學宮興盛於齊</div><div class="tl-desc">齊威王宣王時期，稷下學宮匯集鄒衍、淳于髡、田駢、慎到、環淵等學者千人，百家爭鳴達到高峰。荀卿三為祭酒。</div><div class="sch-row"><span class="sch-tag sch-ru">儒</span><span class="sch-tag sch-dao">道</span><span class="sch-tag sch-fa">法</span><span class="sch-tag sch-ming">名</span><span class="sch-tag sch-bing">兵</span><span class="sch-tag sch-zh">縱橫</span></div></div></div>
+    <div class="tl-row"><div class="tl-year">前372年</div><div class="tl-body"><div class="tl-title">孟子生，儒學中興</div><div class="tl-desc">孟子受業於子思之門人，主張「性善論」「仁政」「王道」，遊說齊梁，與告子辯性善惡，與墨家辯義利。</div><div class="sch-row"><span class="sch-tag sch-ru">儒家</span></div></div></div>
+    <div class="tl-row"><div class="tl-year">前369年</div><div class="tl-body"><div class="tl-title">莊子生</div><div class="tl-desc">莊子為宋國蒙人，著《莊子》內外雜篇，主張「齊物」「逍遙」，與惠施為濠梁魚樂之辯，為道家集大成者之一。</div><div class="sch-row"><span class="sch-tag sch-dao">道家</span></div></div></div>
+    <div class="tl-row"><div class="tl-year">前356年</div><div class="tl-body"><div class="tl-title">商鞅變法</div><div class="tl-desc">商鞅入秦實行變法，廢井田開阡陌、獎耕戰、行連坐，法家實踐首次大規模推行，奠定秦統一基礎。</div><div class="sch-row"><span class="sch-tag sch-fa">法家</span></div></div></div>
+    <div class="tl-row"><div class="tl-year">前338年</div><div class="tl-body"><div class="tl-title">縱橫家登場：蘇秦張儀</div><div class="tl-desc">蘇秦合縱六國抗秦佩六國相印，張儀連橫破縱為秦相，鬼谷子門下縱橫之術左右戰國格局。</div><div class="sch-row"><span class="sch-tag sch-zh">縱橫家</span></div></div></div>
+    <div class="tl-row"><div class="tl-year">前320年</div><div class="tl-body"><div class="tl-title">公孫龍白馬非馬之辯</div><div class="tl-desc">名家代表公孫龍以「白馬非馬」「離堅白」震動天下，邏輯思辨達到先秦巔峰；同時後期墨家以「墨辯」回應名家。</div><div class="sch-row"><span class="sch-tag sch-ming">名家</span></div></div></div>
+    <div class="tl-row"><div class="tl-year">前313年</div><div class="tl-body"><div class="tl-title">荀子生，集先秦百家之大成</div><div class="tl-desc">荀子主「性惡論」「隆禮重法」，融合儒法思想，培養韓非、李斯兩大法家代表人物，為先秦學術總結者。</div><div class="sch-row"><span class="sch-tag sch-ru">儒家</span><span class="sch-tag sch-fa">法家</span></div></div></div>
+    <div class="tl-row"><div class="tl-year">前280年</div><div class="tl-body"><div class="tl-title">韓非子生，法家集大成</div><div class="tl-desc">韓非融商鞅之「法」、申不害之「術」、慎到之「勢」，建立完整法家理論體系，著《孤憤》《五蠹》《說難》。</div><div class="sch-row"><span class="sch-tag sch-fa">法家</span></div></div></div>
+    <div class="tl-row"><div class="tl-year">前247年</div><div class="tl-body"><div class="tl-title">呂不韋集門客著《呂氏春秋》</div><div class="tl-desc">雜家代表作，兼儒墨合名法，匯集先秦百家之言，標誌著百家思想由對立走向融合。</div><div class="sch-row"><span class="sch-tag sch-ru">儒</span><span class="sch-tag sch-dao">道</span><span class="sch-tag sch-fa">法</span><span class="sch-tag sch-mo">墨</span></div></div></div>
+    <div class="tl-row"><div class="tl-year">前221年</div><div class="tl-body"><div class="tl-title">秦統一六國，焚書坑儒</div><div class="tl-desc">法家思想成為官方意識形態，百家爭鳴時代終結；然諸子思想從未中斷，漢代以降儒道互補、佛教傳入，構成中華文明主幹。</div></div></div>
+  </div>
+</div>
+</div>
+<div id="siteFooter"></div>
+
+<script src="js/common.js"></script>
+<script>
+injectLayout('map');
+const pop=document.getElementById('pop');
+document.querySelectorAll('.person-dot').forEach(g=>{
+  g.addEventListener('mouseenter',e=>{
+    const d=g.dataset;
+    pop.innerHTML=`<h4>${d.name} <span style="font-size:.8em;font-weight:normal;color:var(--sub)">· ${d.school}</span></h4>
+      <p><b>生年：</b>${d.birth||'—'}</p>
+      <p><b>籍貫/活動地：</b>${d.place}</p>
+      ${d.works?`<p><b>著作：</b>${d.works}</p>`:''}`;
+    pop.classList.add('show');
+    const r=g.getBoundingClientRect();const wrap=document.querySelector('.map-wrap').getBoundingClientRect();
+    pop.style.left=(r.left-wrap.left+15)+'px';
+    pop.style.top=(r.top-wrap.top-20)+'px';
+  });
+  g.addEventListener('mousemove',e=>{
+    const r=g.getBoundingClientRect();const wrap=document.querySelector('.map-wrap').getBoundingClientRect();
+    pop.style.left=(r.left-wrap.left+15)+'px';
+    pop.style.top=(r.top-wrap.top-20)+'px';
+  });
+  g.addEventListener('mouseleave',()=>pop.classList.remove('show'));
+});
+</script>
+</body>
+</html>
