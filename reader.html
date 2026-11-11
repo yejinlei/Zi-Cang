@@ -6,8 +6,9 @@
 <title>典籍閱讀 | 子藏本體論</title>
 <link rel="stylesheet" href="css/common.css">
 <style>
-  body { display:flex; flex-direction:column; min-height:100vh; }
-  #main { flex:1; padding:0; position:relative; }
+  body { display:flex; flex-direction:column; min-height:100vh; margin:0; background:var(--paper); }
+  .page-wrap { max-width:none; padding:0; margin:0; flex:1; display:flex; flex-direction:column; min-height:calc(100vh - 200px); }
+  #main { flex:1; padding:0; position:relative; min-height:600px; width:100%; }
   
   /* 顶部工具条 */
   .toolbar {
@@ -47,7 +48,7 @@
   
   /* 加载动画 */
   .loading-overlay {
-    position:absolute; inset:0; background:var(--bg-main);
+    position:absolute; inset:0; background:var(--paper);
     display:flex; flex-direction:column; align-items:center; justify-content:center;
     z-index:100; gap:16px;
   }
@@ -264,102 +265,106 @@ async function loadBook(filePath){
   await fetchAndRender(filePath);
 }
 
-// ===== 抓取并分块渲染（防卡死）
+// ===== 抓取并渲染（优化版：大文件直接处理，避免分块等待）
 async function fetchAndRender(filePath){
   const textEl = document.getElementById('textContent');
   const loadingText = document.getElementById('loadingText');
   const loadingBar = document.getElementById('loadingBar');
+  const loadingEl = document.getElementById('loading');
   
   textEl.innerHTML = '';
-  loadingText.textContent = '正在下载文本…';
-  loadingBar.style.width = '10%';
+  loadingText.textContent = '正在下載文本…';
+  loadingBar.style.width = '15%';
   
-  // fetch带超时
+  // fetch带超时（延长到60秒应对大文件）
   const controller = new AbortController();
-  const timeout = setTimeout(()=>controller.abort(), 30000); // 30秒超时
+  const timeout = setTimeout(()=>controller.abort(), 60000);
   
   let response;
   try{
-    response = await fetch('texts/'+filePath, {signal:controller.signal, cache:'no-cache'});
+    // 路径必须加texts/前缀
+    const url = 'texts/' + decodeURIComponent(filePath);
+    console.log('Fetching:', url);
+    response = await fetch(url, {signal:controller.signal, cache:'no-cache'});
   }catch(e){
     clearTimeout(timeout);
-    if(e.name==='AbortError') throw new Error('下载超时（30秒），请检查网络后重试');
+    if(e.name==='AbortError') throw new Error('下载超时（60秒），文件较大请检查网络后重试');
     throw e;
   }
   clearTimeout(timeout);
   
   if(!response.ok){
-    throw new Error(`HTTP ${response.status} - 文件不存在或无法访问`);
+    throw new Error(`HTTP ${response.status} - 文件不存在或无法访问（路径：texts/${decodeURIComponent(filePath)}）`);
   }
   
-  loadingBar.style.width = '30%';
-  loadingText.textContent = '正在解码文本…';
+  loadingBar.style.width = '40%';
+  loadingText.textContent = '正在解碼文本…';
   
-  const text = await response.text();
+  // 让出主线程让UI更新
+  await new Promise(r=>setTimeout(r,50));
+  
+  let text;
+  try {
+    text = await response.text();
+  } catch(e) {
+    throw new Error('文本解码失败：' + e.message);
+  }
+  
   if(!text || text.length===0){
     throw new Error('文件内容为空');
   }
   
-  // 去掉BOM
-  let content = text.replace(/^\uFEFF/,'');
+  // 去掉BOM，统一换行
+  let content = text.replace(/^\uFEFF/,'').replace(/\r\n/g,'\n').replace(/\r/g,'\n');
   
-  loadingBar.style.width = '50%';
+  loadingBar.style.width = '65%';
   loadingText.textContent = '正在排版渲染…';
+  await new Promise(r=>setTimeout(r,30));
   
-  // 分块渲染：先处理高亮正则，再分批插入DOM，避免大文件阻塞主线程
+  // 概念高亮正则
   const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
   const pattern = new RegExp('('+CONCEPTS.map(esc).sort((a,b)=>b.length-a.length).join('|')+')','g');
   
-  // 按块处理（不拆分段落）
+  // 按段落处理（避免一行一行replace的开销）
   const lines = content.split('\n');
-  const totalChunks = Math.ceil(content.length / CHUNK_SIZE);
-  let processed = 0;
-  let chunkHtml = '';
-  let chunkLen = 0;
+  const totalLines = lines.length;
   
-  textEl.innerHTML = '';
+  // 一次性构建HTML（5MB文本约170万字符，现代浏览器一次innerHTML完全OK）
+  let html = '';
+  let reportEvery = Math.max(1, Math.floor(totalLines / 20));
   
-  for(let i=0;i<lines.length;i++){
-    let line = lines[i];
-    if(!line.trim()){ chunkHtml += '\n'; chunkLen += 1; continue; }
-    // 高亮
-    const highlighted = line.replace(pattern,'<span class="concept">$1</span>');
-    chunkHtml += highlighted + '\n';
-    chunkLen += line.length;
-    
-    // 达到分块大小时，用requestAnimationFrame异步插入
-    if(chunkLen >= CHUNK_SIZE){
-      await appendChunk(textEl, chunkHtml);
-      chunkHtml = ''; chunkLen = 0; processed++;
-      loadingBar.style.width = (50 + 45*(processed/totalChunks)) + '%';
-      loadingText.textContent = `正在渲染…${Math.round(processed/totalChunks*100)}%`;
+  for(let i=0;i<totalLines;i++){
+    const line = lines[i];
+    if(!line.trim()){
+      html += '\n';
+    } else {
+      html += line.replace(pattern,'<span class="concept">$1</span>') + '\n';
+    }
+    // 每处理5%更新一次进度，让出主线程
+    if(i % reportEvery === 0){
+      loadingBar.style.width = (65 + 30*(i/totalLines)) + '%';
+      loadingText.textContent = `正在渲染…${Math.round(i/totalLines*100)}%`;
+      await new Promise(r=>setTimeout(r,0));
     }
   }
-  if(chunkHtml){
-    await appendChunk(textEl, chunkHtml);
-  }
+  
+  loadingBar.style.width = '96%';
+  loadingText.textContent = '即將完成…';
+  
+  // 一次性插入DOM（比逐块insertAdjacentHTML快得多）
+  textEl.innerHTML = html;
   
   loadingBar.style.width = '100%';
-  loadingText.textContent = '加载完成';
+  loadingText.textContent = '加載完成';
   
   // 短暂延迟后隐藏loading，显示内容
   setTimeout(()=>{
-    document.getElementById('loading').classList.add('hidden');
-    document.getElementById('contentArea').style.display = 'block';
+    loadingEl.classList.add('hidden');
+    document.getElementById('errorPage').style.display = 'none';
+    const ca = document.getElementById('contentArea');
+    ca.style.display = 'block';
     window.scrollTo(0,0);
-  },200);
-}
-
-// 异步追加DOM块（给主线程喘息）
-function appendChunk(el, html){
-  return new Promise(resolve=>{
-    requestAnimationFrame(()=>{
-      const div = document.createTextNode ? null : null;
-      el.insertAdjacentHTML('beforeend', html);
-      // 让出主线程
-      setTimeout(resolve,0);
-    });
-  });
+  }, 300);
 }
 
 // ===== 切换卷
