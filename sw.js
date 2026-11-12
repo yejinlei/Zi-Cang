@@ -1,5 +1,5 @@
 /* Zi-Cang PWA Service Worker */
-const CACHE='zicang-v1';
+const CACHE='zicang-v6';
 const APP_SHELL=[
   './','./index.html','./library.html','./search.html','./ontology.html','./map.html','./data.html','./reader.html',
   './css/common.css','./js/common.js','./js/flexsearch.min.js',
