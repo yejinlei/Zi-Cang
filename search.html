@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>全文檢索 · 子藏本體論 Zi-Cang</title>
-<link rel="stylesheet" href="css/common.css?v=7">
+<link rel="stylesheet" href="css/common.css?v=11">
 <style>
   :root{--ink:#2c1810;--sub:#6b4423;--paper:#f5ecd7;--card:#faf4e3;--border:#d4b896;--gold:#8b2500;--accent:#a0522d}
   .search-hero{text-align:center;padding:60px 0 30px}
@@ -76,7 +76,7 @@
 </div>
 
 <script src="js/flexsearch.min.js"></script>
-<script src="js/common.js?v=7"></script>
+<script src="js/common.js?v=11"></script>
 <script>
 injectLayout('search');
 
@@ -85,7 +85,7 @@ function setQ(s){ document.getElementById('q').value=s; doSearch(); }
 
 async function init(){
   try{
-    const r = await fetch('data/books.json?v=7');
+    const r = await fetch('data/books.json?v=11');
     books = await r.json();
   }catch(e){
     document.getElementById('results').innerHTML='<div class="empty">索引加載失敗，請刷新重試</div>';

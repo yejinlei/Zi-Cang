@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>諸子時間軸 · 子藏</title>
-<link rel="stylesheet" href="css/common.css?v=10">
+<link rel="stylesheet" href="css/common.css?v=11">
 <style>
 .page-title{margin-bottom:12px}
 .era-nav{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 14px}
@@ -28,6 +28,14 @@
 .tl-tag.book{background:#2E5C3A}
 .tl-tag.event{background:#B8860B}
 .tl-body p{margin:4px 0 0;color:var(--muted);font-size:13px;line-height:1.8}
+.tl-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.tl-chips a{font-size:11px;padding:1px 7px;border-radius:10px;border:1px solid var(--border);text-decoration:none;color:var(--muted);line-height:1.7}
+.tl-chips a:hover{color:#fff}
+.tl-chips a.tp{color:#8B0000;border-color:#8B000055}.tl-chips a.tp:hover{background:#8B0000}
+.tl-chips a.tc{color:#2E5C3A;border-color:#2E5C3A55}.tl-chips a.tc:hover{background:#2E5C3A}
+.tl-chips a.tt{color:#1d4e89;border-color:#1d4e8955}.tl-chips a.tt:hover{background:#1d4e89}
+.tl-chips a.ti{color:var(--gold);border-color:var(--gold)55}.tl-chips a.ti:hover{background:var(--gold)}
+.tl-chips a.ts{color:#6b3fa0;border-color:#6b3fa055}.tl-chips a.ts:hover{background:#6b3fa0}
 </style>
 </head>
 <body>
@@ -45,10 +53,10 @@
   <div id="tl" class="tl"></div>
   <div id="siteFooter"></div>
 </div>
-<script src="data/people_ext.js?v=10"></script>
-<script src="js/linkify.js?v=10"></script>
-<script src="js/common.js?v=10"></script>
-<script src="data/timeline.js?v=10"></script>
+<script src="data/people_ext.js?v=11"></script>
+<script src="js/linkify.js?v=11"></script>
+<script src="js/common.js?v=11"></script>
+<script src="data/timeline.js?v=11"></script>
 <script>
 (function(){
   var data=window.TIMELINE_DATA||[];
@@ -81,10 +89,46 @@
         var tagName=d.type==='person'?'人物':d.type==='book'?'典籍':'事件';
         var it=document.createElement('div'); it.className='tl-item '+d.type;
         function escLk(s){return linkify.text(String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'));}
+        // 从 title+desc 抽取相关实体生成 chips（去重、最多 8 个）
+        var wholeText=(d.title||'')+' '+(d.desc||'');
+        var hits={person:{},classic:{},term:{},idiom:{},school:{}};
+        var lex=linkify.lexicon();
+        // 按长度降序优先匹配长词
+        lex.sort(function(a,b){return (b.name.length)-(a.name.length);});
+        lex.forEach(function(e){
+          if(!e.name||e.name.length<2) return;
+          if(wholeText.indexOf(e.name)>=0){
+            if(!hits[e.type][e.name]) hits[e.type][e.name]=e;
+          }
+        });
+        // 若条目本身就是 person/book，则不要把同名作为"相关"重复列出
+        var selfName=d.title.replace(/^《|》.*$/g,'').replace(/.*?([\u4e00-\u9fa5]{2,4})(生|卒|約|成書|遊|使|入|相|死).*/,'$1');
+        function chipHref(e){
+          if(e.type==='person') return linkify.personHref(e.id);
+          if(e.type==='classic') return linkify.classicHref(e.name);
+          if(e.type==='term') return 'terms.html#'+encodeURIComponent(e.name);
+          if(e.type==='idiom') return 'idioms.html#'+encodeURIComponent(e.name);
+          if(e.type==='school') return 'graph.html#school-'+encodeURIComponent(e.id||e.name);
+          return '#';
+        }
+        function chipClass(t){return 't'+(t==='person'?'p':t==='classic'?'c':t==='term'?'t':t==='idiom'?'i':'s');}
+        var chipsHtml='<div class="tl-chips no-link">';
+        var chipCount=0;
+        ['person','classic','term','school','idiom'].forEach(function(tp){
+          Object.keys(hits[tp]).forEach(function(n){
+            if(n===selfName && (tp==='person'||tp==='classic')) return;
+            if(chipCount>=8) return;
+            var e=hits[tp][n];
+            chipsHtml+='<a href="'+chipHref(e)+'" class="'+chipClass(tp)+'">'+n+'</a>';
+            chipCount++;
+          });
+        });
+        chipsHtml+='</div>';
         it.innerHTML='<div class="tl-year no-link">'+yearStr(d.year)+'</div>'+
           '<div class="tl-body">'+
             '<h4><span class="tl-tag '+d.type+' no-link">'+tagName+'</span>'+escLk(d.title)+'</h4>'+
             '<p>'+escLk(d.desc)+'</p>'+
+            (chipCount?chipsHtml:'')+
           '</div>';
         block.appendChild(it);
       });

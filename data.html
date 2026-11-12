@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>數據下載 · 子藏本體論 Zi-Cang</title>
-<link rel="stylesheet" href="css/common.css?v=8">
+<link rel="stylesheet" href="css/common.css?v=11">
 <style>
   :root{--ink:#2c1810;--sub:#6b4423;--paper:#f5ecd7;--card:#faf4e3;--border:#d4b896;--gold:#8b2500;--accent:#a0522d}
   .data-hero{padding:48px 28px 24px;text-align:center;max-width:900px;margin:0 auto}
@@ -71,7 +71,7 @@
 </div>
 </div>
 
-<script src="js/common.js?v=8"></script>
+<script src="js/common.js?v=11"></script>
 <script>
 injectLayout('data');
 
@@ -102,6 +102,8 @@ const FILES=[
    files:[{name:'timeline.json',url:'data/timeline.js',label:'JS數據'}]},
   {ico:'⚖',title:'歷代諸子評騭數據',desc:'七篇歷代學術品評文獻（莊子天下、荀子非十二子、韓非顯學、司馬談論六家、漢志諸子略、文心諸子、四庫子部），含各家學派評語與態度。',meta:['評騭','~13KB','7篇'],
    files:[{name:'panjiao.json',url:'data/panjiao.js',label:'JS數據'}]},
+  {ico:'⇌',title:'典籍引文關聯數據',desc:'38部先秦兩漢核心典籍之間的引用、批評、注釋、繼承、並稱五類關係共68條，每條關係附原文證據與出處。',meta:['引文關聯','~24KB','38部·68關係'],
+   files:[{name:'citation.json',url:'data/citation.js',label:'JS數據'}]},
   {ico:'⚙',title:'本體推理規則與查詢',desc:'9條TBox推理規則（師承傳遞、創始人歸屬、類傳遞等）、7個示例查詢（含SPARQL形式、推理邏輯、答案），含演示用ABox三元組。',meta:['推理','~10KB','9規則·7查詢'],
    files:[{name:'reasoning.json',url:'data/reasoning.js',label:'JS數據'}]},
   {ico:'🗂',title:'完整本體包',desc:'將以上所有文件打包為zip，含README說明與SPARQL查詢示例。',meta:['ZIP','一次性下載'],

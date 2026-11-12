@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>引文關聯圖 · 子藏</title>
+<link rel="stylesheet" href="css/common.css?v=11">
+<style>
+.page-title{margin-bottom:12px}
+.intro{color:var(--muted);margin-bottom:12px;font-size:14px;line-height:1.8}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:12px}
+.kpi{border:1px solid var(--border);border-radius:var(--radius);background:var(--card-bg);padding:10px 14px}
+.kpi-v{font-size:22px;color:var(--gold);font-weight:600;font-family:serif}
+.kpi-l{font-size:12px;color:var(--muted);margin-top:2px}
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:14px;height:3px;vertical-align:middle;margin-right:4px;border-radius:2px}
+.legend .dot{width:10px;height:10px;border-radius:50%}
+.ct-wrap{display:grid;grid-template-columns:1fr 340px;gap:14px}
+@media(max-width:900px){.ct-wrap{grid-template-columns:1fr}}
+#chart{border:1px solid var(--border);border-radius:var(--radius);background:var(--card-bg);height:640px}
+.ct-side{border:1px solid var(--border);border-radius:var(--radius);background:var(--card-bg);padding:14px;overflow-y:auto;max-height:640px}
+.ct-side h3{margin:0 0 8px;font-size:16px;color:var(--gold);border-bottom:1px solid var(--border);padding-bottom:6px}
+.ct-side .ct-meta{font-size:13px;color:var(--muted);margin-bottom:10px;line-height:1.7}
+.rel-list{list-style:none;padding:0;margin:0}
+.rel-item{border:1px solid var(--border);border-radius:8px;padding:8px 10px;margin-bottom:8px;font-size:13px;line-height:1.7}
+.rel-type{display:inline-block;font-size:11px;padding:1px 8px;border-radius:10px;color:#fff;margin-right:6px;vertical-align:middle}
+.rel-type.inherit{background:#2E5C3A}
+.rel-type.criticize{background:#8B0000}
+.rel-type.comment{background:#6b3fa0}
+.rel-type.quote{background:#1d4e89}
+.rel-type.parallel{background:var(--gold)}
+.rel-arrow{color:var(--muted);margin:0 3px;font-weight:600}
+.rel-ev{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.7;border-left:2px solid var(--gold);padding-left:8px}
+.rel-empty{color:var(--muted);font-size:13px;text-align:center;padding:20px 0}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.filters .chip{padding:4px 10px;border:1px solid var(--border);border-radius:14px;cursor:pointer;font-size:12px;background:var(--card-bg);color:var(--muted)}
+.filters .chip.active{background:var(--gold);color:#fff;border-color:var(--gold)}
+.read-link{display:inline-block;margin-top:8px;font-size:12px;color:var(--gold);text-decoration:none}
+.read-link:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="siteNav"></div>
+  <h1 class="page-title">諸子典籍引文關聯圖</h1>
+  <p class="intro">以力導向圖呈現先秦兩漢核心典籍之間的<b>引用、批評、注釋、承繼、並稱</b>五種關係。點擊任一節點，右側展示該書的所有引文證據；雙擊節點可打開典籍詳解。資料據《史記》《漢志》、原書篇題及學界定論錄入，不憑空編造。</p>
+
+  <div class="kpis">
+    <div class="kpi"><div class="kpi-v" id="kB">-</div><div class="kpi-l">核心典籍</div></div>
+    <div class="kpi"><div class="kpi-v" id="kR">-</div><div class="kpi-l">關聯關係</div></div>
+    <div class="kpi"><div class="kpi-v" id="kS">-</div><div class="kpi-l">覆蓋學派</div></div>
+    <div class="kpi"><div class="kpi-v" id="kT">-</div><div class="kpi-l">證據條目</div></div>
+  </div>
+
+  <div class="legend">
+    <span><i class="dot" style="background:#8B0000"></i>儒家</span>
+    <span><i class="dot" style="background:#1d4e89"></i>道家</span>
+    <span><i class="dot" style="background:#a33"></i>法家</span>
+    <span><i class="dot" style="background:#2E5C3A"></i>兵家</span>
+    <span><i class="dot" style="background:#444"></i>墨家</span>
+    <span><i class="dot" style="background:#d96d00"></i>名家</span>
+    <span><i class="dot" style="background:#704020"></i>陰陽家</span>
+    <span><i class="dot" style="background:#6b3fa0"></i>縱橫家/注疏</span>
+    <span><i class="dot" style="background:#558b2f"></i>雜家</span>
+    <span><i class="dot" style="background:#00796b"></i>醫家</span>
+    <span><i class="dot" style="background:#8d6e63"></i>史家</span>
+    <span style="margin-left:12px"><i style="background:#2E5C3A"></i>繼承</span>
+    <span><i style="background:#8B0000"></i>批評</span>
+    <span><i style="background:#6b3fa0"></i>注釋</span>
+    <span><i style="background:#1d4e89"></i>引用</span>
+    <span><i style="background:var(--gold)"></i>並稱</span>
+  </div>
+
+  <div class="filters" id="typeFilter">
+    <span class="chip active" data-type="all">全部</span>
+    <span class="chip" data-type="inherit">繼承</span>
+    <span class="chip" data-type="criticize">批評</span>
+    <span class="chip" data-type="comment">注釋</span>
+    <span class="chip" data-type="quote">引用</span>
+    <span class="chip" data-type="parallel">並稱</span>
+  </div>
+
+  <div class="ct-wrap">
+    <div id="chart"></div>
+    <div class="ct-side" id="side">
+      <h3 id="sTitle">點選節點查看關係</h3>
+      <div class="ct-meta" id="sMeta">左側力導向圖中，節點大小依典籍重要度加權；邊線顏色表示關係類型，箭頭方向為「<b>來源 → 指向</b>」（例如「韓非子 → 商君書 繼承」表示韓非子繼承商君書）。</div>
+      <ul class="rel-list" id="sList"></ul>
+    </div>
+  </div>
+
+  <div id="siteFooter"></div>
+</div>
+
+<script src="data/citation.js?v=11"></script>
+<script src="js/linkify.js?v=11"></script>
+<script src="js/common.js?v=11"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<script>
+(function(){
+  var D=window.CITATION_DATA;
+  var TYPE_META={
+    inherit:   {label:'繼承', color:'#2E5C3A'},
+    criticize: {label:'批評', color:'#8B0000'},
+    comment:   {label:'注釋', color:'#6b3fa0'},
+    quote:     {label:'引用', color:'#1d4e89'},
+    parallel:  {label:'並稱', color:'#B8860B'}
+  };
+  var SCHOOL_COLOR={
+    rujia:'#8B0000', daojia:'#1d4e89', fajia:'#a33', binfa:'#2E5C3A',
+    mojia:'#444', mingjia:'#d96d00', yinyang:'#704020', zongheng:'#6b3fa0',
+    zajia:'#558b2f', yijia:'#00796b', shixue:'#8d6e63', qita:'#6b3fa0'
+  };
+  var SCHOOL_NAME={
+    rujia:'儒家',daojia:'道家',fajia:'法家',binfa:'兵家',mojia:'墨家',
+    mingjia:'名家',yinyang:'陰陽家',zongheng:'縱橫家',zajia:'雜家',
+    yijia:'醫家',shixue:'史家',qita:'注疏類'
+  };
+  var bookMap={}; D.books.forEach(b=>bookMap[b.id]=b);
+
+  // KPI
+  var schools=new Set(); D.books.forEach(b=>{if(b.school!=='qita')schools.add(b.school);});
+  document.getElementById('kB').textContent=D.books.filter(b=>b.school!=='qita').length;
+  document.getElementById('kR').textContent=D.relations.length;
+  document.getElementById('kS').textContent=schools.size;
+  document.getElementById('kT').textContent=D.relations.length;
+
+  var currentType='all';
+  var chart=echarts.init(document.getElementById('chart'));
+
+  function getFiltered(){
+    var rels = currentType==='all'? D.relations : D.relations.filter(r=>r.type===currentType);
+    var used={};
+    rels.forEach(r=>{used[r.from]=1;used[r.to]=1;});
+    // 始終把注疏節點留著（如果有 comment 類型被過濾掉才不顯示）
+    var nodes=D.books.filter(b=>used[b.id]).map(b=>({
+      id:b.id, name:b.name,
+      symbolSize: Math.max(18, Math.min(60, (b.weight||40)/1.6)),
+      itemStyle:{color:SCHOOL_COLOR[b.school]||'#888'},
+      label:{show:true, color:'inherit', fontSize:12, fontWeight:600},
+      school:b.school, era:b.era, weight:b.weight
+    }));
+    var links=rels.map(r=>({
+      source:r.from, target:r.to,
+      lineStyle:{color:TYPE_META[r.type].color, width: r.type==='comment'?2:2, curveness:0.15, opacity:0.75},
+      label:{show:false},
+      _rel:r
+    }));
+    return {nodes:nodes, links:links};
+  }
+
+  function render(){
+    var d=getFiltered();
+    chart.setOption({
+      backgroundColor:'transparent',
+      tooltip:{
+        formatter:function(p){
+          if(p.dataType==='node'){
+            var b=bookMap[p.data.id];
+            return '<b>'+b.name+'</b><br/>派別：'+SCHOOL_NAME[b.school]+'<br/>時代：'+b.era;
+          }else{
+            var r=p.data._rel;
+            return '<b>'+bookMap[r.from].name+' → '+bookMap[r.to].name+'</b><br/>'+TYPE_META[r.type].label+'：'+r.label;
+          }
+        }
+      },
+      series:[{
+        type:'graph', layout:'force', roam:true, draggable:true,
+        data:d.nodes, links:d.links,
+        force:{repulsion:380, edgeLength:[60,120], gravity:0.08},
+        emphasis:{focus:'adjacency', lineStyle:{width:4}},
+        label:{position:'right', formatter:'{b}'},
+        edgeSymbol:['none','arrow'], edgeSymbolSize:[0,8],
+        lineStyle:{curveness:0.15}
+      }]
+    }, true);
+  }
+
+  // 初始渲染
+  render();
+  window.addEventListener('resize',()=>chart.resize());
+
+  // 點擊節點 → 右側詳情
+  chart.on('click', function(p){
+    if(p.dataType!=='node') return;
+    var bid=p.data.id;
+    showBook(bid);
+  });
+  chart.on('dblclick', function(p){
+    if(p.dataType==='node'){
+      var b=bookMap[p.data.id];
+      // 找 classics 跳轉
+      var href='classics.html#'+encodeURIComponent(b.name);
+      if(window.linkify && linkify.classicHref) href=linkify.classicHref(b.name);
+      window.open(href,'_blank');
+    }
+  });
+
+  function showBook(bid){
+    var b=bookMap[bid]; if(!b) return;
+    document.getElementById('sTitle').textContent=b.name;
+    var meta='<span style="color:'+SCHOOL_COLOR[b.school]+'">■ '+SCHOOL_NAME[b.school]+'</span> · '+b.era;
+    // 找閱讀入口
+    var readHref='#';
+    if(window.linkify && linkify.classicHref) readHref=linkify.classicHref(b.name);
+    if(readHref && readHref!=='#'){
+      meta+='<br/><a class="read-link" href="'+readHref+'" target="_blank">📖 閱讀原典 →</a>';
+    }
+    document.getElementById('sMeta').innerHTML=meta;
+
+    // 匯總所有與此書有關的關係（雙向）
+    var rels=[];
+    D.relations.forEach(r=>{
+      if(r.from===bid){ rels.push({dir:'out', r:r}); }
+      else if(r.to===bid){ rels.push({dir:'in', r:r}); }
+    });
+    // 過濾當前類型
+    if(currentType!=='all') rels=rels.filter(x=>x.r.type===currentType);
+    var list=document.getElementById('sList');
+    if(!rels.length){
+      list.innerHTML='<li class="rel-empty">當前篩選下無關聯</li>';
+      return;
+    }
+    list.innerHTML=rels.map(function(x){
+      var r=x.r;
+      var src=bookMap[r.from], tgt=bookMap[r.to];
+      var mid='<span class="rel-arrow">→</span>';
+      var left=x.dir==='out'? '<b>'+src.name+'</b>' : src.name;
+      var right=x.dir==='in'? '<b>'+tgt.name+'</b>' : tgt.name;
+      // 對於注疏，from=zhushu（注本）→ to=原典，反向顯示「zhushu 注 原典」
+      return '<li class="rel-item no-link">'+
+        '<span class="rel-type '+r.type+'">'+TYPE_META[r.type].label+'</span>'+
+        left+mid+right+
+        '<div style="font-size:12px;color:var(--muted);margin-top:2px">'+(r.label||'')+'</div>'+
+        '<div class="rel-ev">'+r.evidence+'</div>'+
+      '</li>';
+    }).join('');
+  }
+
+  // 類型篩選
+  document.querySelectorAll('#typeFilter .chip').forEach(function(c){
+    c.addEventListener('click',function(){
+      document.querySelectorAll('#typeFilter .chip').forEach(x=>x.classList.remove('active'));
+      c.classList.add('active');
+      currentType=c.dataset.type;
+      render();
+      document.getElementById('sList').innerHTML='<li class="rel-empty">已切換到「'+(currentType==='all'?'全部':TYPE_META[currentType].label)+'」視圖，點擊節點查看詳情</li>';
+    });
+  });
+
+  // 默認展示數量最多的節點（道德經）
+  var defaultBook='daodejing';
+  var mostIn=0;
+  var count={};
+  D.relations.forEach(r=>{count[r.to]=(count[r.to]||0)+1;count[r.from]=(count[r.from]||0)+1;});
+  Object.keys(count).forEach(k=>{if(count[k]>mostIn){mostIn=count[k];defaultBook=k;}});
+  showBook(defaultBook);
+})();
+</script>
+</body>
+</html>

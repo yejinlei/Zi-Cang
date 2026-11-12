@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>諸子評騭 · 子藏</title>
-<link rel="stylesheet" href="css/common.css?v=10">
+<link rel="stylesheet" href="css/common.css?v=11">
 <style>
 .page-title{margin-bottom:12px}
 .intro{color:var(--muted);margin-bottom:16px;font-size:14px;line-height:1.8}
@@ -23,6 +23,14 @@
 .pj-att.negative{background:#8B0000;color:#fff}
 .pj-att.neutral{background:#B8860B;color:#fff}
 .pj-quote{font-size:13px;line-height:1.8;color:var(--muted);font-style:italic;border-left:2px solid var(--gold);padding-left:10px;margin-top:4px}
+.pj-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:14px;padding-top:12px;border-top:1px dashed var(--border)}
+.pj-chips a{font-size:11px;padding:2px 8px;border-radius:10px;border:1px solid var(--border);text-decoration:none;color:var(--muted);line-height:1.7}
+.pj-chips a:hover{color:#fff}
+.pj-chips a.tp{color:#8B0000;border-color:#8B000055}.pj-chips a.tp:hover{background:#8B0000}
+.pj-chips a.tc{color:#2E5C3A;border-color:#2E5C3A55}.pj-chips a.tc:hover{background:#2E5C3A}
+.pj-chips a.tt{color:#1d4e89;border-color:#1d4e8955}.pj-chips a.tt:hover{background:#1d4e89}
+.pj-chips a.ti{color:var(--gold);border-color:var(--gold)55}.pj-chips a.ti:hover{background:var(--gold)}
+.pj-chips a.ts{color:#6b3fa0;border-color:#6b3fa055}.pj-chips a.ts:hover{background:#6b3fa0}
 </style>
 </head>
 <body>
@@ -33,10 +41,10 @@
   <div id="list"></div>
   <div id="siteFooter"></div>
 </div>
-<script src="data/people_ext.js?v=10"></script>
-<script src="js/linkify.js?v=10"></script>
-<script src="js/common.js?v=10"></script>
-<script src="data/panjiao.js?v=10"></script>
+<script src="data/people_ext.js?v=11"></script>
+<script src="js/linkify.js?v=11"></script>
+<script src="js/common.js?v=11"></script>
+<script src="data/panjiao.js?v=11"></script>
 <script>
 (function(){
   var data=window.PANJIAO_DATA||[];
@@ -50,7 +58,9 @@
       '<span class="pj-critic">'+lk(d.critic)+'</span>'+
       '</div>';
     var schools='<div class="pj-schools">';
+    var schoolNames=[];
     d.schools.forEach(function(s){
+      schoolNames.push(s.name);
       var att=s.attitude;
       var cls='pj-att';
       if(/推崇|欣賞|肯定|正宗|可觀|崇/.test(att)) cls+=' positive';
@@ -60,10 +70,46 @@
         '<div class="pj-quote">'+lk(s.judge)+'</div></div>';
     });
     schools+='</div>';
+    // 收集全文实体
+    var wholeText=d.title+' '+d.critic+' '+d.intro+' '+d.summary;
+    d.schools.forEach(s=>{ wholeText+=' '+s.name+' '+s.judge; });
+    var hits={person:{},classic:{},term:{},idiom:{},school:{}};
+    var lex=linkify.lexicon();
+    lex.sort(function(a,b){return (b.name.length)-(a.name.length);});
+    lex.forEach(function(e){
+      if(!e.name||e.name.length<2) return;
+      if(wholeText.indexOf(e.name)>=0){
+        // 学派名已在卡片里展示，不重复加入 chips
+        if(e.type==='school' && schoolNames.indexOf(e.name)>=0) return;
+        if(!hits[e.type][e.name]) hits[e.type][e.name]=e;
+      }
+    });
+    function chipHref(e){
+      if(e.type==='person') return linkify.personHref(e.id);
+      if(e.type==='classic') return linkify.classicHref(e.name);
+      if(e.type==='term') return 'terms.html#'+encodeURIComponent(e.name);
+      if(e.type==='idiom') return 'idioms.html#'+encodeURIComponent(e.name);
+      if(e.type==='school') return 'graph.html#school-'+encodeURIComponent(e.id||e.name);
+      return '#';
+    }
+    function chipClass(t){return 't'+(t==='person'?'p':t==='classic'?'c':t==='term'?'t':t==='idiom'?'i':'s');}
+    var chipsHtml='<div class="pj-chips no-link">';
+    var chipCount=0;
+    ['person','classic','term','school','idiom'].forEach(function(tp){
+      Object.keys(hits[tp]).forEach(function(n){
+        if(chipCount>=10) return;
+        var e=hits[tp][n];
+        chipsHtml+='<a href="'+chipHref(e)+'" class="'+chipClass(tp)+'">'+n+'</a>';
+        chipCount++;
+      });
+    });
+    chipsHtml+='</div>';
     card.innerHTML=head+'<div class="pj-body">'+
       '<div style="color:var(--muted);font-size:13px;margin-bottom:8px">'+lk(d.intro)+'</div>'+
       '<div class="pj-summary">'+lk(d.summary)+'</div>'+
-      schools+'</div>';
+      schools+
+      (chipCount?chipsHtml:'')+
+      '</div>';
     list.appendChild(card);
   });
 })();

@@ -1,4 +1,4 @@
-const CACHE = 'zicang-v10';
+const CACHE = 'zicang-v11';
 const APP_SHELL = [
   './',
   './index.html',
@@ -15,6 +15,7 @@ const APP_SHELL = [
   './panjiao.html',
   './timeline.html',
   './graph.html',
+  './citation.html',
   './reasoning.html',
   './statistics.html',
   './map.html',
@@ -37,6 +38,7 @@ const APP_SHELL = [
   './data/ontology-schema.js',
   './data/timeline.js',
   './data/panjiao.js',
+  './data/citation.js',
   './data/reasoning.js',
   './manifest.json'
 ];

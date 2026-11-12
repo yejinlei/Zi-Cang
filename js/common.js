@@ -79,6 +79,7 @@ function buildNav(active){
       {key:'panjiao',   href:'panjiao.html',    label:'⚖ 歷代評騭'},
       {key:'timeline',  href:'timeline.html',   label:'⎯ 時間長卷'},
       {key:'graph',     href:'graph.html',      label:'✺ 譜系圖譜'},
+      {key:'citation',  href:'citation.html',   label:'⇌ 引文關聯'},
       {key:'reasoning', href:'reasoning.html',  label:'⚙ 本體推理'},
       {key:'statistics',href:'statistics.html',  label:'▤ 典籍統計'}
     ]},
@@ -182,6 +183,7 @@ function getProgress(path){
     'panjiao.html': 'panjiao',
     'timeline.html': 'timeline',
     'graph.html': 'graph',
+    'citation.html': 'citation',
     'reasoning.html': 'reasoning',
     'statistics.html': 'statistics',
     'map.html': 'map',
