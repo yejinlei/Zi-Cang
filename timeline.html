@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>諸子時間軸 · 子藏</title>
-<link rel="stylesheet" href="css/common.css?v=9">
+<link rel="stylesheet" href="css/common.css?v=10">
 <style>
 .page-title{margin-bottom:12px}
 .era-nav{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 14px}
@@ -45,8 +45,10 @@
   <div id="tl" class="tl"></div>
   <div id="siteFooter"></div>
 </div>
-<script src="js/common.js?v=9"></script>
-<script src="data/timeline.js?v=9"></script>
+<script src="data/people_ext.js?v=10"></script>
+<script src="js/linkify.js?v=10"></script>
+<script src="js/common.js?v=10"></script>
+<script src="data/timeline.js?v=10"></script>
 <script>
 (function(){
   var data=window.TIMELINE_DATA||[];
@@ -78,10 +80,11 @@
       items.forEach(function(d){
         var tagName=d.type==='person'?'人物':d.type==='book'?'典籍':'事件';
         var it=document.createElement('div'); it.className='tl-item '+d.type;
-        it.innerHTML='<div class="tl-year">'+yearStr(d.year)+'</div>'+
+        function escLk(s){return linkify.text(String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'));}
+        it.innerHTML='<div class="tl-year no-link">'+yearStr(d.year)+'</div>'+
           '<div class="tl-body">'+
-            '<h4><span class="tl-tag '+d.type+'">'+tagName+'</span>'+d.title+'</h4>'+
-            '<p>'+d.desc+'</p>'+
+            '<h4><span class="tl-tag '+d.type+' no-link">'+tagName+'</span>'+escLk(d.title)+'</h4>'+
+            '<p>'+escLk(d.desc)+'</p>'+
           '</div>';
         block.appendChild(it);
       });

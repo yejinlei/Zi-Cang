@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>諸子人物譜 · 子藏</title>
+<link rel="stylesheet" href="css/common.css?v=10">
+<style>
+.people-hero{
+  background:linear-gradient(135deg,var(--bg-soft),var(--card));
+  border:1px solid var(--border);border-radius:14px;padding:28px;
+  margin-bottom:20px;position:relative;overflow:hidden;
+}
+.people-hero::before{
+  content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;
+  border:2px solid var(--gold);border-radius:50%;opacity:.12;
+}
+.people-hero::after{
+  content:"";position:absolute;right:20px;top:20px;width:80px;height:80px;
+  border:1px solid var(--gold);border-radius:50%;opacity:.25;
+}
+.people-hero h2{margin:0 0 6px 0;font-size:34px;color:var(--ink);letter-spacing:2px;}
+.people-title{color:var(--accent);font-size:15px;margin-bottom:12px;letter-spacing:1px;}
+.people-meta{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 14px 0;}
+.meta-pill{background:var(--paper);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:13px;color:var(--ink-soft);}
+.meta-pill b{color:var(--accent);margin-right:4px;}
+.people-bio{font-size:15px;line-height:1.9;color:var(--ink);margin:10px 0 0 0;text-indent:2em;}
+.section-title{font-size:18px;margin:22px 0 12px 0;color:var(--ink);border-left:4px solid var(--gold);padding-left:10px;}
+.section-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;}
+.people-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;}
+.people-card h4{margin:0 0 10px 0;font-size:15px;color:var(--accent);}
+.people-card ul{margin:0;padding-left:18px;line-height:1.9;font-size:14px;}
+.people-card li{margin-bottom:4px;}
+.quote-box{background:var(--paper);border-left:3px solid var(--gold);padding:10px 14px;margin:8px 0;border-radius:0 8px 8px 0;font-size:14px;line-height:1.8;color:var(--ink);font-style:italic;}
+.chain{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:6px 0;}
+.chain-node{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:13px;}
+.chain-node.cur{background:var(--gold);color:#fff;border-color:var(--gold);font-weight:bold;}
+.chain-arrow{color:var(--ink-soft);font-size:14px;}
+.relation-section{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px;}
+.relation-section h4{margin:0 0 10px 0;color:var(--accent);font-size:15px;display:flex;align-items:center;gap:6px;}
+.relation-section h4::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--gold);}
+.person-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin:10px 0;}
+.person-item{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 12px;cursor:pointer;transition:all .2s;}
+.person-item:hover{background:var(--accent);color:#fff;border-color:var(--accent);transform:translateY(-2px);}
+.person-item .n{font-size:15px;font-weight:bold;margin-bottom:2px;}
+.person-item .r{font-size:12px;opacity:.85;}
+.search-bar{margin:16px 0;display:flex;gap:8px;}
+.search-bar input{flex:1;padding:10px 14px;border:1px solid var(--border);border-radius:8px;background:var(--paper);font-size:14px;font-family:inherit;}
+.search-bar input:focus{outline:none;border-color:var(--gold);}
+.school-filter{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+.sf-btn{padding:6px 14px;border:1px solid var(--border);background:var(--paper);border-radius:20px;font-size:13px;cursor:pointer;font-family:inherit;transition:all .2s;color:var(--ink);}
+.sf-btn.active{background:var(--gold);color:#fff;border-color:var(--gold);}
+.back-bar{margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap;}
+.back-bar a{font-size:13px;color:var(--accent);}
+.lk{color:var(--accent);text-decoration:none;border-bottom:1px dashed var(--gold);transition:all .2s;}
+.lk:hover{color:var(--gold);background:rgba(184,134,11,.08);}
+.lk-person{border-bottom-color:#8B4513;}
+.lk-term{border-bottom-color:#2E5C3A;}
+.lk-classic{border-bottom-color:#8B0000;}
+.lk-idiom{border-bottom-color:#B8860B;}
+.lk-school{border-bottom-color:#4B0082;}
+.anecdote{background:var(--paper);border-radius:8px;padding:10px 14px;margin:6px 0;font-size:14px;line-height:1.9;border-left:3px double var(--gold);}
+.breadcrumbs{font-size:13px;color:var(--ink-soft);margin-bottom:10px;}
+.breadcrumbs a{color:var(--ink-soft);text-decoration:none;}
+.breadcrumbs a:hover{color:var(--accent);}
+.empty-state{text-align:center;padding:40px 20px;color:var(--ink-soft);}
+</style>
+</head>
+<body>
+<nav id="siteNav"></nav>
+<main class="container">
+  <h1 class="page-title">諸子人物譜</h1>
+  <p style="color:var(--ink-soft);margin:0 0 16px 0;">載 :ml-search[諸子百家]{text="諸子百家"}核心人物生平、思想體系、師承源流與歷史影響。點擊人物查看詳情，文中術語、書名、人名均可互見鏈接。</p>
+
+  <div class="kpi-grid" id="kpi"></div>
+
+  <!-- 列表/详情切换 -->
+  <div id="listView">
+    <div class="search-bar">
+      <input id="searchInput" type="text" placeholder="🔍 搜索人物（姓名/字/學派/思想/名言）…">
+    </div>
+    <div class="school-filter" id="schoolFilter"></div>
+    <div class="person-list" id="personList"></div>
+  </div>
+
+  <div id="detailView" style="display:none;">
+    <div class="breadcrumbs" id="bcrumbs"></div>
+    <div class="back-bar">
+      <button class="btn btn-ghost" onclick="showList()">← 返回人物列表</button>
+      <a class="btn btn-ghost" id="goGraph" href="graph.html" target="_blank">📊 譜系圖</a>
+      <a class="btn btn-ghost" id="goTimeline" href="timeline.html" target="_blank">📜 時間長卷</a>
+    </div>
+    <div id="detailContent"></div>
+  </div>
+</main>
+<footer id="siteFooter"></footer>
+
+<script src="data/people.js?v=10"></script>
+<script src="data/people_ext.js?v=10"></script>
+<script src="data/schools.js?v=10"></script>
+<script src="data/books.js?v=10"></script>
+<script src="data/classics.js?v=10"></script>
+<script src="data/terms.js?v=10"></script>
+<script src="data/idioms.js?v=10"></script>
+<script src="js/linkify.js?v=10"></script>
+<script src="js/common.js?v=10"></script>
+<script>
+const SCHOOL_MAP = {};
+SCHOOLS_DATA.forEach(s=>SCHOOL_MAP[s.id]=s);
+
+// 合并人物数据：以 people_ext 为主，people.js 提供 pos/links
+const people = {};
+PEOPLE_DATA.nodes.forEach(n=>{
+  people[n.id] = Object.assign({}, n, people[n.id]||{});
+});
+Object.keys(PEOPLE_EXT).forEach(pid=>{
+  const ex = PEOPLE_EXT[pid];
+  // 寻找对应的 people 节点 id
+  let pid_match = pid;
+  if(!people[pid]){
+    // 按 name 匹配
+    const found = Object.keys(people).find(k=>people[k].name===ex.name);
+    if(found) pid_match = found;
+  }
+  people[pid_match] = Object.assign({}, people[pid_match]||{id:pid_match,name:ex.name,school:guessSchool(ex)}, ex, {id:pid_match});
+});
+function guessSchool(ex){
+  if(!ex)return '';
+  if(ex.title && ex.title.includes('道'))return 'daojia';
+  if(ex.title && ex.title.includes('儒'))return 'rujia';
+  if(ex.title && ex.title.includes('法'))return 'fajia';
+  if(ex.title && ex.title.includes('墨'))return 'mojia';
+  if(ex.title && ex.title.includes('兵'))return 'bingjia';
+  return '';
+}
+
+const PPL = Object.values(people);
+
+// 关系索引
+const relIndex = {teacher:new Map(), disciple:new Map(), influence:new Map(), criticize:new Map()};
+PEOPLE_DATA.links.forEach(l=>{
+  const relMap = {
+    '弟子':'disciple','學生':'disciple','门人':'disciple','师承':'teacher',
+    '影响':'influence','批评':'criticize','同学':'disciple'
+  };
+  const type = relMap[l.rel] || 'influence';
+  if(!relIndex[type].has(l.source)) relIndex[type].set(l.source,[]);
+  relIndex[type].get(l.source).push({target:l.target,rel:l.rel});
+});
+// 反向关系
+const revIndex = {teacher:new Map(), disciple:new Map(), influence:new Map(), criticize:new Map()};
+['disciple','teacher','influence','criticize'].forEach(t=>{
+  const map = relIndex[t];
+  const revMap = revIndex[t];
+  map.forEach((arr,sid)=>{
+    arr.forEach(e=>{
+      if(!revMap.has(e.target)) revMap.set(e.target,[]);
+      revMap.get(e.target).push({source:sid,rel:e.rel});
+    });
+  });
+});
+
+// KPI
+function renderKpi(){
+  const total = PPL.length;
+  const schools = new Set(PPL.map(p=>p.school)).size;
+  const works = PPL.reduce((s,p)=>(p.works?s+p.works.length:s),0);
+  const quotes = PPL.reduce((s,p)=>(p.famous_quotes?s+p.famous_quotes.length:s),0);
+  const links = PEOPLE_DATA.links.length;
+  document.getElementById('kpi').innerHTML = `
+    <div class="kpi"><div class="kpi-num">${total}</div><div class="kpi-label">諸子人物</div></div>
+    <div class="kpi"><div class="kpi-num">${schools}</div><div class="kpi-label">學派覆蓋</div></div>
+    <div class="kpi"><div class="kpi-num">${works}</div><div class="kpi-label">核心著作</div></div>
+    <div class="kpi"><div class="kpi-num">${quotes}</div><div class="kpi-label">名言輯錄</div></div>
+    <div class="kpi"><div class="kpi-num">${links}</div><div class="kpi-label">師承/影響關係</div></div>
+  `;
+}
+
+// 学派过滤
+let curSchool = 'all';
+function renderSchools(){
+  const counts = {};
+  PPL.forEach(p=>{counts[p.school]=(counts[p.school]||0)+1;});
+  const html = ['<button class="sf-btn '+(curSchool==='all'?'active':'')+'" data-s="all">全部('+PPL.length+')</button>'];
+  Object.keys(SCHOOL_MAP).forEach(sid=>{
+    if(counts[sid]){
+      html.push(`<button class="sf-btn ${curSchool===sid?'active':''}" data-s="${sid}" style="--sc:${SCHOOL_MAP[sid].color};">${SCHOOL_MAP[sid].name}(${counts[sid]})</button>`);
+    }
+  });
+  document.getElementById('schoolFilter').innerHTML = html.join('');
+  document.querySelectorAll('.sf-btn').forEach(b=>{
+    b.onclick = ()=>{curSchool=b.dataset.s; renderList(document.getElementById('searchInput').value); renderSchools();};
+  });
+}
+
+function renderList(keyword){
+  keyword = (keyword||'').trim().toLowerCase();
+  let list = PPL;
+  if(curSchool!=='all') list = list.filter(p=>p.school===curSchool);
+  if(keyword){
+    list = list.filter(p=>{
+      const str = [p.name,p.title,p.role,p.bio||'',(p.core_thoughts||[]).join(','),(p.famous_quotes||[]).join(','),(p.works||[]).join(',')].join(',').toLowerCase();
+      return str.includes(keyword);
+    });
+  }
+  list = list.sort((a,b)=>(a.name||'').localeCompare(b.name||'','zh'));
+  if(!list.length){
+    document.getElementById('personList').innerHTML='<div class="empty-state" style="grid-column:1/-1;">未找到匹配的人物</div>';
+    return;
+  }
+  document.getElementById('personList').innerHTML = list.map(p=>{
+    const sc = SCHOOL_MAP[p.school];
+    const scolor = sc?sc.color:'#888';
+    const sname = sc?sc.name:'';
+    return `<div class="person-item" onclick="showPerson('${p.id}')" style="border-left:3px solid ${scolor};">
+      <div class="n">${p.name}</div>
+      <div class="r">${p.role||p.title||''} · ${sname}</div>
+    </div>`;
+  }).join('');
+}
+
+function schoolBadge(sid){
+  const s = SCHOOL_MAP[sid];
+  if(!s) return '';
+  return `<span class="tag" style="background:${s.color};color:#fff;border-color:${s.color};">${s.name}</span>`;
+}
+
+function personLink(pid, label, cls){
+  if(!people[pid]) return `<span>${label||pid}</span>`;
+  const n = label||people[pid].name;
+  return `<a href="people.html?id=${encodeURIComponent(pid)}" class="lk lk-person ${cls||''}">${n}</a>`;
+}
+
+function showPerson(pid){
+  const p = people[pid];
+  if(!p){ showList(); return; }
+  document.getElementById('listView').style.display='none';
+  document.getElementById('detailView').style.display='';
+  const sc = SCHOOL_MAP[p.school];
+  const scolor = sc?sc.color:'#888';
+
+  // 师承链（向前追溯三代）
+  function traceUp(id, depth){
+    if(depth>3||!people[id]) return [];
+    const teachers = (revIndex.disciple.get(id)||[]).map(e=>e.source);
+    let chain = [];
+    teachers.slice(0,2).forEach(t=>{
+      chain = chain.concat(traceUp(t, depth+1));
+      chain.push({id:t, dir:'up'});
+    });
+    chain.push({id:id, dir:'self'});
+    return chain;
+  }
+  function traceDown(id, depth){
+    if(depth>3||!people[id]) return [];
+    let chain = [{id:id, dir:'self'}];
+    const disciples = (relIndex.disciple.get(id)||[]).map(e=>e.target);
+    disciples.slice(0,3).forEach(d=>{
+      chain = chain.concat(traceDown(d, depth+1).slice(1));
+    });
+    return chain;
+  }
+  const up = traceUp(pid,0);
+  const down = traceDown(pid,0);
+  const chainNodes = up.slice(0,-1).concat(down);
+  const chainHtml = chainNodes.map(n=>{
+    if(n.dir==='self') return `<span class="chain-node cur">${people[n.id].name}</span>`;
+    return personLink(n.id, people[n.id].name, 'chain-node');
+  }).join('<span class="chain-arrow">→</span>');
+
+  // 各类关系
+  function relBlock(title, arr){
+    if(!arr||!arr.length) return '';
+    return `<div class="relation-section"><h4>${title}</h4>
+      <div class="chain">${arr.map(e=>personLink(e.id||e, people[e.id||e]?.name||e,'chain-node')).join('<span class="chain-arrow">·</span>')}</div></div>`;
+  }
+  const teachers = [...new Set([
+    ...(p.teachers||[]).map(t=>{
+      const hit = linkify.findPerson(t);
+      return hit?hit.id:t;
+    }),
+    ...(revIndex.disciple.get(pid)||[]).map(e=>e.source)
+  ])];
+  const disciples = [...new Set([
+    ...(p.disciples||[]).map(t=>{const hit=linkify.findPerson(t);return hit?hit.id:t;}),
+    ...(relIndex.disciple.get(pid)||[]).map(e=>e.target)
+  ])];
+  const influences = [...new Set([
+    ...(p.influences||[]).map(t=>{const hit=linkify.findPerson(t);return hit?hit.id:t;}),
+    ...(revIndex.influence.get(pid)||[]).map(e=>e.source)
+  ])];
+  const influencedBy = [...new Set([...(relIndex.influence.get(pid)||[]).map(e=>e.target)])];
+  const criticism = [...new Set([...(p.criticism||[]).map(t=>t)])];
+
+  // 著作
+  const worksHtml = (p.works||[]).map(w=>{
+    const cHit = linkify.findClassic(w);
+    if(cHit){
+      return `<li><a href="${linkify.classicHref(w)}" class="lk lk-classic">${w}</a></li>`;
+    }
+    return `<li>${w}</li>`;
+  }).join('');
+
+  // 核心思想
+  const thoughtsHtml = (p.core_thoughts||[]).map(t=>`<li>${linkify.text(t)}</li>`).join('');
+
+  // 名言
+  const quotesHtml = (p.famous_quotes||[]).map(q=>`<div class="quote-box">${linkify.text(q)}</div>`).join('');
+
+  // 轶事
+  const anecHtml = (p.anecdotes||[]).map(a=>`<div class="anecdote">${linkify.text(a)}</div>`).join('');
+
+  // 相关术语/成语/辩题
+  function tagList(arr, cls){
+    if(!arr||!arr.length) return '';
+    return arr.map(t=>{
+      if(cls==='term') return `<a href="terms.html#${encodeURIComponent(t)}" class="tag">${t}</a>`;
+      if(cls==='idiom') return `<a href="idioms.html#${encodeURIComponent(t)}" class="tag">${t}</a>`;
+      return `<span class="tag">${t}</span>`;
+    }).join(' ');
+  }
+
+  const relHtml =
+    relBlock('師承（所從受業）', teachers) +
+    relBlock('弟子（門人後學）', disciples) +
+    relBlock('淵源所自（所受影響）', influences) +
+    relBlock('所影響者（後學流衍）', influencedBy);
+
+  document.getElementById('detailContent').innerHTML = `
+    <div class="people-hero" style="border-top:4px solid ${scolor};">
+      <h2>${p.name}</h2>
+      <div class="people-title">${p.title||p.role||''}</div>
+      <div class="people-meta">
+        ${schoolBadge(p.school)}
+        <span class="meta-pill"><b>生卒</b>${p.years||p.era||'—'}</span>
+        <span class="meta-pill"><b>籍貫</b>${p.birth_place||'—'}</span>
+      </div>
+      <p class="people-bio">${linkify.text(p.bio||'暫無傳記。')}</p>
+    </div>
+
+    <div class="section-title">師承源流</div>
+    <div class="chain">${chainHtml||'<span class="meta-pill">師承鏈暫缺</span>'}</div>
+    ${relHtml}
+
+    <div class="section-grid">
+      <div class="people-card">
+        <h4>📜 核心思想</h4>
+        <ul>${thoughtsHtml||'<li>暫缺</li>'}</ul>
+      </div>
+      <div class="people-card">
+        <h4>📚 代表著作</h4>
+        <ul>${worksHtml||'<li>暫無記載</li>'}</ul>
+      </div>
+    </div>
+
+    <div class="section-title">💬 名言輯錄</div>
+    ${quotesHtml||'<div class="meta-pill" style="display:inline-block;">暫無記載</div>'}
+
+    ${criticism.length?`<div class="section-title">🗡 後世批評/論敵</div><div class="people-card"><ul>${criticism.map(c=>`<li>${linkify.text(c)}</li>`).join('')}</ul></div>`:''}
+
+    ${anecHtml?`<div class="section-title">📖 軼事典故</div>${anecHtml}`:''}
+
+    <div class="section-title">🔗 義理互見</div>
+    <div class="people-card">
+      ${p.related_terms&&p.related_terms.length?`<div style="margin-bottom:10px;"><b>核心概念：</b><br><div style="margin-top:6px;">${tagList(p.related_terms,'term')}</div></div>`:''}
+      ${p.related_idioms&&p.related_idioms.length?`<div style="margin-bottom:10px;"><b>相關典故成語：</b><br><div style="margin-top:6px;">${tagList(p.related_idioms,'idiom')}</div></div>`:''}
+      ${p.related_debates&&p.related_debates.length?`<div><b>相關論辯：</b><br><div style="margin-top:6px;">${p.related_debates.map(d=>`<a href="panjiao.html" class="tag">${d}</a>`).join(' ')}</div></div>`:''}
+    </div>
+
+    <div style="text-align:center;margin:30px 0;">
+      <button class="btn btn-ghost" onclick="showList()">← 返回人物列表</button>
+      <a class="btn" href="graph.html" target="_blank">📊 在傳承譜系圖中查看</a>
+      <a class="btn" href="panjiao.html" target="_blank">📖 歷代評騭</a>
+    </div>
+  `;
+  document.getElementById('bcrumbs').innerHTML = `<a href="index.html">首頁</a> / <a href="javascript:showList()">人物譜</a> / <b>${p.name}</b>`;
+  window.scrollTo({top:0,behavior:'smooth'});
+  history.replaceState(null,'',`?id=${encodeURIComponent(pid)}`);
+}
+
+function showList(){
+  document.getElementById('listView').style.display='';
+  document.getElementById('detailView').style.display='none';
+  history.replaceState(null,'',location.pathname);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// 初始化
+renderKpi();
+renderSchools();
+renderList();
+document.getElementById('searchInput').addEventListener('input',e=>renderList(e.target.value));
+
+// 处理 URL 参数
+const params = new URLSearchParams(location.search);
+if(params.get('id')){
+  setTimeout(()=>showPerson(params.get('id')),100);
+}
+</script>
+</body>
+</html>

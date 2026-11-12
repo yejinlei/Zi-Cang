@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>諸子術語詞典 | 子藏本體論</title>
-<link rel="stylesheet" href="css/common.css?v=8">
+<link rel="stylesheet" href="css/common.css?v=10">
 <style>
   .tm-wrap { max-width:1240px; margin:0 auto; padding:24px 20px 70px; }
   .tm-title { font-family:"STKaiti",serif; font-size:34px; color:var(--ink); letter-spacing:3px; margin-bottom:6px; }
@@ -62,8 +62,10 @@
 </div>
 <div id="siteFooter"></div>
 
-<script src="js/common.js?v=8"></script>
-<script src="data/terms.js?v=8"></script>
+<script src="data/people_ext.js?v=10"></script>
+<script src="js/linkify.js?v=10"></script>
+<script src="js/common.js?v=10"></script>
+<script src="data/terms.js?v=10"></script>
 <script>
 (function(){
   var D = window.TERMS_DATA || [];
@@ -90,20 +92,20 @@
     document.getElementById('count').textContent = '共 ' + f.length + ' 條術語';
     document.getElementById('grid').innerHTML = f.map(function(t){
       var h = '<div class="tm-card"><div class="tm-head">'+
-        '<span class="tm-name">'+esc(t.name)+'</span>'+
+        '<span class="tm-name no-link">'+esc(t.name)+'</span>'+
         '<span class="tm-py">'+esc(t.pinyin||'')+'</span>'+
         '<span class="tm-cat">'+esc(t.cat)+'</span></div>';
-      h += '<div class="tm-school">主要歸屬：'+esc(t.school||'')+'</div>';
-      h += '<div class="tm-def">'+esc(t.def||'')+'</div>';
-      if(t.source) h += '<div class="tm-src">'+esc(t.source)+'</div>';
+      h += '<div class="tm-school">主要歸屬：'+linkify.text(esc(t.school||''))+'</div>';
+      h += '<div class="tm-def">'+linkify.text(esc(t.def||''))+'</div>';
+      if(t.source) h += '<div class="tm-src">'+linkify.text(esc(t.source))+'</div>';
       if(t.views && t.views.length){
         h += '<div class="tm-views"><h5>各家異解（'+t.views.length+'）</h5>'+
           t.views.map(function(v){
-            return '<div class="tm-view"><span class="sch">'+esc(v.school)+'</span><span class="vtx">'+esc(v.view)+'</span></div>';
+            return '<div class="tm-view"><span class="sch no-link">'+esc(v.school)+'</span><span class="vtx">'+linkify.text(esc(v.view))+'</span></div>';
           }).join('')+'</div>';
       }
       if(t.related && t.related.length){
-        h += '<div class="tm-rel">'+t.related.map(function(r){
+        h += '<div class="tm-rel no-link">'+t.related.map(function(r){
           return '<span data-jump="'+esc(r)+'">'+esc(r)+'</span>';
         }).join('')+'</div>';
       }

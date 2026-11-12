@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>成語典故庫 | 子藏本體論</title>
-<link rel="stylesheet" href="css/common.css?v=8">
+<link rel="stylesheet" href="css/common.css?v=10">
 <style>
   .id-wrap { max-width:1240px; margin:0 auto; padding:24px 20px 70px; }
   .id-title { font-family:"STKaiti",serif; font-size:34px; color:var(--ink); letter-spacing:3px; margin-bottom:6px; }
@@ -57,8 +57,10 @@
 </div>
 <div id="siteFooter"></div>
 
-<script src="js/common.js?v=8"></script>
-<script src="data/idioms.js?v=8"></script>
+<script src="data/people_ext.js?v=10"></script>
+<script src="js/linkify.js?v=10"></script>
+<script src="js/common.js?v=10"></script>
+<script src="data/idioms.js?v=10"></script>
 <script>
 (function(){
   var D = (window.IDIOMS_DATA||[]).filter(function(x){return x.name!=='其他';});
@@ -88,14 +90,14 @@
     document.getElementById('count').textContent = '共 ' + f.length + ' 條成語典故';
     document.getElementById('grid').innerHTML = f.map(function(x){
       var h = '<div class="id-card"><div class="id-head">'+
-        '<span class="id-name">'+esc(x.name)+'</span>'+
+        '<span class="id-name no-link">'+esc(x.name)+'</span>'+
         '<span class="id-py">'+esc(x.pinyin||'')+'</span>'+
-        '<span class="id-src">'+esc(x.src||'')+'</span></div>';
-      if(x.text) h += '<div class="id-text">'+esc(x.text)+'</div>';
-      h += '<div class="id-mean">'+esc(x.mean||'')+'</div>';
+        '<span class="id-src">'+linkify.text(esc(x.src||''))+'</span></div>';
+      if(x.text) h += '<div class="id-text">'+linkify.text(esc(x.text))+'</div>';
+      h += '<div class="id-mean">'+linkify.text(esc(x.mean||''))+'</div>';
       if(x.tag) h += '<div class="id-tagrow">類別：'+esc(x.tag)+'</div>';
       if(x.rel && x.rel.length){
-        h += '<div class="id-rel">'+x.rel.map(function(r){
+        h += '<div class="id-rel no-link">'+x.rel.map(function(r){
           return '<span data-jump="'+esc(r)+'">'+esc(r)+'</span>';
         }).join('')+'</div>';
       }

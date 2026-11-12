@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>研讀工具 | 子藏本體論</title>
-<link rel="stylesheet" href="css/common.css?v=8">
+<link rel="stylesheet" href="css/common.css?v=10">
 <style>
   .tl-wrap { max-width:1240px; margin:0 auto; padding:24px 20px 70px; }
   .tl-title { font-family:"STKaiti",serif; font-size:34px; color:var(--ink); letter-spacing:3px; margin-bottom:6px; }
@@ -113,10 +113,12 @@
 </div>
 <div id="siteFooter"></div>
 
-<script src="js/common.js?v=8"></script>
-<script src="data/paths.js?v=8"></script>
-<script src="data/commentaries.js?v=8"></script>
-<script src="data/terms.js?v=8"></script>
+<script src="data/people_ext.js?v=10"></script>
+<script src="js/linkify.js?v=10"></script>
+<script src="js/common.js?v=10"></script>
+<script src="data/paths.js?v=10"></script>
+<script src="data/commentaries.js?v=10"></script>
+<script src="data/terms.js?v=10"></script>
 <script>
 (function(){
   function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -137,12 +139,12 @@
   pSel.innerHTML = PATHS.map(function(p,i){ return '<option value="'+i+'">'+esc(p.name)+'（'+esc(p.school)+'）</option>'; }).join('');
   function drawPath(){
     var p = PATHS[pSel.value]; if(!p){document.getElementById('pathOut').innerHTML='';return;}
-    var h = '<div class="path-desc">'+esc(p.desc)+'<div class="refs">典源：'+esc((p.refs||[]).join('；'))+'</div></div>';
+    var h = '<div class="path-desc">'+linkify.text(esc(p.desc))+'<div class="refs">典源：'+linkify.text(esc((p.refs||[]).join('；')))+'</div></div>';
     h += '<div class="chain">';
     p.steps.forEach(function(s,i){
-      h += '<div class="step"><div class="node">'+esc(s.node)+'</div>'+
-           '<div class="step-body"><div class="src">'+esc(s.text)+'</div>'+
-           '<div class="note">'+esc(s.note)+'</div></div></div>';
+      h += '<div class="step"><div class="node no-link">'+esc(s.node)+'</div>'+
+           '<div class="step-body"><div class="src">'+linkify.text(esc(s.text))+'</div>'+
+           '<div class="note">'+linkify.text(esc(s.note))+'</div></div></div>';
     });
     h += '</div>';
     document.getElementById('pathOut').innerHTML = h;
@@ -155,15 +157,15 @@
   cSel.innerHTML = COM.map(function(c,i){ return '<option value="'+i+'">'+esc(c.book+' · '+c.chapter)+'</option>'; }).join('');
   function drawCom(){
     var c = COM[cSel.value]; if(!c){document.getElementById('comOut').innerHTML='';return;}
-    var h = '<div class="base-sentence">'+esc(c.base)+'</div>';
+    var h = '<div class="base-sentence">'+linkify.text(esc(c.base))+'</div>';
     h += '<table class="var-table"><tr><th>版本 / 來源</th><th>文字</th></tr>'+
-      (c.variants||[]).map(function(v){ return '<tr><td class="s">'+esc(v.src)+'</td><td class="v">'+esc(v.text)+'</td></tr>'; }).join('')+'</table>';
-    if(c.collation) h += '<div class="collation"><b>校記：</b>'+esc(c.collation)+'</div>';
+      (c.variants||[]).map(function(v){ return '<tr><td class="s no-link">'+esc(v.src)+'</td><td class="v">'+linkify.text(esc(v.text))+'</td></tr>'; }).join('')+'</table>';
+    if(c.collation) h += '<div class="collation"><b>校記：</b>'+linkify.text(esc(c.collation))+'</div>';
     if(c.readings && c.readings.length){
       h += '<div class="readings"><h5>各家注疏</h5>'+
-        c.readings.map(function(r){ return '<div class="reading"><span class="who">'+esc(r.who)+'</span><span class="txt">'+esc(r.view)+'</span></div>'; }).join('')+'</div>';
+        c.readings.map(function(r){ return '<div class="reading"><span class="who no-link">'+esc(r.who)+'</span><span class="txt">'+linkify.text(esc(r.view))+'</span></div>'; }).join('')+'</div>';
     }
-    if(c.meaning) h += '<div class="sec-h">義旨</div><div class="mean-box">'+esc(c.meaning)+'</div>';
+    if(c.meaning) h += '<div class="sec-h">義旨</div><div class="mean-box">'+linkify.text(esc(c.meaning))+'</div>';
     document.getElementById('comOut').innerHTML = h;
   }
   cSel.addEventListener('change', drawCom);
@@ -174,10 +176,10 @@
   tSel.innerHTML = TERMS.map(function(t,i){ return '<option value="'+i+'">'+esc(t.name)+'（'+t.views.length+'家）</option>'; }).join('');
   function drawTerm(){
     var t = TERMS[tSel.value]; if(!t){document.getElementById('termOut').innerHTML='';return;}
-    var h = '<div class="term-def"><span class="nm">'+esc(t.name)+'</span>'+esc(t.def)+
-            (t.source?'<div style="font-family:\'STKaiti\',serif;color:var(--gold);margin-top:8px">'+esc(t.source)+'</div>':'')+'</div>';
+    var h = '<div class="term-def"><span class="nm no-link">'+esc(t.name)+'</span>'+linkify.text(esc(t.def))+
+            (t.source?'<div style="font-family:\'STKaiti\',serif;color:var(--gold);margin-top:8px">'+linkify.text(esc(t.source))+'</div>':'')+'</div>';
     h += '<div class="cmp-board">'+t.views.map(function(v){
-      return '<div class="cmp-col"><div class="hd">'+esc(v.school)+'</div><div class="bd">'+esc(v.view)+'</div></div>';
+      return '<div class="cmp-col"><div class="hd no-link">'+esc(v.school)+'</div><div class="bd">'+linkify.text(esc(v.view))+'</div></div>';
     }).join('')+'</div>';
     document.getElementById('termOut').innerHTML = h;
   }

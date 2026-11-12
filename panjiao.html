@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>諸子評騭 · 子藏</title>
-<link rel="stylesheet" href="css/common.css?v=9">
+<link rel="stylesheet" href="css/common.css?v=10">
 <style>
 .page-title{margin-bottom:12px}
 .intro{color:var(--muted);margin-bottom:16px;font-size:14px;line-height:1.8}
@@ -33,18 +33,21 @@
   <div id="list"></div>
   <div id="siteFooter"></div>
 </div>
-<script src="js/common.js?v=9"></script>
-<script src="data/panjiao.js?v=9"></script>
+<script src="data/people_ext.js?v=10"></script>
+<script src="js/linkify.js?v=10"></script>
+<script src="js/common.js?v=10"></script>
+<script src="data/panjiao.js?v=10"></script>
 <script>
 (function(){
   var data=window.PANJIAO_DATA||[];
   var list=document.getElementById('list');
+  function lk(s){return linkify.text(String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'));}
   data.forEach(function(d){
     var card=document.createElement('div'); card.className='pj-card';
     var head='<div class="pj-head">'+
-      '<span class="pj-period">'+d.period+'</span>'+
-      '<span class="pj-title">'+d.title+'</span>'+
-      '<span class="pj-critic">'+d.critic+'</span>'+
+      '<span class="pj-period no-link">'+lk(d.period)+'</span>'+
+      '<span class="pj-title no-link">'+lk(d.title)+'</span>'+
+      '<span class="pj-critic">'+lk(d.critic)+'</span>'+
       '</div>';
     var schools='<div class="pj-schools">';
     d.schools.forEach(function(s){
@@ -53,13 +56,13 @@
       if(/推崇|欣賞|肯定|正宗|可觀|崇/.test(att)) cls+=' positive';
       else if(/批評|否定|嚴厲|慘刻|貶|傷恩|不足/.test(att)) cls+=' negative';
       else cls+=' neutral';
-      schools+='<div class="pj-sch"><h5>'+s.name+'<span class="'+cls+'">'+att+'</span></h5>'+
-        '<div class="pj-quote">'+s.judge+'</div></div>';
+      schools+='<div class="pj-sch"><h5 class="no-link">'+s.name+'<span class="'+cls+' no-link">'+att+'</span></h5>'+
+        '<div class="pj-quote">'+lk(s.judge)+'</div></div>';
     });
     schools+='</div>';
     card.innerHTML=head+'<div class="pj-body">'+
-      '<div style="color:var(--muted);font-size:13px;margin-bottom:8px">'+d.intro+'</div>'+
-      '<div class="pj-summary">'+d.summary+'</div>'+
+      '<div style="color:var(--muted);font-size:13px;margin-bottom:8px">'+lk(d.intro)+'</div>'+
+      '<div class="pj-summary">'+lk(d.summary)+'</div>'+
       schools+'</div>';
     list.appendChild(card);
   });

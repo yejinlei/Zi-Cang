@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>典籍詳解 | 子藏本體論</title>
-<link rel="stylesheet" href="css/common.css?v=8">
+<link rel="stylesheet" href="css/common.css?v=10">
 <style>
   .cl-wrap { max-width:1240px; margin:0 auto; padding:24px 20px 70px; }
   .cl-head { margin-bottom:20px; }
@@ -88,9 +88,11 @@
 </div>
 <div id="siteFooter"></div>
 
-<script src="js/common.js?v=8"></script>
-<script src="data/books.js?v=8"></script>
-<script src="data/classics.js?v=8"></script>
+<script src="data/people_ext.js?v=10"></script>
+<script src="js/linkify.js?v=10"></script>
+<script src="js/common.js?v=10"></script>
+<script src="data/books.js?v=10"></script>
+<script src="data/classics.js?v=10"></script>
 <script>
 (function(){
   var D = (window.CLASSICS_DATA||[]).slice();
@@ -140,27 +142,27 @@
     var h = '<div class="cl-card'+(isFull?' full':'')+'" data-title="'+esc(c.title)+'">';
     h += '<div class="cl-card-top"><span class="cl-name">'+esc(c.title)+'</span>'+
          '<span class="cl-badge'+(isFull?' full':'')+'">'+esc(c.cat)+'</span>'+
-         (isFull?'<span class="cl-badge">'+esc(c.school||'')+'</span>':'')+'</div>';
-    if(c.author) h += '<div class="cl-author">'+esc(c.author)+(c.era?' · '+esc(c.era):'')+'</div>';
-    h += '<div class="cl-brief">'+esc(c.brief||'')+'</div>';
+         (isFull&&c.school?'<span class="cl-badge">'+linkify.text(esc(c.school))+'</span>':'')+'</div>';
+    if(c.author) h += '<div class="cl-author">'+linkify.text(esc(c.author))+(c.era?' · '+esc(c.era):'')+'</div>';
+    h += '<div class="cl-brief">'+linkify.text(esc(c.brief||''))+'</div>';
     h += '<div class="cl-meta">'+(c.chars?fmtChars(c.chars)+'字':'')+
          (c.volumes&&c.volumes>1?' · '+c.volumes+'卷':'')+'</div>';
     if(isFull){
       h += '<div class="cl-detail">';
       if(c.key&&c.key.length){
-        h += '<h5>核心論點</h5><ul>'+c.key.map(function(k){return '<li>'+esc(k)+'</li>';}).join('')+'</ul>';
+        h += '<h5>核心論點</h5><ul>'+c.key.map(function(k){return '<li>'+linkify.text(esc(k))+'</li>';}).join('')+'</ul>';
       }
       if(c.quotes&&c.quotes.length){
         h += '<h5>原文引證</h5>'+c.quotes.map(function(q){
-          return '<div class="cl-quote">'+esc(q.t)+'<small>——'+esc(q.s)+'</small></div>';
+          return '<div class="cl-quote">'+linkify.text(esc(q.t))+'<small>——'+linkify.text(esc(q.s))+'</small></div>';
         }).join('');
       }
-      if(c.notes) h += '<h5>版本與研讀</h5><div class="cl-brief">'+esc(c.notes)+'</div>';
+      if(c.notes) h += '<h5>版本與研讀</h5><div class="cl-brief">'+linkify.text(esc(c.notes))+'</div>';
       h += '</div>';
     }
     var tags = (c.tags||[]).map(function(t){return '<span>'+esc(t)+'</span>';}).join('');
-    if(tags) h += '<div class="cl-tags">'+tags+'</div>';
-    h += '<div class="cl-actions">';
+    if(tags) h += '<div class="cl-tags no-link">'+tags+'</div>';
+    h += '<div class="cl-actions no-link">';
     if(path) h += '<a class="cl-link" href="reader.html?b='+encodeURIComponent(path)+'">進入閱讀 →</a>';
     if(isFull) h += '<button class="cl-toggle">展開詳解 ▾</button>';
     h += '</div></div>';

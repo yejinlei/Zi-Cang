@@ -75,11 +75,12 @@ function buildNav(active){
       {key:'spec',     href:'spec.html',     label:'📐 本體規範'}
     ]},
     {key:'research',icon:'✦', label:'義理研究', children:[
-      {key:'panjiao',    href:'panjiao.html',    label:'⚖ 歷代評騭'},
-      {key:'timeline',   href:'timeline.html',   label:'⎯ 時間長卷'},
-      {key:'graph',      href:'graph.html',      label:'✺ 譜系圖譜'},
-      {key:'reasoning',  href:'reasoning.html',  label:'⚙ 本體推理'},
-      {key:'statistics', href:'statistics.html', label:'▤ 典籍統計'}
+      {key:'people',    href:'people.html',    label:'👤 諸子人物'},
+      {key:'panjiao',   href:'panjiao.html',    label:'⚖ 歷代評騭'},
+      {key:'timeline',  href:'timeline.html',   label:'⎯ 時間長卷'},
+      {key:'graph',     href:'graph.html',      label:'✺ 譜系圖譜'},
+      {key:'reasoning', href:'reasoning.html',  label:'⚙ 本體推理'},
+      {key:'statistics',href:'statistics.html',  label:'▤ 典籍統計'}
     ]},
     {key:'map',     href:'map.html',      icon:'🗺', label:'時空'},
     {key:'data',    href:'data.html',     icon:'💾', label:'數據'}
@@ -177,6 +178,7 @@ function getProgress(path){
     'idioms.html': 'idioms',
     'tools.html': 'tools',
     'spec.html': 'spec',
+    'people.html': 'people',
     'panjiao.html': 'panjiao',
     'timeline.html': 'timeline',
     'graph.html': 'graph',

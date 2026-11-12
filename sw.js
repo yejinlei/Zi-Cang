@@ -1,4 +1,4 @@
-const CACHE = 'zicang-v9';
+const CACHE = 'zicang-v10';
 const APP_SHELL = [
   './',
   './index.html',
@@ -11,6 +11,7 @@ const APP_SHELL = [
   './idioms.html',
   './tools.html',
   './spec.html',
+  './people.html',
   './panjiao.html',
   './timeline.html',
   './graph.html',
@@ -20,11 +21,13 @@ const APP_SHELL = [
   './data.html',
   './css/common.css',
   './js/common.js',
+  './js/linkify.js',
   './js/flexsearch.min.js',
   './data/books.js',
   './data/daoti.js',
   './data/debates.js',
   './data/people.js',
+  './data/people_ext.js',
   './data/schools.js',
   './data/classics.js',
   './data/terms.js',
@@ -51,7 +54,6 @@ self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
   if (url.origin !== location.origin) return;
   const path = url.pathname;
-  // texts/ 大文本：stale-while-revalidate（后台更新）
   if (path.startsWith('/texts/') || path.startsWith('/Zi-Cang/texts/')) {
     e.respondWith(
       caches.match(e.request).then(cached => {
@@ -67,7 +69,6 @@ self.addEventListener('fetch', e => {
     );
     return;
   }
-  // 其余走 cache-first
   e.respondWith(
     caches.match(e.request).then(cached => {
       return cached || fetch(e.request).then(res => {
