@@ -137,3 +137,25 @@ function saveProgress(path,pos){
 function getProgress(path){
   try{return JSON.parse(localStorage.getItem(PROG_KEY)||'{}')[path]||0;}catch(e){return 0;}
 }
+
+// ====== 自动初始化：根据URL判断当前页面并注入导航/页脚/主题 ======
+(function(){
+  const path = location.pathname.split('/').pop() || 'index.html';
+  const pageMap = {
+    '': 'home', 'index.html': 'home',
+    'library.html': 'library',
+    'search.html': 'search',
+    'ontology.html': 'ontology',
+    'map.html': 'map',
+    'data.html': 'data',
+    'reader.html': 'library'  // 阅读器高亮全文库
+  };
+  const active = pageMap[path] || 'home';
+  // 延迟到DOM就绪
+  const run = () => injectLayout(active);
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', run);
+  } else {
+    run();
+  }
+})();

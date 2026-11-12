@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>全文庫 | 子藏本體論</title>
-<link rel="stylesheet" href="css/common.css">
+<link rel="stylesheet" href="css/common.css?v=4">
 <style>
   .lib-wrap { max-width:1200px; margin:0 auto; padding:24px 20px 60px; }
   .lib-title { font-family:"STKaiti","KaiTi",serif; font-size:32px; color:var(--ink); margin-bottom:6px; }
@@ -95,9 +95,7 @@
   <button class="load-more" id="loadMore" style="display:none" onclick="loadMore()">加載更多 ▾</button>
 </div>
 
-<div id="siteFooter"></div>
-
-<script src="css/common.js"></script>
+<script src="js/common.js?v=4"></script>
 <script>
 let ALL_BOOKS = [];
 const CAT_ORDER = ['all','诸子','兵家','法家','农家','算学','笔记','类书'];
@@ -213,5 +211,6 @@ document.getElementById('searchInput').addEventListener('input',()=>{
 init();
 </script>
 </div><!-- /page-wrap -->
+<div id="siteFooter"></div>
 </body>
 </html>
