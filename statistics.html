@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>典籍統計 · 子藏</title>
+<link rel="stylesheet" href="css/common.css?v=9">
+<style>
+.page-title{margin-bottom:12px}
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:16px}
+.kpi{border:1px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center;background:var(--card-bg)}
+.kpi .v{font-size:26px;color:var(--gold);font-family:serif;font-weight:600}
+.kpi .l{font-size:12px;color:var(--muted);margin-top:4px}
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.chart-card{border:1px solid var(--border);border-radius:var(--radius);background:var(--card-bg);padding:14px}
+.chart-card h3{margin:0 0 6px;font-size:15px;color:var(--gold)}
+.chart-card .sub{font-size:12px;color:var(--muted);margin-bottom:8px}
+.chart-box{width:100%;height:300px}
+.chart-box.tall{height:400px}
+.table-card{margin-top:14px;border:1px solid var(--border);border-radius:var(--radius);background:var(--card-bg);padding:14px}
+.table-card h3{margin:0 0 8px;font-size:15px;color:var(--gold)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{border:1px solid var(--border);padding:6px 10px;text-align:left}
+th{background:var(--bg);color:var(--gold)}
+td.num{text-align:right;font-family:monospace}
+@media(max-width:800px){.chart-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="siteNav"></div>
+  <h1 class="page-title">子藏典籍統計</h1>
+  <p style="color:var(--muted);margin:0 0 12px">依實際收錄文本的數據，統計典籍數量、字數、學派、朝代、文件大小等維度。</p>
+
+  <div class="kpi-row" id="kpis"></div>
+
+  <div class="chart-grid">
+    <div class="chart-card">
+      <h3>按分類典籍數</h3>
+      <div class="sub">七大分類的典籍數量分佈</div>
+      <div class="chart-box" id="chart-cat"></div>
+    </div>
+    <div class="chart-card">
+      <h3>按分類字數（萬字）</h3>
+      <div class="sub">各分類總字數對比</div>
+      <div class="chart-box" id="chart-chars"></div>
+    </div>
+    <div class="chart-card">
+      <h3>學派典籍分佈（精編庫）</h3>
+      <div class="sub">296 部精編典籍所屬學派</div>
+      <div class="chart-box" id="chart-school"></div>
+    </div>
+    <div class="chart-card">
+      <h3>典籍字數 Top 15</h3>
+      <div class="sub">收錄中字數最多的典籍（萬字）</div>
+      <div class="chart-box tall" id="chart-top"></div>
+    </div>
+  </div>
+
+  <div class="table-card">
+    <h3>分類詳情表</h3>
+    <table id="cat-table">
+      <thead><tr><th>分類</th><th>典籍數</th><th>總字數（萬）</th><th>總大小（KB）</th><th>平均字數（萬）</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div id="siteFooter"></div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<script src="js/common.js?v=9"></script>
+<script src="data/books.js?v=9"></script>
+<script src="data/classics.js?v=9"></script>
+<script>
+(function(){
+  // books.js 直接声明 const CATEGORIES/ALL_BOOKS
+  var books=window.ALL_BOOKS||[];
+  var cats=window.CATEGORIES||{};
+  var classics=window.CLASSICS_DATA||[];
+  var TOTAL_BOOKS=window.TOTAL_BOOKS||books.length;
+  var TOTAL_CHARS_WAN=window.TOTAL_CHARS_WAN||0;
+  // 聚合同 cat
+  var catStat={};
+  var catName={zhubojia:"諸子百家",bingfajunzheng:"兵法軍政",fajialvling:"法家律令",nongjiayishi:"農家醫術",suanxukezaji:"算學科技",bijiwenhua:"筆記文化",leishuzongshu:"類書綜述"};
+  var catColor={zhubojia:"#8B0000",bingfajunzheng:"#8B4513",fajialvling:"#2D2D2D",nongjiayishi:"#556B2F",suanxukezaji:"#4B0082",bijiwenhua:"#696969",leishuzongshu:"#B8860B"};
+  books.forEach(function(b){
+    if(!catStat[b.cat]) catStat[b.cat]={n:0,chars:0,size:0};
+    catStat[b.cat].n+=1;
+    catStat[b.cat].chars+=b.chars||0;
+    catStat[b.cat].size+=b.size||0;
+  });
+  var totalBooks=books.length,totalChars=0,totalSize=0;
+  Object.values(catStat).forEach(s=>{totalChars+=s.chars;totalSize+=s.size;});
+  // KPI
+  var kpis=[
+    {v:totalBooks.toLocaleString(),l:"典籍數（部）"},
+    {v:(totalChars/10000).toFixed(0),l:"總字數（萬字）"},
+    {v:(totalSize/1024).toFixed(1),l:"總大小（MB）"},
+    {v:classics.length,l:"精編典籍卡"},
+    {v:Object.keys(catStat).length,l:"分類數"}
+  ];
+  document.getElementById('kpis').innerHTML=kpis.map(k=>
+    '<div class="kpi"><div class="v">'+k.v+'</div><div class="l">'+k.l+'</div></div>'
+  ).join('');
+  // 分类表
+  var tbody=document.querySelector('#cat-table tbody');
+  var catNames=Object.keys(catStat).sort((a,b)=>catStat[b].n-catStat[a].n);
+  catNames.forEach(c=>{
+    var s=catStat[c];
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td>'+(catName[c]||c)+'</td><td class="num">'+s.n+'</td><td class="num">'+(s.chars/10000).toFixed(1)+'</td><td class="num">'+(s.size/1024).toFixed(1)+'</td><td class="num">'+(s.chars/10000/s.n).toFixed(1)+'</td>';
+    tbody.appendChild(tr);
+  });
+  var tr=document.createElement('tr');
+  tr.innerHTML='<td><b>合計</b></td><td class="num"><b>'+totalBooks+'</b></td><td class="num"><b>'+(totalChars/10000).toFixed(0)+'</b></td><td class="num"><b>'+(totalSize/1024).toFixed(1)+'</b></td><td class="num"><b>'+(totalChars/10000/totalBooks).toFixed(1)+'</b></td>';
+  tbody.appendChild(tr);
+  // 图表1：分类数量
+  var optCat={
+    tooltip:{trigger:'item'},
+    grid:{left:80,right:20,top:20,bottom:30},
+    xAxis:{type:'value'},
+    yAxis:{type:'category',data:catNames.map(c=>catName[c]||c).reverse(),axisLabel:{fontSize:12}},
+    series:[{type:'bar',data:catNames.map(c=>({value:catStat[c].n,itemStyle:{color:catColor[c]||'#888'}})).reverse(),
+      label:{show:true,position:'right',fontSize:11}}]
+  };
+  echarts.init(document.getElementById('chart-cat')).setOption(optCat);
+  // 图表2：分类字数
+  var optChars={
+    tooltip:{trigger:'item',formatter:p=>p.name+': '+p.value.toFixed(1)+' 萬字'},
+    grid:{left:80,right:20,top:20,bottom:30},
+    xAxis:{type:'value',name:'萬字'},
+    yAxis:{type:'category',data:catNames.map(c=>catName[c]||c).reverse(),axisLabel:{fontSize:12}},
+    series:[{type:'bar',data:catNames.map(c=>({value:catStat[c].chars/10000,itemStyle:{color:catColor[c]||'#888'}})).reverse(),
+      label:{show:true,position:'right',fontSize:11,formatter:p=>p.value.toFixed(0)+'萬'}}]
+  };
+  echarts.init(document.getElementById('chart-chars')).setOption(optChars);
+  // 图表3：学派分布（classics 里带 school 的）
+  var schoolCnt={};
+  var schoolColor={};
+  // 与 schools.js 联动（已 load）
+  var schools=window.SCHOOLS_DATA||[];
+  schools.forEach(s=>{schoolColor[s.id]=s.color;});
+  var catToSchool={zhubojia:'其他'};
+  classics.forEach(c=>{
+    var s=c.school||'其他';
+    if(!schoolCnt[s]) schoolCnt[s]=0;
+    schoolCnt[s]++;
+  });
+  // 把没在 schools.js 的分类标其他
+  var pieData=Object.keys(schoolCnt).map(s=>({name:s,value:schoolCnt[s],itemStyle:{color:schoolColor[s]||'#999'}}));
+  var optSchool={
+    tooltip:{trigger:'item',formatter:'{b}: {c} 部 ({d}%)'},
+    legend:{orient:'vertical',right:0,top:'center',fontSize:11,type:'scroll'},
+    series:[{type:'pie',radius:['40%','68%'],center:['35%','50%'],data:pieData.sort((a,b)=>b.value-a.value),
+      label:{fontSize:11,formatter:'{b}\n{d}%'}}]
+  };
+  echarts.init(document.getElementById('chart-school')).setOption(optSchool);
+  // 图表4：字数 Top15
+  var top=books.slice().sort((a,b)=>b.chars-a.chars).slice(0,15).reverse();
+  var optTop={
+    tooltip:{trigger:'item',formatter:p=>p.name+': '+(p.value/10000).toFixed(1)+' 萬字'},
+    grid:{left:120,right:40,top:20,bottom:30},
+    xAxis:{type:'value',name:'萬字'},
+    yAxis:{type:'category',data:top.map(b=>b.name),axisLabel:{fontSize:11}},
+    series:[{type:'bar',data:top.map(b=>({value:b.chars,itemStyle:{color:catColor[b.cat]||'#888'}})),
+      label:{show:true,position:'right',fontSize:10,formatter:p=>(p.value/10000).toFixed(0)+'萬'}}]
+  };
+  echarts.init(document.getElementById('chart-top')).setOption(optTop);
+  // resize
+  window.addEventListener('resize',()=>{
+    document.querySelectorAll('.chart-box').forEach(el=>{
+      var inst=echarts.getInstanceByDom(el);if(inst)inst.resize();
+    });
+  });
+})();
+</script>
+</body>
+</html>

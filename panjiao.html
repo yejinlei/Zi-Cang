@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>諸子評騭 · 子藏</title>
+<link rel="stylesheet" href="css/common.css?v=9">
+<style>
+.page-title{margin-bottom:12px}
+.intro{color:var(--muted);margin-bottom:16px;font-size:14px;line-height:1.8}
+.pj-card{border:1px solid var(--border);border-radius:var(--radius);background:var(--card-bg);margin-bottom:16px;overflow:hidden}
+.pj-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.pj-period{background:var(--gold);color:#fff;padding:2px 10px;border-radius:12px;font-size:13px}
+.pj-title{font-size:17px;font-weight:600}
+.pj-critic{color:var(--muted);font-size:13px}
+.pj-body{padding:14px 18px}
+.pj-summary{line-height:1.9;font-size:14px;margin-bottom:12px;color:var(--ink)}
+.pj-schools{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+.pj-sch{border:1px solid var(--border);border-radius:8px;padding:10px 12px}
+.pj-sch h5{margin:0 0 4px;font-size:14px;color:var(--gold)}
+.pj-att{display:inline-block;padding:1px 8px;border-radius:10px;font-size:11px;margin-left:6px;background:var(--border);color:var(--ink)}
+.pj-att.positive{background:#2E5C3A;color:#fff}
+.pj-att.negative{background:#8B0000;color:#fff}
+.pj-att.neutral{background:#B8860B;color:#fff}
+.pj-quote{font-size:13px;line-height:1.8;color:var(--muted);font-style:italic;border-left:2px solid var(--gold);padding-left:10px;margin-top:4px}
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="siteNav"></div>
+  <h1 class="page-title">歷代諸子評騭</h1>
+  <p class="intro">評騭（zhì），即評定高下。自戰國莊子《天下》至清代《四庫全書》，歷代學者皆對諸子百家有系統性的品評與學術源流辨析。本頁輯錄七篇最具代表性的「辨章學術、考鏡源流」之作，可與本體論分類互相參證。</p>
+  <div id="list"></div>
+  <div id="siteFooter"></div>
+</div>
+<script src="js/common.js?v=9"></script>
+<script src="data/panjiao.js?v=9"></script>
+<script>
+(function(){
+  var data=window.PANJIAO_DATA||[];
+  var list=document.getElementById('list');
+  data.forEach(function(d){
+    var card=document.createElement('div'); card.className='pj-card';
+    var head='<div class="pj-head">'+
+      '<span class="pj-period">'+d.period+'</span>'+
+      '<span class="pj-title">'+d.title+'</span>'+
+      '<span class="pj-critic">'+d.critic+'</span>'+
+      '</div>';
+    var schools='<div class="pj-schools">';
+    d.schools.forEach(function(s){
+      var att=s.attitude;
+      var cls='pj-att';
+      if(/推崇|欣賞|肯定|正宗|可觀|崇/.test(att)) cls+=' positive';
+      else if(/批評|否定|嚴厲|慘刻|貶|傷恩|不足/.test(att)) cls+=' negative';
+      else cls+=' neutral';
+      schools+='<div class="pj-sch"><h5>'+s.name+'<span class="'+cls+'">'+att+'</span></h5>'+
+        '<div class="pj-quote">'+s.judge+'</div></div>';
+    });
+    schools+='</div>';
+    card.innerHTML=head+'<div class="pj-body">'+
+      '<div style="color:var(--muted);font-size:13px;margin-bottom:8px">'+d.intro+'</div>'+
+      '<div class="pj-summary">'+d.summary+'</div>'+
+      schools+'</div>';
+    list.appendChild(card);
+  });
+})();
+</script>
+</body>
+</html>

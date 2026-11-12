@@ -74,6 +74,13 @@ function buildNav(active){
       {key:'tools',    href:'tools.html',    label:'⿴ 研讀工具'},
       {key:'spec',     href:'spec.html',     label:'📐 本體規範'}
     ]},
+    {key:'research',icon:'✦', label:'義理研究', children:[
+      {key:'panjiao',    href:'panjiao.html',    label:'⚖ 歷代評騭'},
+      {key:'timeline',   href:'timeline.html',   label:'⎯ 時間長卷'},
+      {key:'graph',      href:'graph.html',      label:'✺ 譜系圖譜'},
+      {key:'reasoning',  href:'reasoning.html',  label:'⚙ 本體推理'},
+      {key:'statistics', href:'statistics.html', label:'▤ 典籍統計'}
+    ]},
     {key:'map',     href:'map.html',      icon:'🗺', label:'時空'},
     {key:'data',    href:'data.html',     icon:'💾', label:'數據'}
   ];
@@ -170,6 +177,11 @@ function getProgress(path){
     'idioms.html': 'idioms',
     'tools.html': 'tools',
     'spec.html': 'spec',
+    'panjiao.html': 'panjiao',
+    'timeline.html': 'timeline',
+    'graph.html': 'graph',
+    'reasoning.html': 'reasoning',
+    'statistics.html': 'statistics',
     'map.html': 'map',
     'data.html': 'data',
     'reader.html': 'library'  // 阅读器高亮全文库

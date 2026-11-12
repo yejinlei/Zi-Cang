@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>本體推理器 · 子藏</title>
+<link rel="stylesheet" href="css/common.css?v=9">
+<style>
+.page-title{margin-bottom:12px}
+.intro{color:var(--muted);margin-bottom:14px;font-size:14px;line-height:1.8}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.tab{padding:6px 14px;border:1px solid var(--border);border-radius:20px;cursor:pointer;font-size:13px;background:var(--card-bg)}
+.tab.active{background:var(--gold);color:#fff;border-color:var(--gold)}
+.panel{border:1px solid var(--border);border-radius:var(--radius);background:var(--card-bg);padding:16px;margin-bottom:14px}
+.panel h3{margin:0 0 8px;font-size:16px;color:var(--gold)}
+.rule-card{border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:8px}
+.rule-card h4{margin:0 0 4px;font-size:14px}
+.rule-meta{font-size:12px;color:var(--muted);margin-bottom:4px}
+.rule-trip{font-family:monospace;font-size:12px;color:var(--ink);background:var(--bg);padding:6px 8px;border-radius:4px;line-height:1.6}
+.btn{display:inline-block;padding:8px 18px;background:var(--gold);color:#fff;border:none;border-radius:var(--radius);cursor:pointer;font-size:14px;margin:6px 8px 6px 0}
+.btn.sec{background:transparent;color:var(--gold);border:1px solid var(--gold)}
+.demo-area{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+.demo-col{border:1px solid var(--border);border-radius:8px;padding:10px}
+.demo-col h5{margin:0 0 6px;font-size:13px;color:var(--gold)}
+.demo-col ul{margin:0;padding-left:18px;font-size:12px;line-height:1.8;font-family:monospace;max-height:280px;overflow:auto}
+.q-card{border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px;cursor:pointer;transition:all .2s}
+.q-card:hover{border-color:var(--gold)}
+.q-card.active{border-color:var(--gold);background:var(--bg)}
+.q-card h4{margin:0 0 4px;font-size:15px}
+.q-card .q-desc{font-size:13px;color:var(--muted);line-height:1.7}
+.sparql{background:#2d2d2d;color:#e6e6e6;padding:8px 12px;border-radius:6px;font-family:monospace;font-size:12px;margin:8px 0;line-height:1.6;white-space:pre-wrap;overflow-x:auto}
+.ans-table{width:100%;border-collapse:collapse;margin-top:8px;font-size:13px}
+.ans-table th,.ans-table td{border:1px solid var(--border);padding:6px 10px;text-align:left}
+.ans-table th{background:var(--bg);color:var(--gold)}
+.step-log{font-family:monospace;font-size:12px;line-height:1.7;background:var(--bg);padding:10px;border-radius:6px;max-height:200px;overflow:auto;margin-top:8px}
+.step-log .new{color:#2E5C3A;font-weight:600}
+.class-hier{display:flex;flex-wrap:wrap;gap:6px;font-size:13px;margin-top:6px}
+.class-tag{padding:2px 10px;border:1px solid var(--border);border-radius:12px;background:var(--bg)}
+.arrow{color:var(--muted);align-self:center}
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="siteNav"></div>
+  <h1 class="page-title">諸子本體推理器</h1>
+  <p class="intro">本頁演示基於子藏 ZCore 本體的前向鏈式推理：給定少量初始三元組（ABox）與九條規則（TBox），推理器自動反覆套用規則直到不再產生新三元組，並展示推理閉包。同時提供若干預置本體查詢，對應本體可回答的學術問題類型。</p>
+
+  <div class="tabs">
+    <span class="tab active" data-tab="rules">推理規則</span>
+    <span class="tab" data-tab="demo">閉包推理演示</span>
+    <span class="tab" data-tab="queries">本體查詢示例</span>
+    <span class="tab" data-tab="hierarchy">類層次結構</span>
+  </div>
+
+  <!-- 推理规则 -->
+  <div id="tab-rules" class="tab-panel">
+    <div class="panel">
+      <h3>TBox 推理規則（共 9 條）</h3>
+      <div id="rules-list"></div>
+    </div>
+  </div>
+
+  <!-- 闭包推理演示 -->
+  <div id="tab-demo" class="tab-panel" style="display:none">
+    <div class="panel">
+      <h3>前向鏈推理演示</h3>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:10px">以下左側為初始 ABox 三元組，點擊「運行推理」，右側顯示推理閉包（含規則推出的新三元組）。推理採用樸素前向鏈，迭代直至不動點。</div>
+      <button class="btn" onclick="runReason()">▶ 運行推理</button>
+      <button class="btn sec" onclick="resetReason()">↺ 重置</button>
+      <div class="demo-area">
+        <div class="demo-col">
+          <h5>初始三元組（ABox）</h5>
+          <ul id="init-list"></ul>
+        </div>
+        <div class="demo-col">
+          <h5>推理閉包（<span id="cnt-out">0</span> 條）</h5>
+          <ul id="closure-list"></ul>
+        </div>
+      </div>
+      <div id="log-box" style="display:none">
+        <h5 style="margin:14px 0 6px;font-size:13px;color:var(--gold)">推理過程日誌</h5>
+        <div class="step-log" id="step-log"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 查询示例 -->
+  <div id="tab-queries" class="tab-panel" style="display:none">
+    <div class="panel">
+      <h3>本體查詢示例（7 個）</h3>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:10px">點擊任一查詢展開查看 SPARQL 形式、推理邏輯與答案（答案為預先計算的學術結論，可由 TBox+ABox 推理得到）。</div>
+      <div id="q-list"></div>
+    </div>
+  </div>
+
+  <!-- 类层次 -->
+  <div id="tab-hierarchy" class="tab-panel" style="display:none">
+    <div class="panel">
+      <h3>ZCore 典籍類層次（is-a 樹）</h3>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:10px">典籍類共分五個大類：哲學類、技術類、百科類、小說類、ZText 頂類。下圖展示子類繼承關係（子→父）。</div>
+      <div id="hierarchy"></div>
+    </div>
+  </div>
+
+  <div id="siteFooter"></div>
+</div>
+<script src="js/common.js?v=9"></script>
+<script src="data/reasoning.js?v=9"></script>
+<script>
+var D=window.REASONING_DATA;
+// Tabs
+document.querySelectorAll('.tab').forEach(function(t){
+  t.addEventListener('click',function(){
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.querySelectorAll('.tab-panel').forEach(p=>p.style.display='none');
+    document.getElementById('tab-'+t.dataset.tab).style.display='block';
+  });
+});
+// 规则列表
+var rl=document.getElementById('rules-list');
+D.rules.forEach(function(r){
+  var pat=r.pattern.map(p=>'<div>'+p+'</div>').join('');
+  var inf=r.infer.map(p=>'<div>'+p+'</div>').join('');
+  rl.innerHTML+='<div class="rule-card"><h4>'+r.id+' · '+r.name+'</h4>'+
+    '<div class="rule-meta">'+r.desc+'</div>'+
+    '<div class="rule-trip">IF: '+pat+'<br>⇒ INFER: '+inf+'</div></div>';
+});
+// 查询
+var ql=document.getElementById('q-list');
+D.queries.forEach(function(q,i){
+  var ans='<table class="ans-table"><tr>';
+  var cols=Object.keys(q.answer[0]);
+  cols.forEach(c=>ans+='<th>'+c+'</th>');
+  ans+='</tr>';
+  q.answer.forEach(a=>{
+    ans+='<tr>';
+    cols.forEach(c=>ans+='<td>'+a[c]+'</td>');
+    ans+='</tr>';
+  });
+  ans+='</table>';
+  var card=document.createElement('div');
+  card.className='q-card';
+  card.innerHTML='<h4>'+q.name+'</h4>'+
+    '<div class="q-desc">'+q.desc+'</div>'+
+    '<div class="ans-wrap" style="display:none">'+
+      '<div class="sparql">'+q.sparql+'</div>'+
+      '<div style="font-size:13px;line-height:1.8"><b>推理邏輯：</b>'+q.logic+'</div>'+
+      ans+
+    '</div>';
+  card.addEventListener('click',function(){
+    var w=card.querySelector('.ans-wrap');
+    var active=w.style.display==='block';
+    document.querySelectorAll('.q-card .ans-wrap').forEach(x=>x.style.display='none');
+    document.querySelectorAll('.q-card').forEach(x=>x.classList.remove('active'));
+    if(!active){w.style.display='block';card.classList.add('active');}
+  });
+  ql.appendChild(card);
+});
+// 类层次（以 ZText 为根建树）
+(function(){
+  var hier=D.classHierarchy;
+  var children={}; // parent -> [child]
+  var parents={}; // child -> parent
+  hier.forEach(function(e){
+    var c=e[0],p=e[1];
+    if(!children[p])children[p]=[];
+    children[p].push(c);
+    parents[c]=p;
+  });
+  // 顶层节点 = 没父类
+  var roots=new Set();
+  hier.forEach(e=>{if(!parents[e[1]])roots.add(e[1]);});
+  // 以 ZText 为根展示
+  var box=document.getElementById('hierarchy');
+  function render(parent,depth){
+    var kids=children[parent]||[];
+    var div=document.createElement('div');
+    div.style.paddingLeft=depth*16+'px';
+    div.innerHTML='<span class="class-tag">'+parent+'</span>';
+    box.appendChild(div);
+    kids.forEach(k=>render(k,depth+1));
+  }
+  render('ZText',0);
+})();
+
+// ====== 推理引擎 ======
+function tripleKey(t){return t[0]+' '+t[1]+' '+t[2];}
+function substitute(pattern,env){
+  return pattern.replace(/\?([a-z0-9]+)/gi,function(m,v){
+    return env[v]||m;
+  });
+}
+function matchPattern(pattern, triple, env){
+  // returns new env or null
+  var ps=pattern.split(/\s+/);
+  // pattern like "?a :discipleOf ?b"
+  var sp=ps[0],pp=ps[1],op=ps[2];
+  var newEnv=Object.assign({},env);
+  function bind(v,val){
+    if(v.startsWith('?')){
+      var key=v.slice(1);
+      if(newEnv[key]&&newEnv[key]!==val)return null;
+      newEnv[key]=val;return true;
+    }else{
+      return v===val;
+    }
+  }
+  if(!bind(sp,triple[0]))return null;
+  if(!bind(pp,triple[1]))return null;
+  if(!bind(op,triple[2]))return null;
+  return newEnv;
+}
+var initial,closure,initSet,closureSet,logEl;
+function resetReason(){
+  initial=D.demoGraph.map(t=>t.slice());
+  closure=initial.map(t=>t.slice());
+  initSet=new Set(initial.map(tripleKey));
+  closureSet=new Set(closure.map(tripleKey));
+  // render
+  var il=document.getElementById('init-list');
+  il.innerHTML='';
+  initial.forEach(t=>{
+    var li=document.createElement('li');li.textContent=t.join(' ');il.appendChild(li);
+  });
+  document.getElementById('closure-list').innerHTML=initial.map(t=>'<li>'+t.join(' ')+'</li>').join('');
+  document.getElementById('cnt-out').textContent=closure.length;
+  logEl=document.getElementById('step-log');
+  logEl.innerHTML='';
+  document.getElementById('log-box').style.display='none';
+}
+function runReason(){
+  resetReason();
+  document.getElementById('log-box').style.display='block';
+  var iter=0,added=1;
+  logEl.innerHTML+='<div>=== 開始推理（規則 '+D.rules.length+' 條，初始三元組 '+initial.length+' 條） ===</div>';
+  while(added>0&&iter<10){
+    added=0;iter++;
+    logEl.innerHTML+='<div>--- 第 '+iter+' 輪 ---</div>';
+    D.rules.forEach(function(rule){
+      // 匹配所有模式的笛卡尔积（模式数≤2）
+      var patterns=rule.pattern;
+      var newTriples=[];
+      if(patterns.length===1){
+        closure.forEach(function(t){
+          var env=matchPattern(patterns[0],t,{});
+          if(env){
+            rule.infer.forEach(function(inf){
+              var s=substitute(inf,env).split(/\s+/);
+              if(s.length===3){
+                var k=tripleKey(s);
+                if(!closureSet.has(k)){
+                  newTriples.push(s);
+                  closureSet.add(k);
+                }
+              }
+            });
+          }
+        });
+      }else if(patterns.length===2){
+        closure.forEach(function(t1){
+          var env1=matchPattern(patterns[0],t1,{});
+          if(!env1)return;
+          closure.forEach(function(t2){
+            if(t1===t2)return;
+            var env=matchPattern(patterns[1],t2,env1);
+            if(!env)return;
+            rule.infer.forEach(function(inf){
+              var s=substitute(inf,env).split(/\s+/);
+              if(s.length===3){
+                var k=tripleKey(s);
+                if(!closureSet.has(k)){
+                  newTriples.push(s);
+                  closureSet.add(k);
+                }
+              }
+            });
+          });
+        });
+      }
+      if(newTriples.length){
+        newTriples.forEach(t=>{
+          closure.push(t);
+          logEl.innerHTML+='<div class="new">[R'+rule.id.replace('R','')+' '+rule.name+'] 推出: '+t.join(' ')+'</div>';
+        });
+        added+=newTriples.length;
+      }
+    });
+    if(added===0) logEl.innerHTML+='<div>本輪無新三元組，達到不動點。</div>';
+  }
+  logEl.innerHTML+='<div>=== 推理結束，共 '+iter+' 輪，閉包 '+closure.length+' 條三元組（+'+(closure.length-initial.length)+'） ===</div>';
+  // 渲染闭包：新增的标绿色
+  var html='';
+  closure.forEach(t=>{
+    var isNew=!initSet.has(tripleKey(t));
+    html+='<li'+(isNew?' style="color:#2E5C3A"':'')+'>'+t.join(' ')+(isNew?'  ✓':'' )+'</li>';
+  });
+  document.getElementById('closure-list').innerHTML=html;
+  document.getElementById('cnt-out').textContent=closure.length;
+}
+resetReason();
+</script>
+</body>
+</html>

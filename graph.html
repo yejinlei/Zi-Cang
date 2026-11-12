@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>思想傳承譜系 · 子藏</title>
+<link rel="stylesheet" href="css/common.css?v=9">
+<style>
+.page-title{margin-bottom:12px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin:16px 0 8px;padding:12px 16px;border:1px solid var(--border);border-radius:var(--radius);background:var(--card-bg)}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:13px}
+.legend-dot{width:12px;height:12px;border-radius:50%}
+.chart-wrap{border:1px solid var(--border);border-radius:var(--radius);background:var(--card-bg);padding:8px;overflow:hidden}
+#graph{width:100%;height:680px}
+.rel-filter{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.chip{padding:4px 12px;border:1px solid var(--border);border-radius:20px;font-size:13px;cursor:pointer;background:var(--card-bg)}
+.chip.active{background:var(--gold);color:#fff;border-color:var(--gold)}
+.info-card{margin-top:12px;padding:14px 16px;border:1px solid var(--border);border-radius:var(--radius);background:var(--card-bg);font-size:14px;line-height:1.9}
+.info-card h4{margin:0 0 6px;color:var(--gold);font-size:16px}
+.info-card .meta{color:var(--muted);font-size:13px;margin-bottom:6px}
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="siteNav"></div>
+  <h1 class="page-title">諸子思想傳承譜系</h1>
+  <p style="color:var(--muted);margin:0 0 12px">以力導向圖呈現先秦兩漢諸子的師承、影響、批評與跨學派互動關係。點擊節點查看人物詳情，點擊連線查看關係說明。</p>
+  <div class="rel-filter">
+    <span class="chip active" data-rel="all">全部</span>
+    <span class="chip" data-rel="弟子">師承</span>
+    <span class="chip" data-rel="影响">影響</span>
+    <span class="chip" data-rel="批评">批評</span>
+    <span class="chip" data-rel="友朋">友朋</span>
+    <span class="chip" data-rel="同学">同門</span>
+    <span class="chip" data-rel="集大成">集大成</span>
+  </div>
+  <div class="legend" id="legend"></div>
+  <div class="chart-wrap"><div id="graph"></div></div>
+  <div class="info-card" id="info">
+    <h4>譜系導覽</h4>
+    <div class="meta">點擊人物或連線以查看詳細說明</div>
+    <div>共收錄 <b id="node-cnt"></b> 位諸子人物，<b id="link-cnt"></b> 條師承/影響關係，涵蓋儒家、道家、法家、墨家、兵家、名家、陰陽家、農家、縱橫家、雜家十個學派。</div>
+  </div>
+  <div id="siteFooter"></div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<script src="js/common.js?v=9"></script>
+<script src="data/schools.js?v=9"></script>
+<script src="data/people.js?v=9"></script>
+<script>
+(function(){
+  if(!window.PEOPLE_DATA){ document.getElementById('graph').innerHTML='<p style="padding:40px;text-align:center">人物數據載入中…</p>'; return; }
+  var raw=window.PEOPLE_DATA, schools=window.SCHOOLS_DATA||[];
+  var colorMap={}; schools.forEach(function(s){ colorMap[s.id]=s.color; });
+  var allRels=['弟子','影响','批评','友朋','同学','集大成'];
+  var currentRel='all';
+  document.getElementById('node-cnt').textContent=raw.nodes.length;
+  document.getElementById('link-cnt').textContent=raw.links.length;
+  // legend
+  var lg=document.getElementById('legend');
+  schools.forEach(function(s){
+    var d=document.createElement('div'); d.className='legend-item';
+    d.innerHTML='<span class="legend-dot" style="background:'+s.color+'"></span>'+s.name;
+    lg.appendChild(d);
+  });
+  // chart
+  var chart=echarts.init(document.getElementById('graph'));
+  function buildOption(rel){
+    var nodes=raw.nodes.map(function(n){
+      var c=colorMap[n.school]||'#888';
+      return {
+        id:n.id, name:n.name,
+        symbolSize: n.work?34:22,
+        x:n.pos?n.pos[0]:null, y:n.pos?n.pos[1]:null,
+        itemStyle:{color:c,borderColor:'#fff',borderWidth:2},
+        label:{show:true,position:'bottom',fontSize:12,color:'var(--ink)'},
+        _era:n.era,_role:n.role,_work:n.work,_school:n.school
+      };
+    });
+    var links=raw.links.filter(function(l){
+      if(rel==='all') return true;
+      return l.rel===rel;
+    }).map(function(l){
+      var col='#bbb', w=1.5, cur='';
+      if(l.rel==='弟子'){col=colorMap[getNode(l.source).school]||'#8B0000';w=2.5;cur='arrow';}
+      else if(l.rel==='影响'){col='#5a9ecf';w=2;cur='arrow';}
+      else if(l.rel==='批评'){col='#c0392b';w=1.5;cur='arrow';}
+      else if(l.rel==='友朋'){col='#27ae60';w=1;cur='';}
+      else if(l.rel==='同学'){col='#e67e22';w=1;cur='';}
+      else if(l.rel==='集大成'){col=colorMap[getNode(l.target).school]||'#333';w=3;cur='arrow';}
+      return {
+        source:l.source,target:l.target,
+        lineStyle:{color:col,width:w,curveness:0.15},
+        label:{show:false,formatter:l.rel,fontSize:10},
+        symbol:['none',cur?'arrow':'none'],
+        symbolSize:[0,8],
+        _rel:l.rel
+      };
+    });
+    return {
+      tooltip:{
+        trigger:'item',
+        formatter:function(p){
+          if(p.dataType==='node'){
+            var n=p.data;
+            return '<b>'+n.name+'</b><br/>學派：'+getSchoolName(n._school)+'<br/>時代：'+n._era+'<br/>身份：'+n._role+(n._work?'<br/>代表：'+n._work:'');
+          }else{
+            return getName(p.data.source)+' → '+getName(p.data.target)+'<br/>關係：'+p.data._rel;
+          }
+        }
+      },
+      series:[{
+        type:'graph',layout:'force',roam:true,draggable:true,
+        force:{repulsion:380,edgeLength:[80,160],gravity:0.08},
+        data:nodes,links:links,categories:[],
+        edgeSymbol:['none','arrow'],
+        emphasis:{focus:'adjacency',lineStyle:{width:4}},
+        lineStyle:{opacity:0.7}
+      }]
+    };
+  }
+  function getNode(id){ for(var i=0;i<raw.nodes.length;i++){ if(raw.nodes[i].id===id)return raw.nodes[i];} return {};}
+  function getName(id){ var n=getNode(id); return n.name||id;}
+  function getSchoolName(id){ for(var i=0;i<schools.length;i++){ if(schools[i].id===id)return schools[i].name;} return id;}
+  chart.setOption(buildOption(currentRel));
+  // rel filter
+  document.querySelectorAll('.rel-filter .chip').forEach(function(c){
+    c.addEventListener('click',function(){
+      document.querySelectorAll('.rel-filter .chip').forEach(x=>x.classList.remove('active'));
+      c.classList.add('active');
+      currentRel=c.dataset.rel;
+      chart.setOption(buildOption(currentRel),true);
+    });
+  });
+  // click -> info card
+  var info=document.getElementById('info');
+  chart.on('click',function(p){
+    if(p.dataType==='node'){
+      var n=p.data;
+      var students=[], teachers=[], others=[];
+      raw.links.forEach(function(l){
+        if(l.target===n.id&&l.rel==='弟子') students.push(getName(l.source));
+        if(l.source===n.id&&l.rel==='弟子') teachers.push(getName(l.target));
+        if(l.source===n.id&&l.rel==='批评') others.push('批評 '+getName(l.target));
+        if(l.target===n.id&&l.rel==='批评') others.push('受 '+getName(l.source)+' 批評');
+        if(l.source===n.id&&l.rel==='影响') others.push('影響 '+getName(l.target));
+        if(l.target===n.id&&l.rel==='影响') others.push('受 '+getName(l.source)+' 影響');
+      });
+      var html='<h4>'+n.name+' <span style="color:var(--muted);font-size:13px;font-weight:normal">（'+getSchoolName(n._school)+'）</span></h4>';
+      html+='<div class="meta">'+n._era+' · '+n._role+(n._work?' · 代表作《'+n._work+'》':'')+'</div>';
+      if(teachers.length) html+='<div><b>師承：</b>'+teachers.join('、')+'</div>';
+      if(students.length) html+='<div><b>弟子：</b>'+students.join('、')+'</div>';
+      if(others.length) html+='<div><b>關係：</b>'+others.join('；')+'</div>';
+      info.innerHTML=html;
+    }else if(p.dataType==='edge'){
+      info.innerHTML='<h4>'+getName(p.data.source)+' → '+getName(p.data.target)+'</h4><div class="meta">關係：'+p.data._rel+'</div><div>此連線代表二者之間的「'+p.data._rel+'」關係，可結合時間軸與典籍記載進一步考究。</div>';
+    }
+  });
+  window.addEventListener('resize',()=>chart.resize());
+})();
+</script>
+</body>
+</html>

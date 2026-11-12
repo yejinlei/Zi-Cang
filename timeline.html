@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>諸子時間軸 · 子藏</title>
+<link rel="stylesheet" href="css/common.css?v=9">
+<style>
+.page-title{margin-bottom:12px}
+.era-nav{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 14px}
+.era-nav .chip{padding:5px 14px;border:1px solid var(--border);border-radius:20px;cursor:pointer;font-size:13px;background:var(--card-bg);color:var(--ink)}
+.era-nav .chip.active{background:var(--gold);color:#fff;border-color:var(--gold)}
+.tl{position:relative;padding:12px 0 12px 0}
+.tl::before{content:'';position:absolute;top:0;bottom:0;left:128px;width:2px;background:linear-gradient(180deg,var(--gold),transparent)}
+.era-block{margin-bottom:24px}
+.era-title{position:relative;padding:6px 0 6px 150px;font-size:18px;color:var(--gold);font-weight:600;margin-bottom:8px}
+.era-title::before{content:'';position:absolute;left:122px;top:50%;width:14px;height:14px;border-radius:50%;background:var(--gold);transform:translate(-50%,-50%);border:3px solid var(--bg);box-shadow:0 0 0 2px var(--gold)}
+.tl-item{position:relative;padding:0 0 14px 150px}
+.tl-item::before{content:'';position:absolute;left:128px;top:14px;width:12px;height:12px;border-radius:50%;transform:translateX(-50%);border:2px solid var(--bg)}
+.tl-item.person::before{background:#8B0000}
+.tl-item.book::before{background:#2E5C3A}
+.tl-item.event::before{background:#B8860B}
+.tl-year{position:absolute;left:0;top:6px;width:120px;text-align:right;font-family:serif;font-size:15px;color:var(--gold);font-variant-numeric:tabular-nums}
+.tl-body{border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px;background:var(--card-bg)}
+.tl-body h4{margin:0 0 4px;font-size:15px}
+.tl-tag{display:inline-block;padding:1px 8px;border-radius:10px;font-size:11px;margin-right:6px;color:#fff;vertical-align:middle}
+.tl-tag.person{background:#8B0000}
+.tl-tag.book{background:#2E5C3A}
+.tl-tag.event{background:#B8860B}
+.tl-body p{margin:4px 0 0;color:var(--muted);font-size:13px;line-height:1.8}
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="siteNav"></div>
+  <h1 class="page-title">諸子百家時間軸</h1>
+  <p style="color:var(--muted);margin:0 0 8px">從西周初年到魏晉玄學，縱覽諸子人物生卒、典籍成書與重大事件的時序脈絡。</p>
+  <div class="era-nav">
+    <span class="chip active" data-era="all">全部</span>
+    <span class="chip" data-era="春秋">春秋前</span>
+    <span class="chip" data-era="戰國">戰國</span>
+    <span class="chip" data-era="秦漢">秦漢</span>
+    <span class="chip" data-era="漢以後">魏晉以降</span>
+  </div>
+  <div id="tl" class="tl"></div>
+  <div id="siteFooter"></div>
+</div>
+<script src="js/common.js?v=9"></script>
+<script src="data/timeline.js?v=9"></script>
+<script>
+(function(){
+  var data=window.TIMELINE_DATA||[];
+  // 按 era 分組
+  var eras=[
+    {id:'春秋',title:'西周至春秋（-1046 ~ -476）',from:-1046,to:-476},
+    {id:'戰國',title:'戰國百家爭鳴（-475 ~ -221）',from:-475,to:-221},
+    {id:'秦漢',title:'秦漢百家合流（-220 ~ 220）',from:-220,to:220},
+    {id:'漢以後',title:'玄學與終結（220 ~ 300）',from:220,to:300}
+  ];
+  function yearStr(y){ return y<0?'前'+(-y)+'年':y+'年'; }
+  function render(era){
+    var tl=document.getElementById('tl'); tl.innerHTML='';
+    eras.forEach(function(e){
+      var items=data.filter(function(d){
+        var inEra=d.year>=e.from&&d.year<=e.to;
+        if(!inEra) return false;
+        if(era!=='all'){
+          if(era==='春秋') return e.id==='春秋';
+          if(era==='戰國') return e.id==='戰國';
+          if(era==='秦漢') return e.id==='秦漢';
+          if(era==='漢以後') return e.id==='漢以後';
+        }
+        return true;
+      });
+      if(!items.length) return;
+      var block=document.createElement('div'); block.className='era-block';
+      block.innerHTML='<div class="era-title">'+e.title+'（'+items.length+'條）</div>';
+      items.forEach(function(d){
+        var tagName=d.type==='person'?'人物':d.type==='book'?'典籍':'事件';
+        var it=document.createElement('div'); it.className='tl-item '+d.type;
+        it.innerHTML='<div class="tl-year">'+yearStr(d.year)+'</div>'+
+          '<div class="tl-body">'+
+            '<h4><span class="tl-tag '+d.type+'">'+tagName+'</span>'+d.title+'</h4>'+
+            '<p>'+d.desc+'</p>'+
+          '</div>';
+        block.appendChild(it);
+      });
+      tl.appendChild(block);
+    });
+  }
+  render('all');
+  document.querySelectorAll('.era-nav .chip').forEach(function(c){
+    c.addEventListener('click',function(){
+      document.querySelectorAll('.era-nav .chip').forEach(x=>x.classList.remove('active'));
+      c.classList.add('active');
+      render(c.dataset.era);
+    });
+  });
+})();
+</script>
+</body>
+</html>
