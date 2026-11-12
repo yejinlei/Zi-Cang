@@ -84,6 +84,30 @@ input, select, textarea { font-family: inherit; font-size: 15px; }
   height: 3px; background: var(--gold); border-radius: 2px;
 }
 
+/* ---- 导航下拉菜单 ---- */
+.nav-drop { position: relative; }
+.nav-caret { font-size: .72em; opacity: .55; margin-left: 1px; }
+.nav-drop-menu {
+  position: absolute; top: 100%; left: 0; z-index: 60;
+  min-width: 178px; padding: 7px;
+  background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+  box-shadow: 0 10px 30px var(--shadow);
+  opacity: 0; visibility: hidden; transform: translateY(-6px);
+  transition: all .18s ease;
+}
+.nav-drop:hover .nav-drop-menu,
+.nav-drop:focus-within .nav-drop-menu {
+  opacity: 1; visibility: visible; transform: translateY(2px);
+}
+.nav-drop-item {
+  display: block; padding: 9px 13px; border-radius: 8px;
+  color: var(--ink); font-size: 14.5px; text-decoration: none;
+  font-family: "STKaiti","KaiTi",serif; white-space: nowrap;
+  transition: all .15s;
+}
+.nav-drop-item:hover { background: var(--bg-soft); color: var(--accent); text-decoration: none; }
+.nav-drop-item.active { background: var(--gold); color: var(--paper); font-weight: 700; }
+
 /* ---- 主题切换器（胶囊按钮+下拉） ---- */
 .theme-menu-wrap { position: relative; margin-left: auto; flex-shrink: 0; }
 .theme-btn {

@@ -66,15 +66,34 @@ function buildNav(active){
     {key:'home',    href:'index.html',    icon:'☰', label:'首頁'},
     {key:'library', href:'library.html',  icon:'📚',label:'全文庫'},
     {key:'search',  href:'search.html',   icon:'🔍',label:'檢索'},
-    {key:'ontology',href:'ontology.html', icon:'⬡', label:'諸子本體'},
+    {key:'ontology',icon:'⬡', label:'諸子本體', children:[
+      {key:'ontology', href:'ontology.html', label:'⬡ 本體總論'},
+      {key:'classics', href:'classics.html', label:'📖 典籍詳解'},
+      {key:'terms',    href:'terms.html',    label:'🔖 術語詞典'},
+      {key:'idioms',   href:'idioms.html',   label:'🀄 成語典故'},
+      {key:'tools',    href:'tools.html',    label:'⿴ 研讀工具'},
+      {key:'spec',     href:'spec.html',     label:'📐 本體規範'}
+    ]},
     {key:'map',     href:'map.html',      icon:'🗺', label:'時空'},
     {key:'data',    href:'data.html',     icon:'💾', label:'數據'}
   ];
+  const navHTML = items.map(i=>{
+    if(i.children){
+      const isActive = i.children.some(c=>c.key===active);
+      return `<div class="nav-drop">
+        <a class="nav-link ${isActive?'active':''}" href="${i.children[0].href}">${i.icon} ${i.label} <span class="nav-caret">▾</span></a>
+        <div class="nav-drop-menu">
+          ${i.children.map(c=>`<a href="${c.href}" class="nav-drop-item ${active===c.key?'active':''}">${c.label}</a>`).join('')}
+        </div>
+      </div>`;
+    }
+    return `<a href="${i.href}" class="nav-link ${active===i.key?'active':''}">${i.icon} ${i.label}</a>`;
+  }).join('');
   return `<header class="site-nav">
     <div class="nav-inner">
       <a class="brand" href="index.html"><span class="brand-box">子</span><span class="brand-text">藏本體 · Zi-Cang Ontology</span></a>
       <nav class="nav-links">
-        ${items.map(i=>`<a href="${i.href}" class="nav-link ${active===i.key?'active':''}">${i.icon} ${i.label}</a>`).join('')}
+        ${navHTML}
       </nav>
       ${buildThemeMenu()}
     </div>
@@ -146,6 +165,11 @@ function getProgress(path){
     'library.html': 'library',
     'search.html': 'search',
     'ontology.html': 'ontology',
+    'classics.html': 'classics',
+    'terms.html': 'terms',
+    'idioms.html': 'idioms',
+    'tools.html': 'tools',
+    'spec.html': 'spec',
     'map.html': 'map',
     'data.html': 'data',
     'reader.html': 'library'  // 阅读器高亮全文库

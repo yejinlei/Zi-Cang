@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>研讀工具 | 子藏本體論</title>
+<link rel="stylesheet" href="css/common.css?v=8">
+<style>
+  .tl-wrap { max-width:1240px; margin:0 auto; padding:24px 20px 70px; }
+  .tl-title { font-family:"STKaiti",serif; font-size:34px; color:var(--ink); letter-spacing:3px; margin-bottom:6px; }
+  .tl-sub { color:var(--ink-soft); font-size:14px; margin-bottom:22px; }
+
+  .tool-tabs { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:22px; border-bottom:1px solid var(--border); }
+  .tool-tab { padding:11px 22px; cursor:pointer; font-family:"STKaiti",serif; font-size:15.5px; color:var(--ink-soft);
+    border-bottom:3px solid transparent; transition:all .2s; }
+  .tool-tab:hover { color:var(--accent); }
+  .tool-tab.active { color:var(--gold); border-bottom-color:var(--gold); font-weight:700; }
+  .panel { display:none; }
+  .panel.active { display:block; }
+
+  .sel-row { display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-bottom:20px; }
+  select { padding:10px 14px; border:1px solid var(--border); border-radius:10px; background:var(--paper);
+    color:var(--ink); font-size:14.5px; font-family:"STKaiti",serif; outline:none; min-width:230px; }
+  select:focus { border-color:var(--accent); }
+  .hint { font-size:13px; color:var(--ink-soft); }
+
+  /* 路径链 */
+  .path-desc { background:var(--bg-soft); border-radius:10px; padding:14px 18px; margin-bottom:20px;
+    font-size:14px; color:var(--ink); line-height:1.8; }
+  .path-desc .refs { font-size:12.5px; color:var(--ink-soft); margin-top:6px; }
+  .chain { display:flex; flex-direction:column; gap:0; }
+  .step { display:flex; gap:16px; position:relative; padding-bottom:22px; }
+  .step:last-child { padding-bottom:0; }
+  .step::before { content:''; position:absolute; left:29px; top:52px; bottom:0; width:2px;
+    background:linear-gradient(var(--gold),var(--border)); }
+  .step:last-child::before { display:none; }
+  .node { flex:0 0 60px; height:60px; border-radius:50%; background:var(--paper); border:2px solid var(--gold);
+    display:flex; align-items:center; justify-content:center; font-family:"STKaiti",serif; font-size:19px;
+    font-weight:700; color:var(--gold); z-index:1; }
+  .step-body { flex:1; background:var(--paper); border:1px solid var(--border); border-radius:10px; padding:14px 18px; }
+  .step-body .src { font-family:"STKaiti",serif; font-size:15px; color:var(--ink); margin-bottom:6px; }
+  .step-body .note { font-size:13.5px; color:var(--ink-soft); line-height:1.7; }
+  .step-idx { position:absolute; left:22px; top:46px; font-size:11px; color:var(--ink-soft); }
+
+  /* 异文对照 */
+  .var-table, .cmp-table { width:100%; border-collapse:collapse; margin-bottom:18px; font-size:14px; }
+  .var-table th, .cmp-table th { background:var(--bg-soft); color:var(--accent); font-size:12.5px;
+    padding:9px 12px; text-align:left; border:1px solid var(--border); letter-spacing:1px; }
+  .var-table td, .cmp-table td { padding:11px 12px; border:1px solid var(--border); vertical-align:top; line-height:1.75; }
+  .var-table td.v { font-family:"STKaiti",serif; font-size:15px; color:var(--ink); }
+  .var-table td.s { white-space:nowrap; color:var(--ink-soft); font-size:12.5px; width:170px; }
+  .collation { background:var(--bg-soft); border-left:4px solid var(--gold); padding:13px 16px; border-radius:8px;
+    font-size:13.5px; line-height:1.8; color:var(--ink); margin-bottom:18px; }
+  .collation b { color:var(--gold); }
+  .readings h5, .sec-h { font-family:"STKaiti",serif; font-size:16px; color:var(--gold); margin:16px 0 10px; letter-spacing:1px; }
+  .reading { display:flex; gap:12px; margin-bottom:10px; }
+  .reading .who { flex:0 0 auto; font-family:"STKaiti",serif; color:#fff; background:var(--accent);
+    padding:2px 11px; border-radius:6px; font-size:12.5px; height:fit-content; }
+  .reading .txt { font-size:14px; line-height:1.8; color:var(--ink); }
+  .base-sentence { font-family:"STKaiti",serif; font-size:20px; color:var(--gold); text-align:center;
+    padding:16px; margin-bottom:16px; background:var(--bg-soft); border-radius:10px; letter-spacing:1px; }
+  .mean-box { font-size:14px; color:var(--ink); line-height:1.85; background:var(--paper);
+    border:1px solid var(--border); border-radius:10px; padding:14px 18px; }
+
+  /* 学派比较 */
+  .cmp-board { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; }
+  .cmp-col { background:var(--paper); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+  .cmp-col .hd { padding:11px 16px; background:var(--accent); color:#fff; font-family:"STKaiti",serif;
+    font-size:15.5px; letter-spacing:1px; }
+  .cmp-col .bd { padding:14px 16px; font-size:13.5px; line-height:1.8; color:var(--ink); }
+  .term-def { background:var(--bg-soft); border-radius:10px; padding:14px 18px; margin-bottom:18px; font-size:14px; line-height:1.8; }
+  .term-def .nm { font-family:"STKaiti",serif; font-size:22px; color:var(--gold); margin-right:8px; }
+  @media(max-width:768px){ .tl-title{font-size:26px;} .node{flex-basis:48px;height:48px;font-size:16px;} .step::before{left:23px;top:44px;} }
+</style>
+</head>
+<body>
+<div id="siteNav"></div>
+<div class="page-wrap">
+  <div class="tl-wrap">
+    <div class="tl-title">研讀工具</div>
+    <div class="tl-sub">三件互動工具：概念路徑推演、注疏異文對照、學派立場比較。</div>
+
+    <div class="tool-tabs">
+      <div class="tool-tab active" data-p="p1">概念路徑推演</div>
+      <div class="tool-tab" data-p="p2">注疏異文對照</div>
+      <div class="tool-tab" data-p="p3">學派立場比較</div>
+    </div>
+
+    <div class="panel active" id="p1">
+      <div class="sel-row">
+        <select id="pathSel"></select>
+        <span class="hint">選一條路徑，查看其概念鏈、原文依據與逐步疏解。</span>
+      </div>
+      <div id="pathOut"></div>
+    </div>
+
+    <div class="panel" id="p2">
+      <div class="sel-row">
+        <select id="comSel"></select>
+        <span class="hint">對照同一句在諸版本中的異文，並列各家注疏。</span>
+      </div>
+      <div id="comOut"></div>
+    </div>
+
+    <div class="panel" id="p3">
+      <div class="sel-row">
+        <select id="termSel"></select>
+        <span class="hint">選一術語，比較道、儒、墨、法等家對它的不同界定。</span>
+      </div>
+      <div id="termOut"></div>
+    </div>
+  </div>
+</div>
+<div id="siteFooter"></div>
+
+<script src="js/common.js?v=8"></script>
+<script src="data/paths.js?v=8"></script>
+<script src="data/commentaries.js?v=8"></script>
+<script src="data/terms.js?v=8"></script>
+<script>
+(function(){
+  function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  /* ---- Tab 切换 ---- */
+  document.querySelectorAll('.tool-tab').forEach(function(t){
+    t.addEventListener('click', function(){
+      document.querySelectorAll('.tool-tab').forEach(function(x){x.classList.remove('active');});
+      document.querySelectorAll('.panel').forEach(function(x){x.classList.remove('active');});
+      t.classList.add('active');
+      document.getElementById(t.dataset.p).classList.add('active');
+    });
+  });
+
+  /* ---- 工具一：概念路径推演 ---- */
+  var PATHS = window.PATHS_DATA||[];
+  var pSel = document.getElementById('pathSel');
+  pSel.innerHTML = PATHS.map(function(p,i){ return '<option value="'+i+'">'+esc(p.name)+'（'+esc(p.school)+'）</option>'; }).join('');
+  function drawPath(){
+    var p = PATHS[pSel.value]; if(!p){document.getElementById('pathOut').innerHTML='';return;}
+    var h = '<div class="path-desc">'+esc(p.desc)+'<div class="refs">典源：'+esc((p.refs||[]).join('；'))+'</div></div>';
+    h += '<div class="chain">';
+    p.steps.forEach(function(s,i){
+      h += '<div class="step"><div class="node">'+esc(s.node)+'</div>'+
+           '<div class="step-body"><div class="src">'+esc(s.text)+'</div>'+
+           '<div class="note">'+esc(s.note)+'</div></div></div>';
+    });
+    h += '</div>';
+    document.getElementById('pathOut').innerHTML = h;
+  }
+  pSel.addEventListener('change', drawPath);
+
+  /* ---- 工具二：注疏异文对照 ---- */
+  var COM = window.COMMENTARY_DATA||[];
+  var cSel = document.getElementById('comSel');
+  cSel.innerHTML = COM.map(function(c,i){ return '<option value="'+i+'">'+esc(c.book+' · '+c.chapter)+'</option>'; }).join('');
+  function drawCom(){
+    var c = COM[cSel.value]; if(!c){document.getElementById('comOut').innerHTML='';return;}
+    var h = '<div class="base-sentence">'+esc(c.base)+'</div>';
+    h += '<table class="var-table"><tr><th>版本 / 來源</th><th>文字</th></tr>'+
+      (c.variants||[]).map(function(v){ return '<tr><td class="s">'+esc(v.src)+'</td><td class="v">'+esc(v.text)+'</td></tr>'; }).join('')+'</table>';
+    if(c.collation) h += '<div class="collation"><b>校記：</b>'+esc(c.collation)+'</div>';
+    if(c.readings && c.readings.length){
+      h += '<div class="readings"><h5>各家注疏</h5>'+
+        c.readings.map(function(r){ return '<div class="reading"><span class="who">'+esc(r.who)+'</span><span class="txt">'+esc(r.view)+'</span></div>'; }).join('')+'</div>';
+    }
+    if(c.meaning) h += '<div class="sec-h">義旨</div><div class="mean-box">'+esc(c.meaning)+'</div>';
+    document.getElementById('comOut').innerHTML = h;
+  }
+  cSel.addEventListener('change', drawCom);
+
+  /* ---- 工具三：学派立场比较 ---- */
+  var TERMS = (window.TERMS_DATA||[]).filter(function(t){return t.views && t.views.length;});
+  var tSel = document.getElementById('termSel');
+  tSel.innerHTML = TERMS.map(function(t,i){ return '<option value="'+i+'">'+esc(t.name)+'（'+t.views.length+'家）</option>'; }).join('');
+  function drawTerm(){
+    var t = TERMS[tSel.value]; if(!t){document.getElementById('termOut').innerHTML='';return;}
+    var h = '<div class="term-def"><span class="nm">'+esc(t.name)+'</span>'+esc(t.def)+
+            (t.source?'<div style="font-family:\'STKaiti\',serif;color:var(--gold);margin-top:8px">'+esc(t.source)+'</div>':'')+'</div>';
+    h += '<div class="cmp-board">'+t.views.map(function(v){
+      return '<div class="cmp-col"><div class="hd">'+esc(v.school)+'</div><div class="bd">'+esc(v.view)+'</div></div>';
+    }).join('')+'</div>';
+    document.getElementById('termOut').innerHTML = h;
+  }
+  tSel.addEventListener('change', drawTerm);
+
+  drawPath(); drawCom(); drawTerm();
+})();
+</script>
+</body>
+</html>

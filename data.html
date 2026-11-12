@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>數據下載 · 子藏本體論 Zi-Cang</title>
-<link rel="stylesheet" href="css/common.css?v=7">
+<link rel="stylesheet" href="css/common.css?v=8">
 <style>
   :root{--ink:#2c1810;--sub:#6b4423;--paper:#f5ecd7;--card:#faf4e3;--border:#d4b896;--gold:#8b2500;--accent:#a0522d}
   .data-hero{padding:48px 28px 24px;text-align:center;max-width:900px;margin:0 auto}
@@ -71,7 +71,7 @@
 </div>
 </div>
 
-<script src="js/common.js?v=7"></script>
+<script src="js/common.js?v=8"></script>
 <script>
 injectLayout('data');
 
@@ -86,6 +86,16 @@ const FILES=[
    files:[{name:'debates.json',gen:genDebatesJSON,label:'JSON'},{name:'debates.ttl',gen:genDebatesTTL,label:'Turtle'}]},
   {ico:'📚',title:'子藏書目索引',desc:'1157部典籍的完整元數據：分類、書名、字數、是否多卷本、文件名。可用於構建書目檢索系統。',meta:['書目','~120KB','1157部'],
    files:[{name:'books.json',url:'data/books.json',label:'JSON'}]},
+  {ico:'📖',title:'典籍詳解數據',desc:'1157部典籍之詳解：書名、類目、學派、作者、時代、主旨、核心論點、原文引證、版本研讀。其中296部為精編詳解，852部為分目卡片。',meta:['詳解','~333KB','1157部'],
+   files:[{name:'classics.json',url:'data/classics.js',label:'JS數據'}]},
+  {ico:'辭',title:'諸子術語詞典數據',desc:'83條核心範疇之定義、出處、拼音、所屬學派、各家異解（合計222條）與相關術語。',meta:['術語','~42KB','83條'],
+   files:[{name:'terms.json',url:'data/terms.js',label:'JS數據'}]},
+  {ico:'🀄',title:'成語典故數據',desc:'132條源出諸子典籍之成語：典源篇章、原文、釋義、類別與同源典故。',meta:['典故','~37KB','132條'],
+   files:[{name:'idioms.json',url:'data/idioms.js',label:'JS數據'}]},
+  {ico:'⿴',title:'概念路徑與異文數據',desc:'17條概念路徑（含73步推演）與13組注疏異文對照（版本異文、校記、各家注疏）。',meta:['路徑·異文','~23KB','17+13組'],
+   files:[{name:'paths.json',url:'data/paths.js',label:'路徑'},{name:'commentaries.json',url:'data/commentaries.js',label:'異文'}]},
+  {ico:'📐',title:'本體規範 Schema',desc:'ZCore v2.0 之 TBox 層：24個類、42個物件屬性、28個資料屬性的完整定義，含命名空間與「1+N」模組架構說明。',meta:['Schema','~10KB','TBox'],
+   files:[{name:'ontology-schema.json',url:'data/ontology-schema.js',label:'JS數據'}]},
   {ico:'🗂',title:'完整本體包',desc:'將以上所有文件打包為zip，含README說明與SPARQL查詢示例。',meta:['ZIP','一次性下載'],
    files:[{name:'zicang-ontology-bundle.zip',gen:genBundle,label:'ZIP打包',isBig:true}]},
   {ico:'📜',title:'全文文本庫',desc:'子藏七分部類共計1201個txt文件，UTF-8編碼，約2.06億字。文件體積較大，請按需從GitHub倉庫克隆。',meta:['全文','~500MB（子藏）','1201文件'],

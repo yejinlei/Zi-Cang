@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>子藏本體論 · Zi-Cang Ontology</title>
-<link rel="stylesheet" href="css/common.css?v=7">
-<script src="js/common.js?v=7"></script>
+<link rel="stylesheet" href="css/common.css?v=8">
+<script src="js/common.js?v=8"></script>
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
 <script src="data/daoti.js"></script>
 <script src="data/schools.js"></script>
@@ -111,6 +111,14 @@
   .debate-card .vs{padding:10px}
   .ont-hero h1{font-size:32px;letter-spacing:3px}
 }
+
+/* ---- 深化模块入口 ---- */
+.deeplinks{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:26px 0 6px}
+.deeplink{display:flex;gap:12px;align-items:center;padding:14px 16px;background:var(--paper);border:1px solid var(--border);border-radius:12px;text-decoration:none;transition:all .2s}
+.deeplink:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 6px 18px var(--shadow);text-decoration:none}
+.deeplink .dl-ico{flex:0 0 42px;height:42px;display:flex;align-items:center;justify-content:center;background:var(--highlight);border-radius:10px;font-size:20px;color:var(--accent);font-family:"STKaiti",serif}
+.deeplink b{display:block;color:var(--ink);font-size:15px;font-family:"STKaiti",serif;letter-spacing:1px}
+.deeplink small{display:block;color:var(--ink-soft);font-size:12px;margin-top:3px}
 </style>
 </head>
 <body>
@@ -131,6 +139,15 @@
     <div class="kpi"><div class="kpi-num">84</div><div class="kpi-lbl">義理範疇</div></div>
   </div>
 </section>
+
+<!-- ===== 深化模块入口 ===== -->
+<div class="deeplinks">
+  <a href="classics.html" class="deeplink"><span class="dl-ico">📖</span><div><b>典籍詳解庫</b><small>1157部典籍提要 · 296部精編</small></div></a>
+  <a href="terms.html" class="deeplink"><span class="dl-ico">辭</span><div><b>諸子術語詞典</b><small>83條範疇 · 222條各家異解</small></div></a>
+  <a href="idioms.html" class="deeplink"><span class="dl-ico">🀄</span><div><b>成語典故庫</b><small>132條典源 · 原文義訓</small></div></a>
+  <a href="tools.html" class="deeplink"><span class="dl-ico">⿴</span><div><b>研讀工具</b><small>路徑推演 · 異文對照 · 學派比較</small></div></a>
+  <a href="spec.html" class="deeplink"><span class="dl-ico">📐</span><div><b>本體規範總綱</b><small>24類 · 42屬性 · 七層抽象</small></div></a>
+</div>
 
 <div class="ont-tabs" id="ontTabs">
   <button class="ont-tab active" data-pan="pan-tree">☰ 道體本體樹</button>

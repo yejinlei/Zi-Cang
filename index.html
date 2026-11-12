@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>子藏本体论 · Zi-Cang Ontology</title>
-<link rel="stylesheet" href="css/common.css?v=7">
+<link rel="stylesheet" href="css/common.css?v=8">
 </head>
 <body>
 <div id="siteNav"></div>
@@ -19,6 +19,7 @@
   <div class="hero-actions">
     <a href="library.html" class="btn btn-primary">📜 进入全文库</a>
     <a href="ontology.html" class="btn btn-gold">⬡ 諸子本體</a>
+    <a href="classics.html" class="btn btn-jade">📖 典籍詳解</a>
     <a href="#schools" class="btn btn-outline">九流十家</a>
     <a href="#ontology" class="btn btn-jade">本體架構</a>
     <a href="#thinkers" class="btn btn-indigo">諸子人物</a>
@@ -29,11 +30,12 @@
 
 <!-- KPI -->
 <div class="kpi-grid">
-  <div class="kpi-card"><div class="kpi-num">1463</div><div class="kpi-label">典籍总数</div></div>
-  <div class="kpi-card"><div class="kpi-num">2.06亿</div><div class="kpi-label">总字数</div></div>
-  <div class="kpi-card"><div class="kpi-num">7</div><div class="kpi-label">子部分类</div></div>
-  <div class="kpi-card"><div class="kpi-num">12</div><div class="kpi-label">诸子流派</div></div>
-  <div class="kpi-card"><div class="kpi-num">36</div><div class="kpi-label">道体概念</div></div>
+  <div class="kpi-card"><div class="kpi-num">1157</div><div class="kpi-label">典籍总数</div></div>
+  <div class="kpi-card"><div class="kpi-num">296</div><div class="kpi-label">精編詳解</div></div>
+  <div class="kpi-card"><div class="kpi-num">83</div><div class="kpi-label">術語詞條</div></div>
+  <div class="kpi-card"><div class="kpi-num">132</div><div class="kpi-label">成語典故</div></div>
+  <div class="kpi-card"><div class="kpi-num">2.06億</div><div class="kpi-label">總字數</div></div>
+  <div class="kpi-card"><div class="kpi-num">7</div><div class="kpi-label">子部分類</div></div>
 </div>
 
 
@@ -1091,26 +1093,47 @@
 
 <!-- 义理工具 -->
 <div class="section">
-<h2 class="section-title">器 义理工具</h2>
+<h2 class="section-title">器 研讀工具</h2>
+<a href="classics.html" class="link-block">
+  <div class="link-block-icon">📖</div>
+  <div>
+    <h4>典籍詳解庫</h4>
+    <p>1157 部子學典籍之提要、作者、主旨與原文引證；296 部精編詳解含核心論點、名句出處與版本研讀建議。</p>
+  </div>
+</a>
+<a href="terms.html" class="link-block">
+  <div class="link-block-icon">辭</div>
+  <div>
+    <h4>諸子術語詞典</h4>
+    <p>83 條核心範疇（道、德、仁、義、氣、法、術、勢……）之定義、出處與各家異解對照，同一術語在道儒墨法筆下意涵迥異。</p>
+  </div>
+</a>
+<a href="idioms.html" class="link-block">
+  <div class="link-block-icon">🀄</div>
+  <div>
+    <h4>成語典故庫</h4>
+    <p>132 條源出諸子典籍之成語（庖丁解牛、守株待兔、刻舟求劍……），標明典源篇章、原文、義訓與同源典故。</p>
+  </div>
+</a>
+<a href="tools.html" class="link-block">
+  <div class="link-block-icon">⿴</div>
+  <div>
+    <h4>研讀工具</h4>
+    <p>三件互動工具：概念路徑推演（如「失道而後德」遞降鏈）、注疏異文對照（王弼本／帛書本／竹簡本）、學派立場比較。</p>
+  </div>
+</a>
+<a href="spec.html" class="link-block">
+  <div class="link-block-icon">📐</div>
+  <div>
+    <h4>本體規範總綱</h4>
+    <p>ZCore v2.0 之 TBox 層全表：24 個類、42 個物件屬性、28 個資料屬性，並說明「1+N」模組化架構與七層抽象。</p>
+  </div>
+</a>
 <a href="library.html" class="link-block">
   <div class="link-block-icon">📜</div>
   <div>
-    <h4>古籍全文库</h4>
-    <p>1463部子学典籍、约2亿字全文检索，支持分类筛选、主题切换、横竖排、字号调整，点击概念可查看释义。</p>
-  </div>
-</a>
-<a href="#schools" class="link-block" onclick="showModal('九流十家','<p>先秦至汉初诸子百家共分十家：儒、道、法、墨、名、阴阳、纵横、杂、农、小说。</p><p>其中儒家、道家、法家对后世中国政治思想影响最大；墨家在逻辑学、科学技术上有重要贡献；兵家影响古今军事学。</p><p>此分类出自班固《汉书·艺文志》，本源于刘向、刘歆父子《七略·诸子略》。</p>');return false;">
-  <div class="link-block-icon">流</div>
-  <div>
-    <h4>九流十家流派</h4>
-    <p>浏览儒、道、法、墨、名、阴阳、纵横、杂、农、小说、兵家十二流派的核心思想、代表人物与典籍。</p>
-  </div>
-</a>
-<a href="#" class="link-block" onclick="showModal('子学概念词典','<p style=\'margin-bottom:8px;\'>已收录子学核心概念 <b>36+</b> 个，阅读正文时点击红色标注的概念即可查看释义：</p><p>道、德、仁、义、礼、法、术、势、无为、自然、性、心、气、天、命、名实、阴阳、五行、兼爱、非攻、尚贤、齐物、逍遥、刑名、耕战、王道、霸道、中庸、诚、格物、良知、奇正、庙算、兵势……</p><p>在阅读器中点击任意概念，可弹出释义窗口。</p>');return false;">
-  <div class="link-block-icon">辭</div>
-  <div>
-    <h4>子学概念词典</h4>
-    <p>道、法、术、势、仁、义、无为、自然、阴阳、奇正等36+核心概念释义，阅读中点击即现。</p>
+    <h4>古籍全文庫</h4>
+    <p>1157 部子學典籍、約 2 億字全文檢索，支持分類篩選、主題切換、橫豎排、字號調整，點擊概念可查看釋義。</p>
   </div>
 </a>
 </div>
@@ -1130,7 +1153,7 @@
 </div>
 
 </div>
-<script src="js/common.js?v=7"></script>
+<script src="js/common.js?v=8"></script>
 </div><!-- /page-wrap -->
 <div id="siteFooter"></div>
 </body>
