@@ -4,10 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>六藏互通 · 跨藏思想互見圖 — 子藏 Zi-Cang</title>
-<link rel="stylesheet" href="css/common.css?v=15">
-<script src="js/common.js?v=15"></script>
-<script src="data/cross.js?v=15"></script>
-<script src="data/concept-evolve.js?v=15"></script>
+<link rel="stylesheet" href="css/common.css?v=16">
+<script src="js/common.js?v=16"></script>
+<script src="data/cross.js?v=16"></script>
+<script src="data/concept-evolve.js?v=16"></script>
+<script src="data/concept-pairs.js?v=16"></script>
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
 <style>
 .page-title{font-size:2em;margin:24px 0 8px;text-align:center;}
@@ -83,7 +84,40 @@
 .era-node{padding:8px 10px;background:var(--paper);border-radius:6px;border-left:3px solid var(--border);font-size:.87em;line-height:1.55;}
 .era-node-label{font-weight:bold;margin-bottom:3px;}
 .era-node-desc{color:var(--ink-soft);font-size:.85em;line-height:1.55;}
-@media(max-width:960px){.kpi-bar{grid-template-columns:repeat(3,1fr);}.main-grid{grid-template-columns:1fr;}.chart-box{height:500px;}.era-nodes{grid-template-columns:1fr;}.era-block{padding-left:48px;}}
+/* 人物跳转链接 */
+.era-node-label{cursor:pointer;}
+.era-node-label:hover{text-decoration:underline;}
+.ppl-link{display:inline-block;padding:2px 8px;border-radius:10px;background:rgba(139,69,19,0.1);color:#8B4513;font-size:.82em;margin-left:6px;text-decoration:none;border:1px solid rgba(139,69,19,0.3);}
+.ppl-link:hover{background:#8B4513;color:#fff;}
+.book-link{display:inline-block;padding:2px 8px;border-radius:10px;background:rgba(178,34,34,0.1);color:#B22222;font-size:.82em;margin-left:6px;text-decoration:none;border:1px solid rgba(178,34,34,0.3);}
+.book-link:hover{background:#B22222;color:#fff;}
+/* 对比视图 */
+.pair-bar{display:none;margin:8px 0 14px;padding:12px;background:linear-gradient(135deg,var(--card-bg),rgba(46,139,87,0.08));border:1px solid #2E8B57;border-radius:8px;}
+.pair-bar.active{display:block;}
+.pair-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+.pair-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:8px;}
+.pair-title-bar{font-size:1.1em;font-weight:bold;color:#2E8B57;}
+.pair-exit{padding:4px 12px;border-radius:14px;border:1px solid var(--border);background:var(--paper);cursor:pointer;font-size:.85em;}
+.pair-exit:hover{background:#2E8B57;color:#fff;border-color:#2E8B57;}
+.pair-card{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px;}
+.pair-vs-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:stretch;margin:10px 0 16px;}
+.pair-col{background:var(--paper);border-radius:8px;padding:14px;border-top:4px solid var(--border);}
+.pair-col.left{border-top-color:#8B4513;}
+.pair-col.right{border-top-color:#B22222;}
+.pair-vs{display:flex;align-items:center;justify-content:center;font-size:1.8em;color:var(--accent);font-weight:bold;}
+.pair-concept-name{font-size:1.25em;font-weight:bold;margin-bottom:8px;text-align:center;}
+.pair-concept-name.left{color:#8B4513;}
+.pair-concept-name.right{color:#B22222;}
+.pair-divide-item{margin:8px 0;padding:8px 10px;background:rgba(0,0,0,0.03);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;font-size:.88em;line-height:1.65;}
+.pair-divide-label{font-weight:bold;color:var(--accent);margin-right:4px;}
+.pair-meet-title{font-weight:bold;font-size:1.05em;color:#2E8B57;margin:14px 0 10px;border-left:3px solid #2E8B57;padding-left:8px;}
+.pair-meet-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;}
+.pair-meet-item{padding:10px 12px;background:var(--paper);border-radius:6px;border-left:3px solid #2E8B57;font-size:.87em;line-height:1.6;}
+.pair-meet-era{font-size:.78em;color:#2E8B57;font-weight:bold;margin-bottom:3px;}
+.pair-meet-node{font-weight:bold;color:var(--ink);}
+.pair-meet-note{color:var(--ink-soft);font-size:.85em;margin-top:4px;line-height:1.55;}
+.pair-verdict{margin-top:12px;padding:12px 14px;background:rgba(46,139,87,0.08);border-left:4px solid #2E8B57;border-radius:0 6px 6px 0;font-size:.92em;line-height:1.8;font-style:italic;}
+@media(max-width:960px){.kpi-bar{grid-template-columns:repeat(3,1fr);}.main-grid{grid-template-columns:1fr;}.chart-box{height:500px;}.era-nodes{grid-template-columns:1fr;}.era-block{padding-left:48px;}.pair-vs-grid{grid-template-columns:1fr;}.pair-vs{padding:8px 0;}}
 </style>
 </head>
 <body>
@@ -105,6 +139,7 @@
       <span class="ctrl-label">視圖：</span>
       <span class="chip active" data-view="all">🌐 全景互見</span>
       <span class="chip" data-view="focus">🎯 概念聚焦</span>
+      <span class="chip" data-view="compare">⚖️ 雙概念對比</span>
     </div>
     <div class="ctrl-group" id="view-all-ctrl" style="margin-left:10px;">
       <span class="ctrl-label">按藏篩選：</span>
@@ -127,6 +162,15 @@
       <span class="focus-exit" id="focus-exit">✕ 退出聚焦</span>
     </div>
     <div class="focus-chips" id="focus-chips"></div>
+  </div>
+
+  <!-- 双概念对比选择条 -->
+  <div class="pair-bar" id="pair-bar">
+    <div class="pair-head">
+      <div class="pair-title-bar">⚖️ 選擇對比組 · 觀三教分合</div>
+      <span class="pair-exit" id="pair-exit">✕ 退出對比</span>
+    </div>
+    <div class="pair-chips" id="pair-chips"></div>
   </div>
 
   <div class="legend">
@@ -345,6 +389,16 @@ function renderDetail(t,d,nid){
       const c=D.cangs.find(x=>x.id===cid);
       if(c)html+=`<a class="d-link" href="${c.url}" target="_blank" style="color:${c.color};border-color:${c.color};">📖 ${c.name}</a>`;
     });
+    // 人物→人物谱跳转
+    if(t==='people'&&nid){
+      const pid=nid.replace(/^p-/,'');
+      html+=`<a class="d-link" href="people.html?id=${encodeURIComponent(pid)}" target="_blank" style="color:#8B4513;border-color:#8B4513;">👤 詳見人物譜</a>`;
+    }
+    // 典籍→典籍详解决跳转
+    if(t==='book'&&nid){
+      const bid=nid.replace(/^b-/,'');
+      html+=`<a class="d-link" href="classics.html#${encodeURIComponent(bid)}" target="_blank" style="color:#B22222;border-color:#B22222;">📖 詳見典籍詳解</a>`;
+    }
     html+=`</div>`;
   }
   // 相关关系
@@ -392,16 +446,22 @@ document.querySelectorAll('.chip[data-nodetype]').forEach(el=>{
 // 默认展示"道"节点详情
 setTimeout(()=>{renderDetail('concept',D.concepts.find(c=>c.id==='c-dao'),'c-dao');chart.dispatchAction({type:'highlight',seriesIndex:0,name:'道'});},400);
 
-// ============== ⑧ 單概念聚焦模式 ==============
 const EVO=window.CONCEPT_EVOLUTION||[];
+const PAIRS=window.CONCEPT_PAIRS||[];
 let activeView='all';
 let activeFocus=null;
+let activePair=0;
 const focusBar=document.getElementById('focus-bar');
 const focusChipsEl=document.getElementById('focus-chips');
 const focusExit=document.getElementById('focus-exit');
+const pairBar=document.getElementById('pair-bar');
+const pairChipsEl=document.getElementById('pair-chips');
+const pairExit=document.getElementById('pair-exit');
 const viewAllCtrl=document.getElementById('view-all-ctrl');
 const typeFilterGroup=document.getElementById('type-filter-group');
 const cangFilterEl=document.getElementById('cang-filter');
+const legendEl=document.querySelector('.legend');
+const mainGrid=document.querySelector('.main-grid');
 
 // 构建聚焦chip
 EVO.forEach(c=>{
@@ -418,16 +478,30 @@ function switchView(view){
   document.querySelectorAll('.chip[data-view]').forEach(x=>x.classList.toggle('active',x.dataset.view===view));
   if(view==='focus'){
     focusBar.classList.add('active');
+    pairBar.classList.remove('active');
     viewAllCtrl.style.display='none';
     cangFilterEl.style.display='none';
     typeFilterGroup.style.display='none';
+    legendEl.style.display='flex';
+    mainGrid.style.display='grid';
     if(!activeFocus)enterFocus('c-dao');
     else enterFocus(activeFocus);
+  }else if(view==='compare'){
+    focusBar.classList.remove('active');
+    pairBar.classList.add('active');
+    viewAllCtrl.style.display='none';
+    cangFilterEl.style.display='none';
+    typeFilterGroup.style.display='none';
+    legendEl.style.display='none';
+    enterPair(activePair);
   }else{
     focusBar.classList.remove('active');
+    pairBar.classList.remove('active');
     viewAllCtrl.style.display='';
     cangFilterEl.style.display='';
     typeFilterGroup.style.display='';
+    legendEl.style.display='flex';
+    mainGrid.style.display='grid';
     render();
     // 重新绑定全景点击
     chart.off('click');
@@ -438,6 +512,185 @@ function switchView(view){
     });
     setTimeout(()=>{renderDetail('concept',D.concepts.find(c=>c.id==='c-dao'),'c-dao');chart.dispatchAction({type:'highlight',seriesIndex:0,name:'道'});},50);
   }
+}
+
+// 人物名到id的简单映射（用于对比视图中 node 字符串跳转 people.html）
+const PEOPLE_NAME_TO_ID={
+  '孔子':'kongzi','孟子':'mengzi','荀子':'xunzi','曾子':'zengzi','子思':'zisi',
+  '老子':'laozi','莊子':'zhuangzi','庄子':'zhuangzi','列子':'liezi','關尹子':'guanyin','关尹子':'guanyin',
+  '文子':'wenzi','韓非':'hanfei','韩非':'hanfei','商鞅':'shangyang','申不害':'shenbuhai',
+  '慎到':'shendao','李悝':'likui','吳起':'wuqi','吴起':'wuqi','墨子':'mozi','孫子':'sunwu','孙子':'sunwu',
+  '孫臏':'sunbin','孙膑':'sunbin','惠施':'huishi','公孫龍':'gongsunlong','公孙龙':'gongsunlong',
+  '鄒衍':'zouyan','邹衍':'zouyan','鬼谷子':'guiguzi','蘇秦':'suqin','苏秦':'suqin','張儀':'zhangyi','张仪':'zhangyi',
+  '呂不韋':'lvbuwei','吕不韦':'lvbuwei','許行':'xuxing','许行':'xuxing','鄧析':'dengxi','邓析':'dengxi',
+  '董仲舒':'dongzhongshu','劉安':'liuan','刘安':'liuan','司馬遷':'simaqian','司马迁':'simaqian','王充':'wangchong',
+  '顏之推':'yanzhitui','颜之推':'yanzhitui',
+  '王弼':'wangbi','僧肇':'sengzhao','慧能':'huineng','宗密':'zongmi','周敦頤':'zhoudunyi','周敦颐':'zhoudunyi',
+  '邵雍':'shaoyong','張載':'zhangzai','张载':'zhangzai','二程':'ercheng','程顥':'chenghao','程颢':'chenghao','程頤':'chengyi','程颐':'chengyi',
+  '朱熹':'zhuxi','陸九淵':'lujiuyuan','陆九渊':'lujiuyuan','王陽明':'wangyangming','王阳明':'wangyangming',
+  '劉勰':'liuxie','刘勰':'liuxie','屈原':'quyuan','竺道生':'zhudaosheng','神秀':'shenxiu','神會':'shenhui','神会':'shenhui',
+  '韓愈':'hanyu','韩愈':'hanyu','李翱':'liao','憨山德清':'hanshan','顧憲成':'guxiancheng','高攀龍':'gaopanlong',
+  '陳獻章':'chenxianzhang','陈献章':'chenxianzhang','湛若水':'zhanruoshui','劉宗周':'liuzongzhou','刘宗周':'liuzongzhou','黃宗羲':'huangzongxi','王夫之':'wangfuzhi',
+  '王廷相':'wangtingxiang','郭象':'guoxiang','淮南子':'liuan','弘忍':'hongren','五祖弘忍':'hongren'
+};
+function linkifyNames(text){
+  // 把文本中出现的人物名转为链接
+  if(!text)return '';
+  // 按名字长度降序匹配避免短名优先
+  const names=Object.keys(PEOPLE_NAME_TO_ID).sort((a,b)=>b.length-a.length);
+  let out=text;
+  const used=new Set();
+  names.forEach(nm=>{
+    if(used.has(nm))return;
+    const pid=PEOPLE_NAME_TO_ID[nm];
+    const re=new RegExp(nm.replace(/([.*+?^=!:${}()|\[\]\/\\])/g,'\\$1'),'g');
+    out=out.replace(re,function(m){
+      if(/<[^>]*$/.test(out.slice(0,out.indexOf(m)+m.length)))return m;
+      used.add(nm);
+      return `<a href="people.html?id=${pid}" target="_blank" class="ppl-link" style="margin:0 2px;">👤 ${m}</a>`;
+    });
+  });
+  return out;
+}
+
+function buildPairChips(){
+  PAIRS.forEach((p,i)=>{
+    const s=document.createElement('span');
+    s.className='focus-tag';
+    s.dataset.pid=i;
+    s.textContent=p.title;
+    pairChipsEl.appendChild(s);
+  });
+}
+buildPairChips();
+
+function enterPair(idx){
+  activePair=idx;
+  document.querySelectorAll('#pair-chips .focus-tag').forEach(x=>x.classList.toggle('active',Number(x.dataset.pid)===idx));
+  const p=PAIRS[idx];
+  if(!p)return;
+  renderPairChart(p);
+  renderPairDetail(p);
+}
+
+function renderPairChart(p){
+  // 简单关系图：左右两个核心概念居上，中间「匯通」节点，下方会通人物
+  const nodes=[];
+  const links=[];
+  // 左概念
+  nodes.push({
+    id:'__L',name:p.pair[0],symbolSize:55,x:200,y:100,fixed:true,
+    itemStyle:{color:'#8B4513',borderColor:'#fff',borderWidth:3,shadowBlur:15,shadowColor:'#8B451388'},
+    label:{show:true,fontSize:16,fontWeight:'bold',color:'#fff'},
+    _type:'concept'
+  });
+  nodes.push({
+    id:'__R',name:p.pair[1],symbolSize:55,x:640,y:100,fixed:true,
+    itemStyle:{color:'#B22222',borderColor:'#fff',borderWidth:3,shadowBlur:15,shadowColor:'#B2222288'},
+    label:{show:true,fontSize:16,fontWeight:'bold',color:'#fff'},
+    _type:'concept'
+  });
+  // VS节点
+  nodes.push({
+    id:'__VS',name:'VS',symbolSize:36,x:420,y:100,fixed:true,
+    itemStyle:{color:'#DAA520',borderColor:'#fff',borderWidth:3},
+    label:{show:true,fontSize:13,fontWeight:'bold',color:'#fff'},
+    _type:'vs'
+  });
+  links.push({source:'__L',target:'__VS',lineStyle:{color:'#DAA520',width:2,type:'dashed'}});
+  links.push({source:'__R',target:'__VS',lineStyle:{color:'#DAA520',width:2,type:'dashed'}});
+  // 汇通节点
+  const meetNodes=p.meet||[];
+  meetNodes.forEach((m,i)=>{
+    const col=i%4;
+    const row=Math.floor(i/4);
+    nodes.push({
+      id:'__M'+i,name:m.node,symbolSize:26,
+      x:120+col*200,y:260+row*90,fixed:true,
+      itemStyle:{color:'#2E8B57',borderColor:'#fff',borderWidth:2},
+      label:{show:true,fontSize:11,position:'right',color:'var(--ink)',distance:3},
+      _type:'meet',_data:m
+    });
+    links.push({source:'__L',target:'__M'+i,lineStyle:{color:'#8B4513',width:1.2,opacity:0.6,curveness:0.15}});
+    links.push({source:'__R',target:'__M'+i,lineStyle:{color:'#B22222',width:1.2,opacity:0.6,curveness:-0.15}});
+  });
+  const opt={
+    tooltip:{
+      trigger:'item',
+      formatter:function(pp){
+        if(pp.dataType==='node'){
+          if(pp.data._type==='meet'){
+            const m=pp.data._data;
+            return `<b>${m.node}</b>（${m.era}）<br>${m.canon||''}<br>${m.note||''}`;
+          }
+          return pp.data.name;
+        }
+        return '';
+      }
+    },
+    xAxis:{show:false,min:0,max:840},
+    yAxis:{show:false,min:0,max:500},
+    series:[{
+      type:'graph',layout:'none',roam:true,draggable:true,
+      data:nodes,links:links,
+      edgeSymbol:['none','arrow'],edgeSymbolSize:6,
+      emphasis:{focus:'adjacency',lineStyle:{width:3}},
+      lineStyle:{curveness:0.1},
+      label:{fontFamily:'inherit'},
+    }]
+  };
+  chart.setOption(opt,true);
+  chart.off('click');
+  chart.on('click',function(pp){
+    if(pp.dataType!=='node'||pp.data._type!=='meet')return;
+    const m=pp.data._data;
+    // 尝试找人物跳转
+    const pid=PEOPLE_NAME_TO_ID[m.node];
+    if(pid){
+      window.open('people.html?id='+pid,'_blank');
+    }
+  });
+}
+
+function renderPairDetail(p){
+  const panel=document.getElementById('detail');
+  let html=`<div class="d-title"><span>${p.title}</span><span class="d-badge" style="background:#2E8B57;">雙概念對比</span></div>`;
+  html+=`<div class="d-desc" style="font-style:italic;color:#2E8B57;margin-bottom:6px;border-left:3px solid #2E8B57;padding-left:10px;">${p.subtitle}</div>`;
+  // 分歧
+  html+=`<div class="d-section-title" style="color:#8B4513;border-left-color:#8B4513;">⚔️ 分歧：兩家之異</div>`;
+  html+=`<div class="pair-vs-grid">`;
+  html+=`<div class="pair-col left"><div class="pair-concept-name left">${p.pair[0]}</div>`;
+  (p.divide.left||[]).forEach(d=>{
+    html+=`<div class="pair-divide-item"><span class="pair-divide-label" style="color:#8B4513;">${d.label}：</span>${linkifyNames(d.text)}</div>`;
+  });
+  html+=`</div>`;
+  html+=`<div class="pair-vs">⇆</div>`;
+  html+=`<div class="pair-col right"><div class="pair-concept-name right">${p.pair[1]}</div>`;
+  (p.divide.right||[]).forEach(d=>{
+    html+=`<div class="pair-divide-item"><span class="pair-divide-label" style="color:#B22222;">${d.label}：</span>${linkifyNames(d.text)}</div>`;
+  });
+  html+=`</div></div>`;
+  // 匯通
+  html+=`<div class="pair-meet-title">🔗 匯通：三教會通之脈絡</div>`;
+  html+=`<div class="pair-meet-grid">`;
+  (p.meet||[]).forEach(m=>{
+    html+=`<div class="pair-meet-item">`;
+    html+=`<div class="pair-meet-era">${m.era}</div>`;
+    const pid=PEOPLE_NAME_TO_ID[m.node];
+    if(pid){
+      html+=`<div class="pair-meet-node">${linkifyNames(m.node)}${m.canon?' · <span style="color:var(--ink-soft);font-size:.85em;font-weight:normal;">'+m.canon+'</span>':''}</div>`;
+    }else{
+      html+=`<div class="pair-meet-node">${m.node}${m.canon?' · <span style="color:var(--ink-soft);font-size:.85em;font-weight:normal;">'+m.canon+'</span>':''}</div>`;
+    }
+    html+=`<div class="pair-meet-note">${linkifyNames(m.note||'')}</div>`;
+    html+=`</div>`;
+  });
+  html+=`</div>`;
+  // 定谳
+  if(p.verdict){
+    html+=`<div class="pair-verdict">▸ ${linkifyNames(p.verdict)}</div>`;
+  }
+  panel.innerHTML=html;
 }
 
 function enterFocus(cid){
@@ -590,7 +843,20 @@ function renderFocusTimeline(evo){
     (era.nodes||[]).forEach(nd=>{
       const col=cangColor(nd.cang);
       html+=`<div class="era-node" style="border-left-color:${col};">`;
-      html+=`<div class="era-node-label" style="color:${col};">${nd.label}</div>`;
+      // 人物/典籍名带跳转
+      const isPeople=nd.id&&nd.id.startsWith('p-');
+      const isBook=nd.id&&nd.id.startsWith('b-');
+      let labelHtml=nd.label;
+      if(isPeople){
+        const pid=nd.id.replace(/^p-/,'');
+        labelHtml=`<a href="people.html?id=${encodeURIComponent(pid)}" target="_blank" class="era-node-label" style="color:${col};text-decoration:none;">${nd.label}</a><a href="people.html?id=${encodeURIComponent(pid)}" target="_blank" class="ppl-link">👤 人物譜</a>`;
+      }else if(isBook){
+        const bid=nd.id.replace(/^b-/,'');
+        labelHtml=`<a href="classics.html#${encodeURIComponent(bid)}" target="_blank" class="era-node-label" style="color:${col};text-decoration:none;">${nd.label}</a><a href="classics.html#${encodeURIComponent(bid)}" target="_blank" class="book-link">📖 詳解</a>`;
+      }else{
+        labelHtml=`<span class="era-node-label" style="color:${col};">${nd.label}</span>`;
+      }
+      html+=`<div>${labelHtml}</div>`;
       html+=`<div class="era-node-desc">${nd.desc}</div>`;
       html+=`</div>`;
     });
@@ -609,11 +875,17 @@ document.querySelectorAll('.chip[data-view]').forEach(el=>{
 // 聚焦chip点击
 document.querySelectorAll('.focus-tag').forEach(el=>{
   el.addEventListener('click',()=>{
-    if(activeView!=='focus')switchView('focus');
-    enterFocus(el.dataset.fid);
+    if(el.closest('#focus-chips')){
+      if(activeView!=='focus')switchView('focus');
+      enterFocus(el.dataset.fid);
+    }else if(el.closest('#pair-chips')){
+      if(activeView!=='compare')switchView('compare');
+      enterPair(Number(el.dataset.pid));
+    }
   });
 });
 focusExit.addEventListener('click',()=>switchView('all'));
+pairExit.addEventListener('click',()=>switchView('all'));
 })();
 </script>
 </body>
