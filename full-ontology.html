@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>全文本體化 · 子藏</title>
-<link rel="stylesheet" href="css/common.css?v=16">
+<link rel="stylesheet" href="css/common.css?v=17">
 <style>
 .kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:20px 0}
 .kpi{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center}
@@ -187,15 +187,15 @@ pre.rdf-out{background:#f5f0e1;border:1px solid var(--border);border-radius:8px;
 
 </div>
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
-<script src="data/chapters.js?v=16"></script>
-<script src="data/concept_book.js?v=16"></script>
-<script src="data/mention_book.js?v=16"></script>
-<script src="data/anchors.js?v=16"></script>
-<script src="data/ontobuild_summary.js?v=16"></script>
-<script src="data/people_ext.js?v=16"></script>
-<script src="data/books.js?v=16"></script>
-<script src="data/classics.js?v=16"></script>
-<script src="js/common.js?v=16"></script>
+<script src="data/chapters.js?v=17"></script>
+<script src="data/concept_book.js?v=17"></script>
+<script src="data/mention_book.js?v=17"></script>
+<script src="data/anchors.js?v=17"></script>
+<script src="data/ontobuild_summary.js?v=17"></script>
+<script src="data/people_ext.js?v=17"></script>
+<script src="data/books.js?v=17"></script>
+<script src="data/classics.js?v=17"></script>
+<script src="js/common.js?v=17"></script>
 <script>
 // ======== 初始化 KPI ========
 (function(){
@@ -744,6 +744,48 @@ document.getElementById('btn-copy').addEventListener('click',()=>{
 if(window.linkifyText){
   // 复用全局 linkify，但这里主要是面板动态渲染的内容，后续再加
 }
+
+// ======== URL 参数定位：?tab=xxx 切 tab；?hl=pid 人物定位 ========
+(function(){
+  const params=new URLSearchParams(location.search);
+  // tab 切换
+  const tab=params.get('tab');
+  if(tab){
+    const t=document.querySelector('.tab[data-pane="pane-'+tab+'"]');
+    if(t)t.click();
+  }
+  // 人物定位：切到人物提及 tab，搜索该人并高亮
+  const hl=params.get('hl');
+  if(hl){
+    setTimeout(()=>{
+      const perTab=document.querySelector('.tab[data-pane="pane-person"]');
+      if(perTab)perTab.click();
+      setTimeout(()=>{
+        const inp=document.getElementById('p-search');
+        if(inp){
+          // 优先按 PEOPLE_EXT 找名字
+          const PE=window.PEOPLE_EXT||{};
+          const p=PE[hl];
+          inp.value=p?p.name:hl;
+          inp.dispatchEvent(new Event('input'));
+          // 找该人物卡高亮
+          setTimeout(()=>{
+            const cards=[...document.querySelectorAll('.pcard')];
+            for(const c of cards){
+              if(c.textContent.includes(p?p.name:hl)){
+                c.scrollIntoView({behavior:'smooth',block:'center'});
+                c.style.boxShadow='0 0 0 3px var(--gold)';
+                c.style.transition='box-shadow .4s';
+                setTimeout(()=>{c.style.boxShadow='';},2500);
+                break;
+              }
+            }
+          },200);
+        }
+      },300);
+    },200);
+  }
+})();
 </script>
 </body>
 </html>

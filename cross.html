@@ -4,11 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>六藏互通 · 跨藏思想互見圖 — 子藏 Zi-Cang</title>
-<link rel="stylesheet" href="css/common.css?v=16">
-<script src="js/common.js?v=16"></script>
-<script src="data/cross.js?v=16"></script>
-<script src="data/concept-evolve.js?v=16"></script>
-<script src="data/concept-pairs.js?v=16"></script>
+<link rel="stylesheet" href="css/common.css?v=17">
+<script src="js/common.js?v=17"></script>
+<script src="data/cross.js?v=17"></script>
+<script src="data/concept-evolve.js?v=17"></script>
+<script src="data/concept-pairs.js?v=17"></script>
+<script src="data/people_ext.js?v=17"></script>
+<script src="data/people-pairs.js?v=17"></script>
+<script src="data/people-links.js?v=17"></script>
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
 <style>
 .page-title{font-size:2em;margin:24px 0 8px;text-align:center;}
@@ -140,6 +143,7 @@
       <span class="chip active" data-view="all">🌐 全景互見</span>
       <span class="chip" data-view="focus">🎯 概念聚焦</span>
       <span class="chip" data-view="compare">⚖️ 雙概念對比</span>
+      <span class="chip" data-view="pcompare">👥 人物對比</span>
     </div>
     <div class="ctrl-group" id="view-all-ctrl" style="margin-left:10px;">
       <span class="ctrl-label">按藏篩選：</span>
@@ -171,6 +175,15 @@
       <span class="pair-exit" id="pair-exit">✕ 退出對比</span>
     </div>
     <div class="pair-chips" id="pair-chips"></div>
+  </div>
+
+  <!-- 人物对比选择条 -->
+  <div class="pair-bar" id="ppair-bar">
+    <div class="pair-head">
+      <div class="pair-title-bar">👥 選擇人物對 · 反向查概念分合與匯通</div>
+      <span class="pair-exit" id="ppair-exit">✕ 退出對比</span>
+    </div>
+    <div class="pair-chips" id="ppair-chips"></div>
   </div>
 
   <div class="legend">
@@ -457,6 +470,10 @@ const focusExit=document.getElementById('focus-exit');
 const pairBar=document.getElementById('pair-bar');
 const pairChipsEl=document.getElementById('pair-chips');
 const pairExit=document.getElementById('pair-exit');
+const ppairBar=document.getElementById('ppair-bar');
+const ppairChipsEl=document.getElementById('ppair-chips');
+const ppairExit=document.getElementById('ppair-exit');
+let activePPair=0;
 const viewAllCtrl=document.getElementById('view-all-ctrl');
 const typeFilterGroup=document.getElementById('type-filter-group');
 const cangFilterEl=document.getElementById('cang-filter');
@@ -479,6 +496,7 @@ function switchView(view){
   if(view==='focus'){
     focusBar.classList.add('active');
     pairBar.classList.remove('active');
+    ppairBar.classList.remove('active');
     viewAllCtrl.style.display='none';
     cangFilterEl.style.display='none';
     typeFilterGroup.style.display='none';
@@ -489,14 +507,27 @@ function switchView(view){
   }else if(view==='compare'){
     focusBar.classList.remove('active');
     pairBar.classList.add('active');
+    ppairBar.classList.remove('active');
     viewAllCtrl.style.display='none';
     cangFilterEl.style.display='none';
     typeFilterGroup.style.display='none';
     legendEl.style.display='none';
+    mainGrid.style.display='grid';
     enterPair(activePair);
+  }else if(view==='pcompare'){
+    focusBar.classList.remove('active');
+    pairBar.classList.remove('active');
+    ppairBar.classList.add('active');
+    viewAllCtrl.style.display='none';
+    cangFilterEl.style.display='none';
+    typeFilterGroup.style.display='none';
+    legendEl.style.display='none';
+    mainGrid.style.display='grid';
+    enterPPair(activePPair);
   }else{
     focusBar.classList.remove('active');
     pairBar.classList.remove('active');
+    ppairBar.classList.remove('active');
     viewAllCtrl.style.display='';
     cangFilterEl.style.display='';
     typeFilterGroup.style.display='';
@@ -563,6 +594,171 @@ function buildPairChips(){
   });
 }
 buildPairChips();
+
+// ===== ⑩ 人物对比反查 =====
+const PPAIRS=window.PEOPLE_PAIRS||[];
+const PEOPLE_EXT=window.PEOPLE_EXT||{};
+// 构建人物对比 chips
+PPAIRS.forEach((p,i)=>{
+  const s=document.createElement('span');
+  s.className='focus-tag';
+  s.dataset.ppid=i;
+  s.textContent=p.title;
+  ppairChipsEl.appendChild(s);
+});
+
+function enterPPair(idx){
+  activePPair=idx;
+  document.querySelectorAll('#ppair-chips .focus-tag').forEach(x=>x.classList.toggle('active',Number(x.dataset.ppid)===idx));
+  const p=PPAIRS[idx];
+  if(!p)return;
+  renderPPairChart(p);
+  renderPPairDetail(p);
+}
+
+function renderPPairChart(p){
+  const nodes=[];const links=[];
+  // 两人分左右
+  const [pid1,pid2]=p.persons;
+  const p1=PEOPLE_EXT[pid1];const p2=PEOPLE_EXT[pid2];
+  nodes.push({
+    id:'__P1',name:p.names[0],symbolSize:55,x:200,y:120,fixed:true,
+    itemStyle:{color:'#8B4513',borderColor:'#fff',borderWidth:3,shadowBlur:15,shadowColor:'#8B451388'},
+    label:{show:true,fontSize:16,fontWeight:'bold',color:'#fff'},
+    _type:'person',_pid:pid1
+  });
+  nodes.push({
+    id:'__P2',name:p.names[1],symbolSize:55,x:640,y:120,fixed:true,
+    itemStyle:{color:'#B22222',borderColor:'#fff',borderWidth:3,shadowBlur:15,shadowColor:'#B2222288'},
+    label:{show:true,fontSize:16,fontWeight:'bold',color:'#fff'},
+    _type:'person',_pid:pid2
+  });
+  // VS
+  nodes.push({
+    id:'__VS',name:'VS',symbolSize:36,x:420,y:120,fixed:true,
+    itemStyle:{color:'#DAA520',borderColor:'#fff',borderWidth:3},
+    label:{show:true,fontSize:13,fontWeight:'bold',color:'#fff'},_type:'vs'
+  });
+  links.push({source:'__P1',target:'__VS',lineStyle:{color:'#DAA520',width:2,type:'dashed'}});
+  links.push({source:'__P2',target:'__VS',lineStyle:{color:'#DAA520',width:2,type:'dashed'}});
+  // 分歧概念节点（在VS下方分左右两列）
+  const dLen=p.disagreements.length;
+  p.disagreements.forEach((d,i)=>{
+    const col=i%2;
+    const row=Math.floor(i/2);
+    const nid='__D'+i;
+    nodes.push({
+      id:nid,name:d.concept,symbolSize:22,
+      x:240+col*360,y:260+row*55,fixed:true,
+      itemStyle:{color:col===0?'#8B4513':'#B22222',borderColor:'#fff',borderWidth:2},
+      label:{show:true,fontSize:11,position:'right',color:'var(--ink)',distance:3},
+      _type:'disagree'
+    });
+    links.push({source:col===0?'__P1':'__P2',target:nid,lineStyle:{color:col===0?'#8B4513':'#B22222',width:1.2,opacity:0.6}});
+  });
+  // 汇通人物
+  const bridges=p.bridges||[];
+  bridges.forEach((b,i)=>{
+    const col=i%3;
+    const row=Math.floor(i/3);
+    const nid='__B'+i;
+    const bpid=PEOPLE_NAME_TO_ID[b.person];
+    nodes.push({
+      id:nid,name:b.person,symbolSize:24,
+      x:150+col*270,y:430+row*75,fixed:true,
+      itemStyle:{color:'#2E8B57',borderColor:'#fff',borderWidth:2},
+      label:{show:true,fontSize:11,position:'right',color:'var(--ink)',distance:3},
+      _type:'bridge',_pid:bpid
+    });
+    links.push({source:'__P1',target:nid,lineStyle:{color:'#2E8B57',width:1.2,opacity:0.5,curveness:0.15,type:'dashed'}});
+    links.push({source:'__P2',target:nid,lineStyle:{color:'#2E8B57',width:1.2,opacity:0.5,curveness:-0.15,type:'dashed'}});
+  });
+  const opt={
+    tooltip:{trigger:'item',formatter:function(pp){
+      if(pp.dataType==='node'){
+        if(pp.data._type==='bridge'){const b=bridges.find(x=>x.person===pp.data.name);return `<b>${pp.data.name}</b><br>${b?b.note:''}`;}
+        if(pp.data._type==='person')return `<b>${pp.data.name}</b><br>點擊查看人物譜`;
+        return pp.data.name;
+      }
+      return '';
+    }},
+    xAxis:{show:false,min:0,max:840},
+    yAxis:{show:false,min:0,max:560},
+    series:[{
+      type:'graph',layout:'none',roam:true,draggable:true,
+      data:nodes,links:links,
+      edgeSymbol:['none','arrow'],edgeSymbolSize:6,
+      emphasis:{focus:'adjacency',lineStyle:{width:3}},
+      lineStyle:{curveness:0.1},
+      label:{fontFamily:'inherit'},
+    }]
+  };
+  chart.setOption(opt,true);
+  chart.off('click');
+  chart.on('click',function(pp){
+    if(pp.dataType!=='node')return;
+    if(pp.data._type==='person'&&pp.data._pid){
+      window.open('people.html?id='+pp.data._pid,'_blank');
+    }else if(pp.data._type==='bridge'&&pp.data._pid){
+      window.open('people.html?id='+pp.data._pid,'_blank');
+    }
+  });
+}
+
+function renderPPairDetail(p){
+  const panel=document.getElementById('detail');
+  let html=`<div class="d-title"><span>${p.title}</span><span class="d-badge" style="background:#8B4513;">人物對比 · 反向查</span></div>`;
+  html+=`<div class="d-desc" style="font-style:italic;color:var(--ink-soft);margin-bottom:6px;border-left:3px solid var(--accent);padding-left:10px;">${p.relation} · ${p.eras}</div>`;
+  // 故事/公案
+  if(p.story){
+    html+=`<div class="pair-verdict" style="background:rgba(218,165,32,.08);border-left-color:#DAA520;"><b>📜 公案本事：</b>${linkifyNames(p.story)}</div>`;
+  }
+  // 核心分歧
+  html+=`<div class="d-section-title" style="color:#8B4513;border-left-color:#8B4513;">⚔️ 核心分歧：概念立場對照</div>`;
+  html+=`<div class="pair-vs-grid">`;
+  html+=`<div class="pair-col left"><div class="pair-concept-name left"><a href="people.html?id=${p.persons[0]}" target="_blank" style="color:inherit;text-decoration:none;">👤 ${p.names[0]}</a> <span style="font-size:.75em;color:var(--ink-soft);font-weight:normal;">(${p.schools[0]})</span></div>`;
+  p.disagreements.forEach(d=>{
+    html+=`<div class="pair-divide-item"><span class="pair-divide-label" style="color:#8B4513;">${d.concept}：</span>${linkifyNames(d.a.replace(/^[^：:]+[：:]/,''))}</div>`;
+  });
+  html+=`</div>`;
+  html+=`<div class="pair-vs">⇆</div>`;
+  html+=`<div class="pair-col right"><div class="pair-concept-name right"><a href="people.html?id=${p.persons[1]}" target="_blank" style="color:inherit;text-decoration:none;">👤 ${p.names[1]}</a> <span style="font-size:.75em;color:var(--ink-soft);font-weight:normal;">(${p.schools[1]})</span></div>`;
+  p.disagreements.forEach(d=>{
+    html+=`<div class="pair-divide-item"><span class="pair-divide-label" style="color:#B22222;">${d.concept}：</span>${linkifyNames(d.b.replace(/^[^：:]+[：:]/,''))}</div>`;
+  });
+  html+=`</div></div>`;
+  // 汇通
+  if(p.bridges&&p.bridges.length){
+    html+=`<div class="pair-meet-title">🔗 匯通脈絡：後世會通人物</div>`;
+    html+=`<div class="pair-meet-grid">`;
+    p.bridges.forEach(b=>{
+      const bpid=PEOPLE_NAME_TO_ID[b.person];
+      html+=`<div class="pair-meet-item">`;
+      if(bpid){
+        html+=`<div class="pair-meet-node">👤 <a href="people.html?id=${bpid}" target="_blank" style="color:var(--accent);">${b.person}</a></div>`;
+      }else{
+        html+=`<div class="pair-meet-node">${b.person}</div>`;
+      }
+      html+=`<div class="pair-meet-note">${linkifyNames(b.note||'')}</div>`;
+      html+=`</div>`;
+    });
+    html+=`</div>`;
+  }
+  // 核心典籍
+  if(p.keyTexts&&p.keyTexts.length){
+    html+=`<div class="d-section-title" style="color:#4B0082;border-left-color:#4B0082;">📚 核心典籍</div>`;
+    html+=`<div style="display:flex;flex-wrap:wrap;gap:8px;margin:8px 0;">`;
+    p.keyTexts.forEach(t=>{
+      html+=`<span class="chip" style="background:rgba(75,0,130,.1);border:1px solid #4B008244;color:#4B0082;">${t}</span>`;
+    });
+    html+=`</div>`;
+  }
+  // 定谳
+  if(p.verdict){
+    html+=`<div class="pair-verdict" style="border-left-color:#8B4513;">▸ ${linkifyNames(p.verdict)}</div>`;
+  }
+  panel.innerHTML=html;
+}
 
 function enterPair(idx){
   activePair=idx;
@@ -881,11 +1077,48 @@ document.querySelectorAll('.focus-tag').forEach(el=>{
     }else if(el.closest('#pair-chips')){
       if(activeView!=='compare')switchView('compare');
       enterPair(Number(el.dataset.pid));
+    }else if(el.closest('#ppair-chips')){
+      if(activeView!=='pcompare')switchView('pcompare');
+      enterPPair(Number(el.dataset.ppid));
     }
   });
 });
 focusExit.addEventListener('click',()=>switchView('all'));
 pairExit.addEventListener('click',()=>switchView('all'));
+ppairExit.addEventListener('click',()=>switchView('all'));
+
+// URL 参数处理：?ppair=laozi-confucius 直接打开人物对比；?pair=xx 打开双概念；?focus=x 打开概念聚焦；?hl=pid 人物高亮
+(function initFromURL(){
+  const params=new URLSearchParams(location.search);
+  const ppairId=params.get('ppair');
+  if(ppairId){
+    const idx=PPAIRS.findIndex(p=>p.id===ppairId);
+    if(idx>=0){switchView('pcompare');enterPPair(idx);return;}
+  }
+  const pairId=params.get('pair');
+  if(pairId){
+    const idx=PAIRS.findIndex(p=>(p.id||'')===pairId);
+    if(idx>=0){switchView('compare');enterPair(idx);return;}
+  }
+  const focusId=params.get('focus');
+  if(focusId){
+    const ev=EVO.find(e=>e.id==='c-'+focusId||e.id===focusId);
+    if(ev){switchView('focus');enterFocus(ev.id);return;}
+  }
+  // 默认全景
+  switchView('all');
+  // hl 人物高亮（全景模式下选中该人物节点）
+  const hl=params.get('hl');
+  if(hl){
+    setTimeout(()=>{
+      const node=D.people.find(p=>p.id==='p-'+hl||p.id===hl);
+      if(node){
+        chart.dispatchAction({type:'highlight',seriesIndex:0,name:node.name});
+        renderDetail('people',node,node.id);
+      }
+    },300);
+  }
+})();
 })();
 </script>
 </body>

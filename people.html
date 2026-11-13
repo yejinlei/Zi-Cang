@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>諸子人物譜 · 子藏</title>
-<link rel="stylesheet" href="css/common.css?v=16">
+<link rel="stylesheet" href="css/common.css?v=17">
 <style>
 .people-hero{
   background:linear-gradient(135deg,var(--bg-soft),var(--card));
@@ -85,25 +85,25 @@
 
   <div id="detailView" style="display:none;">
     <div class="breadcrumbs" id="bcrumbs"></div>
-    <div class="back-bar">
-      <button class="btn btn-ghost" onclick="showList()">← 返回人物列表</button>
-      <a class="btn btn-ghost" id="goGraph" href="graph.html" target="_blank">📊 譜系圖</a>
-      <a class="btn btn-ghost" id="goTimeline" href="timeline.html" target="_blank">📜 時間長卷</a>
+    <div class="back-bar" id="crossLinksBar">
+      <!-- 动态渲染：graph / timeline / panjiao / cross / citation / full-ontology / classic / term / pairs -->
     </div>
     <div id="detailContent"></div>
   </div>
 </main>
 <footer id="siteFooter"></footer>
 
-<script src="data/people.js?v=16"></script>
-<script src="data/people_ext.js?v=16"></script>
-<script src="data/schools.js?v=16"></script>
-<script src="data/books.js?v=16"></script>
-<script src="data/classics.js?v=16"></script>
-<script src="data/terms.js?v=16"></script>
-<script src="data/idioms.js?v=16"></script>
-<script src="js/linkify.js?v=16"></script>
-<script src="js/common.js?v=16"></script>
+<script src="data/people.js?v=17"></script>
+<script src="data/people_ext.js?v=17"></script>
+<script src="data/schools.js?v=17"></script>
+<script src="data/books.js?v=17"></script>
+<script src="data/classics.js?v=17"></script>
+<script src="data/terms.js?v=17"></script>
+<script src="data/idioms.js?v=17"></script>
+<script src="data/people-pairs.js?v=17"></script>
+<script src="data/people-links.js?v=17"></script>
+<script src="js/linkify.js?v=17"></script>
+<script src="js/common.js?v=17"></script>
 <script>
 const SCHOOL_MAP = {};
 SCHOOLS_DATA.forEach(s=>SCHOOL_MAP[s.id]=s);
@@ -229,6 +229,49 @@ function personLink(pid, label, cls){
   if(!people[pid]) return `<span>${label||pid}</span>`;
   const n = label||people[pid].name;
   return `<a href="people.html?id=${encodeURIComponent(pid)}" class="lk lk-person ${cls||''}">${n}</a>`;
+}
+
+// 跨页面反向链接渲染（graph/timeline/panjiao/cross/citation/full-ontology/classic/terms/pairs）
+function renderCrossLinks(pid){
+  const L=window.PERSON_LINKS&&window.PERSON_LINKS[pid];
+  const bar=document.getElementById('crossLinksBar');
+  if(!L){bar.innerHTML=`<button class="btn btn-ghost" onclick="showList()">← 返回人物列表</button>`;return;}
+  const links=[];
+  links.push(`<button class="btn btn-ghost" onclick="showList()">← 返回列表</button>`);
+  links.push(`<a class="btn btn-ghost" href="${L.graph}" target="_blank">🕸 譜系定位</a>`);
+  links.push(`<a class="btn btn-ghost" href="${L.timeline}" target="_blank">📜 時間長卷</a>`);
+  links.push(`<a class="btn btn-ghost" href="${L.panjiao}" target="_blank">📖 歷代評騭</a>`);
+  links.push(`<a class="btn btn-ghost" href="${L.cross}" target="_blank">⇌ 六藏互見</a>`);
+  links.push(`<a class="btn btn-ghost" href="${L.citation}" target="_blank">📚 引文關聯</a>`);
+  links.push(`<a class="btn btn-ghost" href="${L.fullOntology}" target="_blank">🔬 全文本體</a>`);
+  if(L.classic) links.push(`<a class="btn btn-ghost" href="${L.classic}" target="_blank">📖 典籍詳解</a>`);
+  if(L.reader) links.push(`<a class="btn btn-ghost" href="${L.reader}" target="_blank">📖 閱讀原典</a>`);
+  if(L.term) links.push(`<a class="btn btn-ghost" href="${L.term}" target="_blank">💡 關鍵術語</a>`);
+  bar.innerHTML=links.join('');
+}
+
+// 相关人物对比卡片
+function renderPersonPairs(pid){
+  const pairIds=(window.PERSON_TO_PAIRS&&window.PERSON_TO_PAIRS[pid])||[];
+  if(!pairIds.length) return '';
+  const PPAIRS=window.PEOPLE_PAIRS||[];
+  let html=`<div class="section-title">⚖️ 與之對辯/會通 · 人物對比</div>`;
+  html+=`<div class="section-grid">`;
+  pairIds.forEach(pidPair=>{
+    const p=PPAIRS.find(x=>x.id===pidPair);
+    if(!p)return;
+    // 另一人
+    const other=p.persons.find(x=>x!==pid);
+    const otherName=other===p.persons[0]?p.names[0]:p.names[1];
+    html+=`<a href="cross.html?ppair=${p.id}" target="_blank" class="people-card" style="text-decoration:none;color:inherit;display:block;border-left:4px solid #8B4513;">`;
+    html+=`<h4 style="color:#8B4513;">${p.title}</h4>`;
+    html+=`<div style="font-size:13px;color:var(--ink-soft);margin-bottom:6px;">${p.relation}</div>`;
+    html+=`<div style="font-size:13px;line-height:1.7;">${p.eras} · ${p.schools.join(' vs ')}<br>`;
+    html+=`<span style="color:#8B4513;">${p.disagreements.length} 項核心分歧</span> · <span style="color:#2E8B57;">${(p.bridges||[]).length} 位匯通人物</span></div>`;
+    html+=`</a>`;
+  });
+  html+=`</div>`;
+  return html;
 }
 
 function showPerson(pid){
@@ -367,13 +410,14 @@ function showPerson(pid){
       ${p.related_debates&&p.related_debates.length?`<div><b>相關論辯：</b><br><div style="margin-top:6px;">${p.related_debates.map(d=>`<a href="panjiao.html" class="tag">${d}</a>`).join(' ')}</div></div>`:''}
     </div>
 
+    ${renderPersonPairs(pid)}
+
     <div style="text-align:center;margin:30px 0;">
       <button class="btn btn-ghost" onclick="showList()">← 返回人物列表</button>
-      <a class="btn" href="graph.html" target="_blank">📊 在傳承譜系圖中查看</a>
-      <a class="btn" href="panjiao.html" target="_blank">📖 歷代評騭</a>
     </div>
   `;
   document.getElementById('bcrumbs').innerHTML = `<a href="index.html">首頁</a> / <a href="javascript:showList()">人物譜</a> / <b>${p.name}</b>`;
+  renderCrossLinks(pid);
   window.scrollTo({top:0,behavior:'smooth'});
   history.replaceState(null,'',`?id=${encodeURIComponent(pid)}`);
 }

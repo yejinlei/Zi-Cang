@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>數據下載 · 子藏本體論 Zi-Cang</title>
-<link rel="stylesheet" href="css/common.css?v=15">
+<link rel="stylesheet" href="css/common.css?v=17">
 <style>
   :root{--ink:#2c1810;--sub:#6b4423;--paper:#f5ecd7;--card:#faf4e3;--border:#d4b896;--gold:#8b2500;--accent:#a0522d}
   .data-hero{padding:48px 28px 24px;text-align:center;max-width:900px;margin:0 auto}
@@ -71,7 +71,7 @@
 </div>
 </div>
 
-<script src="js/common.js?v=15"></script>
+<script src="js/common.js?v=17"></script>
 <script>
 injectLayout('data');
 
@@ -118,6 +118,10 @@ const FILES=[
    files:[{name:'concept-pairs.json',url:'data/concept-pairs.js',label:'JS數據'}]},
   {ico:'⇌',title:'六藏互通跨藏索引',desc:'子·儒·易·佛·詩·史六大典籍藏之間的概念/人物/典籍互見關係：6個藏節點、25個樞紐概念、22位跨藏人物、17部核心跨藏典籍、67條思想關係（同源/注疏/合流/影響/攝取/對峙等）；頁面內含🎯概念聚焦模式（8概念時序流轉+人物跳轉人物譜）與⚖️雙概念對比模式（8組三教分合）。',meta:['跨藏互見','~32KB','25+22+17節點·67邊+8聚焦+8對比'],
    files:[{name:'cross.json',url:'data/cross.js',label:'JS數據'}]},
+  {ico:'👥',title:'人物對比數據（反向查）',desc:'八組諸子人物對的概念分合反向查（老子vs孔子、孟子vs荀子、孟子vs墨子、莊子vs惠施、商鞅vs韓非、朱熹vs陸九淵、朱熹vs王陽明、慧能vs神秀），每組含時代學派、關係定性、典籍原文故事與分合說明，並附人物→對比組索引。',meta:['人物對比','~21KB','8組·反向查'],
+   files:[{name:'people-pairs.json',url:'data/people-pairs.js',label:'JS數據'}]},
+  {ico:'🧭',title:'人物跨頁反向鏈接索引',desc:'為諸子人物譜36位人物生成的跨頁面反向鏈接索引：每位人物對應到達譜系圖/時間長卷/歷代評騭/六藏互通/引文關聯/全文本體化/典籍詳解/術語詞典的定位鏈接（含人名高亮與概念聚焦參數）。',meta:['反向鏈接','~6KB','36位人物·8視圖'],
+   files:[{name:'people-links.json',url:'data/people-links.js',label:'JS數據'}]},
   {ico:'⚙',title:'本體推理規則與查詢',desc:'9條TBox推理規則（師承傳遞、創始人歸屬、類傳遞等）、7個示例查詢（含SPARQL形式、推理邏輯、答案），含演示用ABox三元組。',meta:['推理','~10KB','9規則·7查詢'],
    files:[{name:'reasoning.json',url:'data/reasoning.js',label:'JS數據'}]},
   {ico:'🗂',title:'完整本體包',desc:'將以上所有文件打包為zip，含README說明與SPARQL查詢示例。',meta:['ZIP','一次性下載'],

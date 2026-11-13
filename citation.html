@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>引文關聯圖 · 子藏</title>
-<link rel="stylesheet" href="css/common.css?v=16">
+<link rel="stylesheet" href="css/common.css?v=17">
 <style>
 .page-title{margin-bottom:12px}
 .intro{color:var(--muted);margin-bottom:12px;font-size:14px;line-height:1.8}
@@ -92,9 +92,9 @@
   <div id="siteFooter"></div>
 </div>
 
-<script src="data/citation.js?v=16"></script>
-<script src="js/linkify.js?v=16"></script>
-<script src="js/common.js?v=16"></script>
+<script src="data/citation.js?v=17"></script>
+<script src="js/linkify.js?v=17"></script>
+<script src="js/common.js?v=17"></script>
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
 <script>
 (function(){
@@ -254,6 +254,30 @@
   var count={};
   D.relations.forEach(r=>{count[r.to]=(count[r.to]||0)+1;count[r.from]=(count[r.from]||0)+1;});
   Object.keys(count).forEach(k=>{if(count[k]>mostIn){mostIn=count[k];defaultBook=k;}});
+
+  // ?hl=pid 定位：找到该人物主要关联的典籍并展示
+  (function(){
+    const hl=new URLSearchParams(location.search).get('hl');
+    if(!hl)return;
+    // 人物id→其主要典籍id
+    const P2B={
+      kongzi:'lunyu',mengzi:'mengzi',xunzi:'xunzi',
+      laozi:'daodejing',zhuangzi:'zhuangzi',liezi:'liezi',wenzi:'wenzi',guanzi_yin:'guanyinzi',
+      hanfei:'hanfeizi',shangyang:'shangjunshu',shenbuhai:'shenbuhaishu',shendao:'shenzi_fa',wuchi:'wuzi',
+      mozi:'mozi',sunwu:'sunzi',sunbin:'sunbin',
+      huishi:null,gongsunlong:'gongsunlongzi',zouyan:'zouyanshu',guiguzi:'guiguzi',
+      lvbuwei:'lvshichunqiu',
+      dongzhongshu:'chunqiufanlu',liuan:'huainanzi',simaqian:'shiji',wangchong:'lunheng'
+    };
+    const bid=P2B[hl];
+    if(bid&&bookMap[bid]){
+      setTimeout(()=>{
+        chart.dispatchAction({type:'highlight',seriesIndex:0,name:bookMap[bid].name});
+        showBook(bid);
+      },300);
+    }
+  })();
+
   showBook(defaultBook);
 })();
 </script>

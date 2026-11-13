@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>諸子時間軸 · 子藏</title>
-<link rel="stylesheet" href="css/common.css?v=16">
+<link rel="stylesheet" href="css/common.css?v=17">
 <style>
 .page-title{margin-bottom:12px}
 .era-nav{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 14px}
@@ -53,10 +53,10 @@
   <div id="tl" class="tl"></div>
   <div id="siteFooter"></div>
 </div>
-<script src="data/people_ext.js?v=16"></script>
-<script src="js/linkify.js?v=16"></script>
-<script src="js/common.js?v=16"></script>
-<script src="data/timeline.js?v=16"></script>
+<script src="data/people_ext.js?v=17"></script>
+<script src="js/linkify.js?v=17"></script>
+<script src="js/common.js?v=17"></script>
+<script src="data/timeline.js?v=17"></script>
 <script>
 (function(){
   var data=window.TIMELINE_DATA||[];
@@ -88,6 +88,8 @@
       items.forEach(function(d){
         var tagName=d.type==='person'?'人物':d.type==='book'?'典籍':'事件';
         var it=document.createElement('div'); it.className='tl-item '+d.type;
+        // 为人物项加 id 便于锚点定位
+        if(d.type==='person'&&d.pid){it.id='tl-p-'+d.pid;}
         function escLk(s){return linkify.text(String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'));}
         // 从 title+desc 抽取相关实体生成 chips（去重、最多 8 个）
         var wholeText=(d.title||'')+' '+(d.desc||'');
@@ -143,6 +145,39 @@
       render(c.dataset.era);
     });
   });
+  // URL ?hl=pid / #era-XX 定位
+  (function(){
+    const params=new URLSearchParams(location.search);
+    const hl=params.get('hl');
+    const hash=location.hash.replace(/^#/,'');
+    // era 切换
+    if(hash.startsWith('era-')){
+      const era=hash.replace(/^era-/,'');
+      const btn=document.querySelector('.era-nav .chip[data-era="'+era+'"]');
+      if(btn){btn.click();}
+    }
+    // hl 定位：按人物名匹配 tl-item，先按 name 映射
+    if(hl){
+      const PEOPLE_EXT=window.PEOPLE_EXT||{};
+      const p=PEOPLE_EXT[hl];
+      if(p){
+        setTimeout(()=>{
+          const items=[...document.querySelectorAll('.tl-item.person')];
+          for(const it of items){
+            const h4=it.querySelector('h4');
+            if(!h4)continue;
+            if(h4.textContent.includes(p.name)||h4.textContent.includes(p.name[0])){
+              it.scrollIntoView({behavior:'smooth',block:'center'});
+              it.style.boxShadow='0 0 0 3px var(--gold)';
+              it.style.transition='box-shadow .4s';
+              setTimeout(()=>{it.style.boxShadow='';},2500);
+              break;
+            }
+          }
+        },200);
+      }
+    }
+  })();
 })();
 </script>
 </body>

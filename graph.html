@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>思想傳承譜系 · 子藏</title>
-<link rel="stylesheet" href="css/common.css?v=16">
+<link rel="stylesheet" href="css/common.css?v=17">
 <style>
 .page-title{margin-bottom:12px}
 .legend{display:flex;gap:16px;flex-wrap:wrap;margin:16px 0 8px;padding:12px 16px;border:1px solid var(--border);border-radius:var(--radius);background:var(--card-bg)}
@@ -44,11 +44,11 @@
   <div id="siteFooter"></div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
-<script src="data/people_ext.js?v=16"></script>
-<script src="js/linkify.js?v=16"></script>
-<script src="js/common.js?v=16"></script>
-<script src="data/schools.js?v=16"></script>
-<script src="data/people.js?v=16"></script>
+<script src="data/people_ext.js?v=17"></script>
+<script src="js/linkify.js?v=17"></script>
+<script src="js/common.js?v=17"></script>
+<script src="data/schools.js?v=17"></script>
+<script src="data/people.js?v=17"></script>
 <script>
 (function(){
   if(!window.PEOPLE_DATA){ document.getElementById('graph').innerHTML='<p style="padding:40px;text-align:center">人物數據載入中…</p>'; return; }
@@ -159,6 +159,34 @@
     }
   });
   window.addEventListener('resize',()=>chart.resize());
+  // ?hl=pid 锚点定位：高亮人物并显示信息卡
+  (function(){
+    const p=new URLSearchParams(location.search).get('hl');
+    if(!p)return;
+    setTimeout(()=>{
+      const n=raw.nodes.find(x=>x.id===p);
+      if(!n)return;
+      chart.dispatchAction({type:'highlight',seriesIndex:0,name:n.name});
+      // 触发点击事件
+      chart.dispatchAction({type:'showTip',seriesIndex:0,name:n.name});
+      // 手动填充 info
+      var students=[],teachers=[],others=[];
+      raw.links.forEach(function(l){
+        if(l.target===n.id&&l.rel==='弟子') students.push(getName(l.source));
+        if(l.source===n.id&&l.rel==='弟子') teachers.push(getName(l.target));
+        if(l.source===n.id&&l.rel==='批评') others.push('批評 '+getName(l.target));
+        if(l.target===n.id&&l.rel==='批评') others.push('受 '+getName(l.source)+' 批評');
+        if(l.source===n.id&&l.rel==='影响') others.push('影響 '+getName(l.target));
+        if(l.target===n.id&&l.rel==='影响') others.push('受 '+getName(l.source)+' 影響');
+      });
+      var html='<h4>'+n.name+' <span style="color:var(--muted);font-size:13px;font-weight:normal">（'+getSchoolName(n._school)+'）</span></h4>';
+      html+='<div class="meta">'+n._era+' · '+n._role+(n._work?' · 代表作《'+n._work+'》':'')+'</div>';
+      if(teachers.length) html+='<div><b>師承：</b>'+teachers.join('、')+'</div>';
+      if(students.length) html+='<div><b>弟子：</b>'+students.join('、')+'</div>';
+      if(others.length) html+='<div><b>關係：</b>'+others.join('；')+'</div>';
+      info.innerHTML=html;
+    },300);
+  })();
 })();
 </script>
 </body>

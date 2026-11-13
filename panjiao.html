@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>諸子評騭 · 子藏</title>
-<link rel="stylesheet" href="css/common.css?v=16">
+<link rel="stylesheet" href="css/common.css?v=17">
 <style>
 .page-title{margin-bottom:12px}
 .intro{color:var(--muted);margin-bottom:16px;font-size:14px;line-height:1.8}
@@ -41,17 +41,20 @@
   <div id="list"></div>
   <div id="siteFooter"></div>
 </div>
-<script src="data/people_ext.js?v=16"></script>
-<script src="js/linkify.js?v=16"></script>
-<script src="js/common.js?v=16"></script>
-<script src="data/panjiao.js?v=16"></script>
+<script src="data/people_ext.js?v=17"></script>
+<script src="js/linkify.js?v=17"></script>
+<script src="js/common.js?v=17"></script>
+<script src="data/panjiao.js?v=17"></script>
 <script>
 (function(){
   var data=window.PANJIAO_DATA||[];
   var list=document.getElementById('list');
   function lk(s){return linkify.text(String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'));}
-  data.forEach(function(d){
+  data.forEach(function(d, idx){
     var card=document.createElement('div'); card.className='pj-card';
+    // 锚点 id：取篇名首字+作者名
+    var cardId='pj-'+idx;
+    card.id=cardId;
     var head='<div class="pj-head">'+
       '<span class="pj-period no-link">'+lk(d.period)+'</span>'+
       '<span class="pj-title no-link">'+lk(d.title)+'</span>'+
@@ -112,6 +115,33 @@
       '</div>';
     list.appendChild(card);
   });
+  // URL #xxx 跳指定评骘卡；?hl=pid 找出现该人物的卡
+  (function(){
+    const hash=location.hash.replace(/^#/,'');
+    const params=new URLSearchParams(location.search);
+    const hl=params.get('hl');
+    function scrollTo(el){
+      el.scrollIntoView({behavior:'smooth',block:'start'});
+      el.style.boxShadow='0 0 0 3px var(--gold)';
+      setTimeout(()=>{el.style.boxShadow='';},2500);
+    }
+    if(hash){
+      const el=document.getElementById(hash);
+      if(el)setTimeout(()=>scrollTo(el),200);
+    }
+    if(hl){
+      const PEOPLE_EXT=window.PEOPLE_EXT||{};
+      const p=PEOPLE_EXT[hl];
+      if(p){
+        setTimeout(()=>{
+          const cards=[...document.querySelectorAll('.pj-card')];
+          for(const c of cards){
+            if(c.textContent.includes(p.name)){scrollTo(c);break;}
+          }
+        },200);
+      }
+    }
+  })();
 })();
 </script>
 </body>
