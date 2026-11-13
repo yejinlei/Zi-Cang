@@ -4,9 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>六藏互通 · 跨藏思想互見圖 — 子藏 Zi-Cang</title>
-<link rel="stylesheet" href="css/common.css?v=14">
-<script src="js/common.js?v=14"></script>
-<script src="data/cross.js?v=14"></script>
+<link rel="stylesheet" href="css/common.css?v=15">
+<script src="js/common.js?v=15"></script>
+<script src="data/cross.js?v=15"></script>
+<script src="data/concept-evolve.js?v=15"></script>
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
 <style>
 .page-title{font-size:2em;margin:24px 0 8px;text-align:center;}
@@ -56,7 +57,33 @@
 .legend-sq{width:14px;height:14px;display:inline-block;}
 .legend-dia{width:0;height:0;display:inline-block;}
 .empty-tip{text-align:center;color:var(--ink-soft);padding:40px 0;}
-@media(max-width:960px){.kpi-bar{grid-template-columns:repeat(3,1fr);}.main-grid{grid-template-columns:1fr;}.chart-box{height:500px;}}
+/* 聚焦模式 */
+.focus-bar{display:none;margin:8px 0 14px;padding:12px;background:linear-gradient(135deg,var(--card-bg),rgba(218,165,32,0.08));border:1px solid var(--accent);border-radius:8px;}
+.focus-bar.active{display:block;}
+.focus-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;}
+.focus-title{font-size:1.1em;font-weight:bold;color:var(--accent);}
+.focus-exit{padding:4px 12px;border-radius:14px;border:1px solid var(--border);background:var(--paper);cursor:pointer;font-size:.85em;}
+.focus-exit:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+.focus-chips{display:flex;gap:6px;flex-wrap:wrap;}
+.focus-tag{padding:6px 14px;border-radius:18px;border:1px solid var(--border);background:var(--paper);cursor:pointer;font-size:.9em;transition:all .2s;}
+.focus-tag:hover{border-color:var(--accent);transform:translateY(-1px);}
+.focus-tag.active{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:bold;}
+.timeline-wrap{padding:0;}
+.era-block{margin:10px 0 18px;padding-left:64px;position:relative;}
+.era-block::before{content:'';position:absolute;left:28px;top:0;bottom:-10px;width:2px;background:var(--border);}
+.era-block:last-child::before{bottom:20px;}
+.era-dot{position:absolute;left:20px;top:6px;width:18px;height:18px;border-radius:50%;background:var(--accent);border:3px solid var(--card-bg);box-shadow:0 0 0 2px var(--accent);z-index:2;}
+.era-head{display:flex;align-items:baseline;gap:10px;margin-bottom:8px;}
+.era-name{font-size:1.1em;font-weight:bold;color:var(--accent);}
+.era-year{font-size:.88em;color:var(--ink-soft);}
+.era-cangs{display:flex;gap:4px;margin-left:8px;}
+.era-cangs .d-badge{font-size:.75em;}
+.era-flow{margin:8px 0 0;padding:8px 12px;background:var(--paper);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;font-size:.9em;line-height:1.7;color:var(--ink-soft);font-style:italic;}
+.era-nodes{margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.era-node{padding:8px 10px;background:var(--paper);border-radius:6px;border-left:3px solid var(--border);font-size:.87em;line-height:1.55;}
+.era-node-label{font-weight:bold;margin-bottom:3px;}
+.era-node-desc{color:var(--ink-soft);font-size:.85em;line-height:1.55;}
+@media(max-width:960px){.kpi-bar{grid-template-columns:repeat(3,1fr);}.main-grid{grid-template-columns:1fr;}.chart-box{height:500px;}.era-nodes{grid-template-columns:1fr;}.era-block{padding-left:48px;}}
 </style>
 </head>
 <body>
@@ -75,17 +102,31 @@
 
   <div class="ctrl-bar">
     <div class="ctrl-group">
+      <span class="ctrl-label">視圖：</span>
+      <span class="chip active" data-view="all">🌐 全景互見</span>
+      <span class="chip" data-view="focus">🎯 概念聚焦</span>
+    </div>
+    <div class="ctrl-group" id="view-all-ctrl" style="margin-left:10px;">
       <span class="ctrl-label">按藏篩選：</span>
       <span class="chip chip-cang active" data-cang="all">全部</span>
     </div>
     <div class="ctrl-group" id="cang-filter"></div>
-    <div class="ctrl-group" style="margin-left:10px;">
+    <div class="ctrl-group" id="type-filter-group" style="margin-left:10px;">
       <span class="ctrl-label">節點類型：</span>
       <span class="chip active" data-nodetype="all">全部</span>
       <span class="chip" data-nodetype="concept">概念</span>
       <span class="chip" data-nodetype="people">人物</span>
       <span class="chip" data-nodetype="book">典籍</span>
     </div>
+  </div>
+
+  <!-- 概念聚焦选择条 -->
+  <div class="focus-bar" id="focus-bar">
+    <div class="focus-head">
+      <div class="focus-title">🎯 選擇核心概念 · 觀其三教流轉</div>
+      <span class="focus-exit" id="focus-exit">✕ 退出聚焦</span>
+    </div>
+    <div class="focus-chips" id="focus-chips"></div>
   </div>
 
   <div class="legend">
@@ -350,6 +391,229 @@ document.querySelectorAll('.chip[data-nodetype]').forEach(el=>{
 
 // 默认展示"道"节点详情
 setTimeout(()=>{renderDetail('concept',D.concepts.find(c=>c.id==='c-dao'),'c-dao');chart.dispatchAction({type:'highlight',seriesIndex:0,name:'道'});},400);
+
+// ============== ⑧ 單概念聚焦模式 ==============
+const EVO=window.CONCEPT_EVOLUTION||[];
+let activeView='all';
+let activeFocus=null;
+const focusBar=document.getElementById('focus-bar');
+const focusChipsEl=document.getElementById('focus-chips');
+const focusExit=document.getElementById('focus-exit');
+const viewAllCtrl=document.getElementById('view-all-ctrl');
+const typeFilterGroup=document.getElementById('type-filter-group');
+const cangFilterEl=document.getElementById('cang-filter');
+
+// 构建聚焦chip
+EVO.forEach(c=>{
+  const s=document.createElement('span');
+  s.className='focus-tag';
+  s.dataset.fid=c.id;
+  s.textContent=c.name;
+  s.title=c.tagline;
+  focusChipsEl.appendChild(s);
+});
+
+function switchView(view){
+  activeView=view;
+  document.querySelectorAll('.chip[data-view]').forEach(x=>x.classList.toggle('active',x.dataset.view===view));
+  if(view==='focus'){
+    focusBar.classList.add('active');
+    viewAllCtrl.style.display='none';
+    cangFilterEl.style.display='none';
+    typeFilterGroup.style.display='none';
+    if(!activeFocus)enterFocus('c-dao');
+    else enterFocus(activeFocus);
+  }else{
+    focusBar.classList.remove('active');
+    viewAllCtrl.style.display='';
+    cangFilterEl.style.display='';
+    typeFilterGroup.style.display='';
+    render();
+    // 重新绑定全景点击
+    chart.off('click');
+    chart.on('click',function(p){
+      if(p.dataType!=='node')return;
+      const d=p.data._data;const t=p.data._type;
+      renderDetail(t,d,p.data.id);
+    });
+    setTimeout(()=>{renderDetail('concept',D.concepts.find(c=>c.id==='c-dao'),'c-dao');chart.dispatchAction({type:'highlight',seriesIndex:0,name:'道'});},50);
+  }
+}
+
+function enterFocus(cid){
+  activeFocus=cid;
+  document.querySelectorAll('.focus-tag').forEach(x=>x.classList.toggle('active',x.dataset.fid===cid));
+  const evo=EVO.find(e=>e.id===cid);if(!evo)return;
+  renderFocusGraph(evo);
+  renderFocusTimeline(evo);
+}
+
+function renderFocusGraph(evo){
+  // 收集该概念关联的节点：概念本身 + 所有 timeline.nodes 中出现的人物/典籍
+  const conceptNode=D.concepts.find(c=>c.id===evo.id);
+  const nodeMap=new Map();
+  if(conceptNode)nodeMap.set(evo.id,{_d:conceptNode,_type:'concept',_era:'核心'});
+  const eraXMap={};  // 朝代 -> x 位置
+  const n=evo.timeline.length;
+  evo.timeline.forEach((era,i)=>{eraXMap[era.era]=120+i*200;});
+  evo.timeline.forEach(era=>{
+    (era.nodes||[]).forEach(nd=>{
+      if(!nd.id||nd.id==='p-')return;
+      const matched=findNode(nd.id);
+      if(matched){
+        const type=nd.id.startsWith('p-')?'people':nd.id.startsWith('b-')?'book':'concept';
+        // 判断它所属的藏
+        let primaryCang=nd.cang||'zi';
+        if(matched.cangs&&matched.cangs[0])primaryCang=matched.cangs[0];
+        nodeMap.set(nd.id,{_d:matched,_type:type,_era:era.era,_cang:primaryCang,_nlabel:nd.label});
+      }
+    });
+  });
+  // 构建图节点
+  const nodes=[];
+  // 核心概念居中上方
+  const conceptColor=conceptNode&&conceptNode.cangs?CANG_COLOR[conceptNode.cangs[0]]||'#8B4513':'#DAA520';
+  nodes.push({
+    id:evo.id,name:evo.name,
+    symbolSize:55,
+    x:(n*200+120)/2,y:80,fixed:true,
+    itemStyle:{color:conceptColor,borderColor:'#fff',borderWidth:4,shadowBlur:20,shadowColor:conceptColor},
+    label:{show:true,fontSize:18,fontWeight:'bold',color:'#fff'},
+    _type:'concept',_data:conceptNode||{name:evo.name,desc:evo.tagline}
+  });
+  // 时代列节点
+  let colIdx=0;
+  evo.timeline.forEach(era=>{
+    const x=eraXMap[era.era];
+    // 朝代标签（隐藏节点）
+    nodes.push({
+      id:'__era_'+colIdx,name:era.era,
+      x,y:300,symbolSize:0,
+      label:{show:true,fontSize:13,fontWeight:'bold',color:'var(--ink-soft)',position:'bottom'},
+      itemStyle:{opacity:0},_type:'era'
+    });
+    let rowIdx=0;
+    const eraNodes=(era.nodes||[]).filter(nd=>nd.id&&nd.id!=='p-'&&nodeMap.has(nd.id));
+    eraNodes.forEach(nd=>{
+      const info=nodeMap.get(nd.id);
+      const cang=info._cang;
+      const col=CANG_COLOR[cang]||'#888';
+      const shape=info._type==='people'?'diamond':info._type==='book'?'rect':'circle';
+      const symSize=info._type==='people'?30:info._type==='book'?28:22;
+      nodes.push({
+        id:nd.id,name:info._d.name||nd.label,
+        x,y:180+rowIdx*70,
+        symbol:shape,symbolSize:symSize,
+        itemStyle:{color:col,borderColor:'#fff',borderWidth:2,shadowBlur:8,shadowColor:col+'88'},
+        label:{show:true,fontSize:11,position:'right',distance:4,color:'var(--ink)'},
+        _type:info._type,_data:info._d,_era:era.era
+      });
+      rowIdx++;
+    });
+    colIdx++;
+  });
+  // 连线：核心概念 → 每个节点；节点内同朝代不连线；跨朝代同名/同id 连承继
+  const links=[];
+  const nodeIds=new Set(nodes.map(n=>n.id));
+  nodeIds.forEach(nid=>{
+    if(nid===evo.id||nid.startsWith('__era'))return;
+    links.push({
+      source:evo.id,target:nid,
+      lineStyle:{color:CANG_COLOR[nodeMap.get(nid)._cang]||'#aaa',width:1.6,opacity:0.55,curveness:0.1,type:'dashed'},
+      label:{show:false}
+    });
+  });
+  // 跨时代串联：同一 id 若在多个朝代出现（跨时代思想传播）
+  const idEras={};
+  evo.timeline.forEach(era=>{(era.nodes||[]).forEach(nd=>{if(nd.id&&nd.id!=='p-'){(idEras[nd.id]=idEras[nd.id]||[]).push(era.era);}});});
+  Object.keys(idEras).forEach(nid=>{
+    if(idEras[nid].length<2)return;
+    for(let i=0;i<idEras[nid].length-1;i++){
+      // 不连，使用 era 内部 flow 展示流转（跨时代同 id 在本数据集中较少，以避免图过杂）
+    }
+  });
+
+  const opt={
+    tooltip:{
+      trigger:'item',
+      formatter:function(p){
+        if(p.dataType==='node'){
+          if(p.data._type==='era')return `<b>${p.data.name}</b>`;
+          const d=p.data._data;const t=p.data._type;
+          const typeName={concept:'概念',people:'人物',book:'典籍'}[t]||'';
+          return `<b>${p.data.name}</b> <span style="color:#999">[${typeName}]</span><br>`+(d.desc||'');
+        }
+        return '';
+      }
+    },
+    xAxis:{show:false,min:0,max:n*200+200},
+    yAxis:{show:false,min:0,max:400},
+    series:[{
+      type:'graph',layout:'none',roam:true,draggable:true,
+      coordinateSystem:null,
+      data:nodes,links:links,
+      edgeSymbol:['none','arrow'],edgeSymbolSize:6,
+      emphasis:{focus:'adjacency',lineStyle:{width:3}},
+      lineStyle:{curveness:0.1},
+      label:{fontFamily:'inherit'},
+    }]
+  };
+  chart.setOption(opt,true);
+  // 绑定点击
+  chart.off('click');
+  chart.on('click',function(p){
+    if(p.dataType!=='node')return;
+    if(p.data._type==='era')return;
+    renderDetail(p.data._type,p.data._data,p.data.id);
+  });
+}
+
+function renderFocusTimeline(evo){
+  const panel=document.getElementById('detail');
+  let html=`<div class="d-title"><span>${evo.name} · 三教流變</span><span class="d-badge" style="background:#DAA520;">概念聚焦</span></div>`;
+  html+=`<div class="d-desc" style="font-style:italic;color:var(--ink-soft);margin-bottom:14px;border-left:3px solid var(--accent);padding-left:10px;">${evo.tagline}</div>`;
+  html+=`<div class="timeline-wrap">`;
+  const cangName=cid=>{const c=D.cangs.find(x=>x.id===cid);return c?c.name:cid;};
+  const cangColor=cid=>{const c=D.cangs.find(x=>x.id===cid);return c?c.color:'#888';};
+  evo.timeline.forEach(era=>{
+    html+=`<div class="era-block">`;
+    html+=`<div class="era-dot"></div>`;
+    html+=`<div class="era-head">`;
+    html+=`<span class="era-name">${era.era}</span>`;
+    html+=`<span class="era-year">${era.year}</span>`;
+    html+=`<span class="era-cangs">`;
+    (era.cangs||[]).forEach(cid=>{
+      html+=`<span class="d-badge" style="background:${cangColor(cid)};">${cangName(cid)}</span>`;
+    });
+    html+=`</span></div>`;
+    html+=`<div class="era-nodes">`;
+    (era.nodes||[]).forEach(nd=>{
+      const col=cangColor(nd.cang);
+      html+=`<div class="era-node" style="border-left-color:${col};">`;
+      html+=`<div class="era-node-label" style="color:${col};">${nd.label}</div>`;
+      html+=`<div class="era-node-desc">${nd.desc}</div>`;
+      html+=`</div>`;
+    });
+    html+=`</div>`;
+    if(era.flow)html+=`<div class="era-flow">▸ ${era.flow}</div>`;
+    html+=`</div>`;
+  });
+  html+=`</div>`;
+  panel.innerHTML=html;
+}
+
+// 视图切换按钮
+document.querySelectorAll('.chip[data-view]').forEach(el=>{
+  el.addEventListener('click',()=>switchView(el.dataset.view));
+});
+// 聚焦chip点击
+document.querySelectorAll('.focus-tag').forEach(el=>{
+  el.addEventListener('click',()=>{
+    if(activeView!=='focus')switchView('focus');
+    enterFocus(el.dataset.fid);
+  });
+});
+focusExit.addEventListener('click',()=>switchView('all'));
 })();
 </script>
 </body>

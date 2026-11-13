@@ -1,4 +1,4 @@
-const CACHE = 'zicang-v14';
+const CACHE = 'zicang-v15';
 const APP_SHELL = [
   './',
   './index.html',
@@ -48,6 +48,7 @@ const APP_SHELL = [
   './data/anchors.js',
   './data/ontobuild_summary.js',
   './data/cross.js',
+  './data/concept-evolve.js',
   './manifest.json'
 ];
 self.addEventListener('install', e => {
