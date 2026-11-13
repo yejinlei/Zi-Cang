@@ -76,6 +76,7 @@ function buildNav(active){
       {key:'full-ontology', href:'full-ontology.html', label:'🔬 全文本體化'}
     ]},
     {key:'research',icon:'✦', label:'義理研究', children:[
+      {key:'cross',     href:'cross.html',     label:'⇌ 六藏互通'},
       {key:'people',    href:'people.html',    label:'👤 諸子人物'},
       {key:'panjiao',   href:'panjiao.html',    label:'⚖ 歷代評騭'},
       {key:'timeline',  href:'timeline.html',   label:'⎯ 時間長卷'},
@@ -181,6 +182,7 @@ function getProgress(path){
     'tools.html': 'tools',
     'spec.html': 'spec',
     'full-ontology.html': 'full-ontology',
+    'cross.html': 'cross',
     'people.html': 'people',
     'panjiao.html': 'panjiao',
     'timeline.html': 'timeline',

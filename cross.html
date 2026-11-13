@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>六藏互通 · 跨藏思想互見圖 — 子藏 Zi-Cang</title>
+<link rel="stylesheet" href="css/common.css?v=14">
+<script src="js/common.js?v=14"></script>
+<script src="data/cross.js?v=14"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<style>
+.page-title{font-size:2em;margin:24px 0 8px;text-align:center;}
+.page-sub{text-align:center;color:var(--ink-soft);margin-bottom:18px;font-size:1.05em;}
+.kpi-bar{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:12px 0 18px;}
+.kpi{background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:12px 10px;text-align:center;}
+.kpi-num{font-size:1.55em;font-weight:bold;color:var(--accent);}
+.kpi-lbl{font-size:.82em;color:var(--ink-soft);margin-top:4px;}
+.ctrl-bar{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 14px;padding:12px;background:var(--card-bg);border:1px solid var(--border);border-radius:8px;}
+.ctrl-group{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.ctrl-label{font-size:.88em;color:var(--ink-soft);margin-right:4px;}
+.chip{padding:5px 12px;border-radius:16px;border:1px solid var(--border);background:var(--paper);cursor:pointer;font-size:.88em;user-select:none;transition:all .2s;}
+.chip:hover{border-color:var(--accent);}
+.chip.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.chip.chip-cang{font-weight:bold;}
+.main-grid{display:grid;grid-template-columns:1fr 380px;gap:16px;}
+.chart-box{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:8px;height:720px;position:relative;}
+.detail-panel{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:16px;max-height:720px;overflow-y:auto;}
+.d-title{font-size:1.3em;font-weight:bold;border-bottom:2px solid var(--accent);padding-bottom:8px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.d-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.75em;color:#fff;font-weight:normal;}
+.d-cangs{display:flex;gap:4px;flex-wrap:wrap;margin:6px 0 10px;}
+.d-cangs .d-badge{font-size:.82em;}
+.d-meta{color:var(--ink-soft);font-size:.9em;margin:6px 0 10px;}
+.d-desc{line-height:1.8;margin-bottom:12px;font-size:.95em;}
+.d-links{margin-top:10px;}
+.d-link{display:inline-block;padding:5px 10px;background:var(--paper);border:1px solid var(--border);border-radius:6px;margin:3px 4px 3px 0;font-size:.85em;color:var(--accent);text-decoration:none;}
+.d-link:hover{background:var(--accent);color:#fff;}
+.d-section-title{font-weight:bold;margin:14px 0 6px;font-size:1em;color:var(--accent);border-left:3px solid var(--accent);padding-left:8px;}
+.rel-item{padding:8px 10px;background:var(--paper);border-left:3px solid var(--border);margin:5px 0;border-radius:0 6px 6px 0;font-size:.88em;line-height:1.55;}
+.rel-item.rel-inherit{border-left-color:#2E8B57;}
+.rel-comment{border-left-color:#9370DB;}
+.rel-fuse{border-left-color:#B8860B;}
+.rel-influence{border-left-color:#4682B4;}
+.rel-source{border-left-color:#B22222;}
+.rel-absorb{border-left-color:#CD5C5C;}
+.rel-same-root{border-left-color:#DAA520;}
+.rel-parallel{border-left-color:#5F9EA0;}
+.rel-bridge{border-left-color:#8B4513;}
+.rel-oppose{border-left-color:#8B0000;}
+.rel-edit{border-left-color:#6B8E23;}
+.rel-reinterpret{border-left-color:#A0522D;}
+.rel-label{font-weight:bold;color:var(--accent);}
+.rel-note{color:var(--ink-soft);font-size:.85em;margin-top:3px;}
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0 6px;font-size:.82em;color:var(--ink-soft);}
+.legend-item{display:flex;align-items:center;gap:4px;}
+.legend-dot{width:14px;height:14px;border-radius:50%;display:inline-block;}
+.legend-sq{width:14px;height:14px;display:inline-block;}
+.legend-dia{width:0;height:0;display:inline-block;}
+.empty-tip{text-align:center;color:var(--ink-soft);padding:40px 0;}
+@media(max-width:960px){.kpi-bar{grid-template-columns:repeat(3,1fr);}.main-grid{grid-template-columns:1fr;}.chart-box{height:500px;}}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1 class="page-title">⇌ 六藏互通 · 跨藏思想互見圖</h1>
+  <p class="page-sub">子 · 儒 · 易 · 佛 · 詩 · 史 —— 概念 / 人物 / 典籍之間的跨藏血脈與思想流轉</p>
+
+  <div class="kpi-bar">
+    <div class="kpi"><div class="kpi-num">6</div><div class="kpi-lbl">典籍藏</div></div>
+    <div class="kpi"><div class="kpi-num" id="kpi-concepts">25</div><div class="kpi-lbl">跨藏概念</div></div>
+    <div class="kpi"><div class="kpi-num" id="kpi-people">22</div><div class="kpi-lbl">樞紐人物</div></div>
+    <div class="kpi"><div class="kpi-num" id="kpi-books">17</div><div class="kpi-lbl">跨藏典籍</div></div>
+    <div class="kpi"><div class="kpi-num" id="kpi-relations">67</div><div class="kpi-lbl">思想關係</div></div>
+    <div class="kpi"><div class="kpi-num">2000+</div><div class="kpi-lbl">年思想流變</div></div>
+  </div>
+
+  <div class="ctrl-bar">
+    <div class="ctrl-group">
+      <span class="ctrl-label">按藏篩選：</span>
+      <span class="chip chip-cang active" data-cang="all">全部</span>
+    </div>
+    <div class="ctrl-group" id="cang-filter"></div>
+    <div class="ctrl-group" style="margin-left:10px;">
+      <span class="ctrl-label">節點類型：</span>
+      <span class="chip active" data-nodetype="all">全部</span>
+      <span class="chip" data-nodetype="concept">概念</span>
+      <span class="chip" data-nodetype="people">人物</span>
+      <span class="chip" data-nodetype="book">典籍</span>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span class="legend-item"><span class="legend-dot" style="background:#8B4513;"></span>子藏</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#B22222;"></span>儒藏</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#4A4A2A;"></span>易藏</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#B8860B;"></span>佛藏</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#2E8B57;"></span>詩藏</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#4B0082;"></span>史藏</span>
+    <span class="legend-item" style="margin-left:10px;">●概念 ◆人物 ■典籍</span>
+  </div>
+
+  <div class="main-grid">
+    <div class="chart-box" id="chart"></div>
+    <div class="detail-panel" id="detail">
+      <div class="empty-tip">
+        <p style="font-size:1.1em;">點擊左側圖中任一節點</p>
+        <p style="margin-top:10px;">查看其跨藏流傳、注疏、影響、會通關係，<br>並跳轉到對應典籍藏深入閱讀。</p>
+        <p style="margin-top:14px;font-size:.9em;">💡 可拖動節點、縮放視圖；<br>節點越大表示跨藏影響越廣。</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:24px;background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:16px;">
+    <h3 style="margin-top:0;">📖 六藏地址</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px;margin-top:10px;" id="cang-links"></div>
+  </div>
+</div>
+<script>
+(function(){
+const D=window.CROSS_CANG;
+if(!D){document.getElementById('detail').innerHTML='<p class="empty-tip">數據載入失敗</p>';return;}
+document.getElementById('kpi-concepts').textContent=D.concepts.length;
+document.getElementById('kpi-people').textContent=D.people.length;
+document.getElementById('kpi-books').textContent=D.books.length;
+document.getElementById('kpi-relations').textContent=D.relations.length;
+
+// 颜色
+const CANG_COLOR={};
+D.cangs.forEach(c=>CANG_COLOR[c.id]=c.color);
+const TYPE_COLOR={cang:'#555',concept:'#2E8B57',people:'#B8860B',book:'#B22222'};
+const TYPE_SHAPE={cang:'circle',concept:'circle',people:'diamond',book:'rect'};
+const REL_COLOR={
+  'same-root':'#DAA520','inherit':'#2E8B57','comment':'#9370DB','fuse':'#B8860B',
+  'influence':'#4682B4','source':'#B22222','absorb':'#CD5C5C','parallel':'#5F9EA0',
+  'bridge':'#8B4513','oppose':'#8B0000','edit':'#6B8E23','reinterpret':'#A0522D'
+};
+const REL_LABEL_MAP={
+  'same-root':'同源','inherit':'承繼','comment':'注疏','fuse':'合流','influence':'影響',
+  'source':'源出','absorb':'攝取','parallel':'並舉','bridge':'橋樑','oppose':'對峙',
+  'edit':'刪訂','reinterpret':'轉化'
+};
+
+// 构建节点
+function buildNodes(activeCang,activeType){
+  const nodes=[];
+  const addedIds=new Set();
+  // 藏（总显示）
+  D.cangs.forEach(c=>{
+    nodes.push({
+      id:c.id,name:c.name,
+      category:c.id,
+      symbolSize:45+Math.min(c.scale.length/3,15),
+      itemStyle:{color:c.color,borderColor:'#fff',borderWidth:3},
+      label:{show:true,fontSize:14,fontWeight:'bold',color:'#fff'},
+      _type:'cang',_data:c
+    });
+    addedIds.add(c.id);
+  });
+  // 其他节点按筛选
+  function addNode(n,type,symSize){
+    if(activeType!=='all'&&activeType!==type)return;
+    if(activeCang!=='all'&&!(n.cangs||[]).includes(activeCang))return;
+    // 颜色：cangs[0] 主色
+    const primaryCang=(n.cangs&&n.cangs[0])||'zi';
+    nodes.push({
+      id:n.id,name:n.name,
+      category:primaryCang,
+      symbol:TYPE_SHAPE[type],
+      symbolSize:symSize||Math.min(18+(n.weight||10)/1.5,36),
+      itemStyle:{
+        color:CANG_COLOR[primaryCang]||'#888',
+        borderColor:'#fff',borderWidth:2,
+        opacity:0.9
+      },
+      label:{show:true,fontSize:11,position:'right',color:'var(--ink)',distance:3},
+      _type:type,_data:n
+    });
+    addedIds.add(n.id);
+  }
+  D.concepts.forEach(c=>addNode(c,'concept',Math.min(14+c.weight/1.8,32)));
+  D.people.forEach(p=>addNode(p,'people',Math.min(18+p.weight/1.6,36)));
+  D.books.forEach(b=>addNode(b,'book',Math.min(16+b.weight/1.8,34)));
+  return {nodes,addedIds};
+}
+function buildLinks(addedIds,activeCang){
+  const links=[];
+  D.relations.forEach((r,idx)=>{
+    if(!addedIds.has(r.from)||!addedIds.has(r.to))return;
+    if(activeCang!=='all'&&!(r.cangs||[]).includes(activeCang)&&r.from!==activeCang&&r.to!==activeCang){
+      // 不跨 selected cang 的边也显示只要两端都在
+    }
+    links.push({
+      source:r.from,target:r.to,
+      value:r.label,
+      lineStyle:{color:REL_COLOR[r.type]||'#999',width:1.8,opacity:0.65,curveness:0.12},
+      label:{show:false},
+      _rel:r
+    });
+  });
+  return links;
+}
+
+// 藏筛选按钮
+const cangFilter=document.getElementById('cang-filter');
+D.cangs.forEach(c=>{
+  const s=document.createElement('span');
+  s.className='chip chip-cang';
+  s.dataset.cang=c.id;
+  s.style.color=c.color;
+  s.textContent=c.short+' '+c.name;
+  cangFilter.appendChild(s);
+});
+// 六藏链接
+const cangLinks=document.getElementById('cang-links');
+D.cangs.forEach(c=>{
+  const a=document.createElement('a');
+  a.className='d-link';
+  a.href=c.url;a.target='_blank';
+  a.style.color=c.color;borderColor:c.color;
+  a.textContent=c.short+' '+c.name;
+  cangLinks.appendChild(a);
+});
+
+let chart;
+let activeCang='all';
+let activeType='all';
+
+function render(){
+  const{ nodes, addedIds }=buildNodes(activeCang,activeType);
+  const links=buildLinks(addedIds,activeCang);
+  const categories=D.cangs.map(c=>({name:c.name,itemStyle:{color:c.color}}));
+  const opt={
+    tooltip:{
+      trigger:'item',
+      formatter:function(p){
+        if(p.dataType==='node'){
+          const d=p.data._data;const t=p.data._type;
+          const typeName={cang:'典籍藏',concept:'概念',people:'人物',book:'典籍'}[t]||'';
+          let s=`<b>${p.data.name}</b> <span style="color:#999">[${typeName}]</span><br>`;
+          if(t==='cang')s+=d.desc+'<br><b>规模：</b>'+d.scale;
+          else if(d.era)s+=`<b>时代：</b>${d.era}　<b>定位：</b>${d.style||''}<br>`+d.desc;
+          else if(d.group)s+=`<b>类别：</b>${d.group}<br>`+d.desc;
+          else s+=d.desc||'';
+          return s;
+        }else if(p.dataType==='edge'){
+          const r=p.data._rel;
+          return `<b>${r.label}</b>（${REL_LABEL_MAP[r.type]||r.type}）<br>${r.note||''}`;
+        }
+      }
+    },
+    legend:[{data:categories.map(c=>c.name),show:false}],
+    series:[{
+      type:'graph',layout:'force',
+      roam:true,draggable:true,
+      categories:categories,
+      data:nodes,links:links,
+      force:{repulsion:380,edgeLength:[60,130],gravity:0.08,friction:0.3},
+      focusNodeAdjacency:true,
+      emphasis:{focus:'adjacency',lineStyle:{width:3}},
+      edgeSymbol:['none','arrow'],edgeSymbolSize:8,
+      lineStyle:{curveness:0.12},
+      label:{fontFamily:'inherit'},
+    }]
+  };
+  chart.setOption(opt,true);
+}
+
+chart=echarts.init(document.getElementById('chart'));
+render();
+window.addEventListener('resize',()=>chart.resize());
+
+// 点击节点 → 详情
+chart.on('click',function(p){
+  if(p.dataType!=='node')return;
+  const d=p.data._data;const t=p.data._type;
+  renderDetail(t,d,p.data.id);
+});
+function renderDetail(t,d,nid){
+  const panel=document.getElementById('detail');
+  const typeName={cang:'典籍藏',concept:'跨藏概念',people:'樞紐人物',book:'跨藏典籍'}[t]||'';
+  const cangs=(d.cangs?d.cangs:(t==='cang'?[d.id]:[]));
+  let html='';
+  html+=`<div class="d-title"><span>${d.name||''}</span><span class="d-badge" style="background:${TYPE_COLOR[t]};">${typeName}</span></div>`;
+  if(cangs.length){
+    html+=`<div class="d-cangs">`;
+    cangs.forEach(cid=>{
+      const c=D.cangs.find(x=>x.id===cid);if(c)html+=`<span class="d-badge" style="background:${c.color};">${c.name}</span>`;
+    });
+    html+=`</div>`;
+  }
+  if(t==='cang'){
+    html+=`<div class="d-meta"><b>規模：</b>${d.scale}</div>`;
+    html+=`<div class="d-desc">${d.desc}</div>`;
+    html+=`<div class="d-links"><a class="d-link" href="${d.url}" target="_blank" style="color:${d.color};border-color:${d.color};">📖 前往 ${d.name} 主頁</a></div>`;
+  }else{
+    let meta='';
+    if(d.era)meta+=`<b>時代：</b>${d.era}　`;
+    if(d.style)meta+=`<b>定位：</b>${d.style}　`;
+    if(d.group)meta+=`<b>類別：</b>${d.group}　`;
+    if(meta)html+=`<div class="d-meta">${meta}</div>`;
+    if(d.desc)html+=`<div class="d-desc">${d.desc}</div>`;
+    // 所属藏跳转
+    html+=`<div class="d-links">`;
+    cangs.forEach(cid=>{
+      const c=D.cangs.find(x=>x.id===cid);
+      if(c)html+=`<a class="d-link" href="${c.url}" target="_blank" style="color:${c.color};border-color:${c.color};">📖 ${c.name}</a>`;
+    });
+    html+=`</div>`;
+  }
+  // 相关关系
+  const rels=D.relations.filter(r=>r.from===nid||r.to===nid);
+  if(rels.length){
+    html+=`<div class="d-section-title">相關關係（${rels.length}）</div>`;
+    rels.forEach(r=>{
+      const otherId=r.from===nid?r.to:r.from;
+      const isOut=r.from===nid;
+      const other=findNode(otherId);
+      const dir=isOut?'→':'←';
+      html+=`<div class="rel-item rel-${r.type}">`;
+      html+=`<span class="rel-label" style="color:${REL_COLOR[r.type]};">${dir} ${other?other.name:otherId}</span> <span style="color:var(--ink-soft);">· ${r.label||''}</span>`;
+      if(r.note)html+=`<div class="rel-note">${r.note}</div>`;
+      html+=`</div>`;
+    });
+  }
+  panel.innerHTML=html;
+}
+function findNode(id){
+  for(const arr of [D.cangs,D.concepts,D.people,D.books]){
+    const f=arr.find(x=>x.id===id);if(f)return f;
+  }
+  return null;
+}
+
+// 筛选
+document.querySelectorAll('.chip[data-cang]').forEach(el=>{
+  el.addEventListener('click',()=>{
+    document.querySelectorAll('.chip[data-cang]').forEach(x=>x.classList.remove('active'));
+    el.classList.add('active');
+    activeCang=el.dataset.cang;
+    render();
+  });
+});
+document.querySelectorAll('.chip[data-nodetype]').forEach(el=>{
+  el.addEventListener('click',()=>{
+    document.querySelectorAll('.chip[data-nodetype]').forEach(x=>x.classList.remove('active'));
+    el.classList.add('active');
+    activeType=el.dataset.nodetype;
+    render();
+  });
+});
+
+// 默认展示"道"节点详情
+setTimeout(()=>{renderDetail('concept',D.concepts.find(c=>c.id==='c-dao'),'c-dao');chart.dispatchAction({type:'highlight',seriesIndex:0,name:'道'});},400);
+})();
+</script>
+</body>
+</html>
