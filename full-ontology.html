@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>全文本體化 · 子藏</title>
+<link rel="stylesheet" href="css/common.css?v=12">
+<style>
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:20px 0}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center}
+.kpi .n{font-size:1.8em;font-weight:700;color:var(--gold);font-family:serif}
+.kpi .l{font-size:.82em;color:var(--muted);margin-top:4px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:18px 0 10px;border-bottom:1px solid var(--border);padding-bottom:8px}
+.tab{padding:6px 14px;border:1px solid var(--border);border-radius:20px;cursor:pointer;background:transparent;color:var(--text);font-size:.9em;transition:.2s}
+.tab.active{background:var(--gold);color:#fff;border-color:var(--gold)}
+.tab:hover:not(.active){background:var(--hover)}
+.pane{display:none}.pane.active{display:block}
+.row{display:grid;grid-template-columns:280px 1fr;gap:16px;margin-top:10px}
+@media(max-width:768px){.row{grid-template-columns:1fr}}
+.book-list{max-height:640px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;background:var(--card)}
+.book-item{padding:8px 12px;border-bottom:1px solid var(--border);cursor:pointer;font-size:.9em;display:flex;justify-content:space-between;align-items:center}
+.book-item:last-child{border-bottom:none}
+.book-item:hover{background:var(--hover)}
+.book-item.active{background:var(--gold);color:#fff}
+.book-item .cnt{font-size:.75em;color:var(--muted);padding:2px 6px;border-radius:10px;background:rgba(139,90,43,.1)}
+.book-item.active .cnt{color:#fff;background:rgba(255,255,255,.25)}
+.chapter-panel{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;max-height:640px;overflow-y:auto}
+.chapter-panel .bktitle{font-size:1.2em;font-weight:700;font-family:serif;margin-bottom:4px;color:var(--gold)}
+.chapter-panel .bkmeta{font-size:.82em;color:var(--muted);margin-bottom:14px}
+.ch-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+.ch{padding:8px 10px;border:1px solid var(--border);border-radius:6px;background:rgba(255,255,255,.3);font-size:.85em;cursor:pointer;transition:.15s}
+.ch:hover{border-color:var(--gold);background:rgba(139,90,43,.08)}
+.ch .ct{font-weight:600;margin-bottom:4px;font-family:serif}
+.ch .cc{font-size:.78em;color:var(--muted)}
+.chip{display:inline-block;padding:1px 6px;border-radius:10px;font-size:.72em;margin-right:4px;margin-top:3px;background:rgba(139,90,43,.1);color:var(--text)}
+.empty{padding:40px;text-align:center;color:var(--muted);font-size:.9em}
+/* 热力图 */
+.heat-wrap{overflow:auto;max-height:640px;border:1px solid var(--border);border-radius:8px;background:var(--card);padding:8px}
+.heat-table{border-collapse:collapse;font-size:.78em}
+.heat-table th,.heat-table td{border:1px solid var(--border);padding:4px 6px;text-align:center;white-space:nowrap}
+.heat-table th{background:var(--bg2);position:sticky;top:0;z-index:2;font-weight:600}
+.heat-table th.rowh{position:sticky;left:0;background:var(--bg2);z-index:3;text-align:left}
+.heat-table td{min-width:32px}
+.heat-legend{display:flex;align-items:center;gap:8px;margin:10px 0;font-size:.82em;color:var(--muted)}
+.heat-bar{height:10px;width:200px;background:linear-gradient(to right,#f5f0e1,#c9a55c,#8b5a2b)}
+/* 人物 */
+.person-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.pcard{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px}
+.pcard .pn{font-weight:700;font-family:serif;color:var(--gold);margin-bottom:6px}
+.pcard .pc{font-size:.8em;color:var(--muted);margin-bottom:6px}
+.pcard .blist{font-size:.8em;display:flex;flex-wrap:wrap;gap:4px}
+.pcard .blist a{color:var(--link);text-decoration:none;padding:1px 6px;border-radius:10px;background:rgba(139,90,43,.08);font-size:.85em}
+.pcard .blist a:hover{background:var(--gold);color:#fff}
+/* 锚点 */
+.atable{width:100%;border-collapse:collapse;font-size:.85em}
+.atable th,.atable td{border-bottom:1px solid var(--border);padding:8px 10px;text-align:left;vertical-align:top}
+.atable th{background:var(--bg2);font-weight:600}
+.atable tr:hover{background:var(--hover)}
+.type-tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.75em;margin-right:6px}
+.type-tag.idiom{background:#e8d5b0;color:#6b4520}
+.type-tag.term{background:#b9d4b9;color:#2d5a2d}
+.type-tag.commentary{background:#d4b9d4;color:#5a2d5a}
+/* RDF */
+.rdf-box{display:flex;gap:10px;margin:12px 0;flex-wrap:wrap}
+.rdf-btn{padding:8px 16px;border:1px solid var(--gold);background:transparent;color:var(--gold);border-radius:6px;cursor:pointer;font-size:.9em}
+.rdf-btn:hover{background:var(--gold);color:#fff}
+pre.rdf-out{background:#f5f0e1;border:1px solid var(--border);border-radius:8px;padding:14px;max-height:480px;overflow:auto;font-size:.78em;line-height:1.5;font-family:monospace;white-space:pre-wrap;word-break:break-all}
+.filter-bar{margin:10px 0;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.search-input{padding:6px 12px;border:1px solid var(--border);border-radius:20px;background:var(--card);color:var(--text);font-size:.9em;min-width:200px;outline:none}
+.search-input:focus{border-color:var(--gold)}
+.cat-chip{padding:4px 12px;border:1px solid var(--border);border-radius:16px;cursor:pointer;font-size:.82em;background:transparent}
+.cat-chip.on{background:var(--gold);color:#fff;border-color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="container">
+<h1 class="page-title">諸子全文本體化 · Knowledge Graph over 子藏</h1>
+<p style="color:var(--muted);font-size:.9em;margin-bottom:8px">基于子藏文本库自动构建的篇章切分、概念标注、人物提及与引文锚点数据。所有实体按 <code>zc:</code> 命名空间输出 Turtle / JSON-LD，可导入 Protégé / GraphDB / Blazegraph 等工具进一步推理。</p>
+
+<div class="kpi-row">
+  <div class="kpi"><div class="n" id="kpi-books">-</div><div class="l">已本體化典籍</div></div>
+  <div class="kpi"><div class="n" id="kpi-chapters">-</div><div class="l">篇章節次（Chapter）</div></div>
+  <div class="kpi"><div class="n" id="kpi-chars">-</div><div class="l">本體化字數（萬）</div></div>
+  <div class="kpi"><div class="n" id="kpi-concepts">-</div><div class="l">概念術語（Concept）</div></div>
+  <div class="kpi"><div class="n" id="kpi-persons">-</div><div class="l">人物提及邊（Mentions）</div></div>
+  <div class="kpi"><div class="n" id="kpi-anchors">-</div><div class="l">引文錨點（Quotation）</div></div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" data-pane="pane-tree">📚 篇章樹瀏覽</div>
+  <div class="tab" data-pane="pane-heat">🔥 概念分佈熱力</div>
+  <div class="tab" data-pane="pane-person">👤 人物提及網絡</div>
+  <div class="tab" data-pane="pane-anchor">⚓ 引文錨點</div>
+  <div class="tab" data-pane="pane-rdf">🔗 RDF 導出</div>
+</div>
+
+<!-- 篇章树 -->
+<div class="pane active" id="pane-tree">
+  <div class="filter-bar">
+    <input class="search-input" id="bk-search" placeholder="🔍 搜索書名…">
+    <span id="cat-filter"></span>
+  </div>
+  <div class="row">
+    <div class="book-list" id="book-list"></div>
+    <div class="chapter-panel" id="chapter-panel"><div class="empty">← 從左側選擇一部典籍</div></div>
+  </div>
+</div>
+
+<!-- 概念热力 -->
+<div class="pane" id="pane-heat">
+  <p style="font-size:.85em;color:var(--muted);margin:8px 0">縱軸為核心概念（取全庫出現次數 Top 20），橫軸為典籍（按分類彙總），色深代表該概念在典籍中的出現頻次。</p>
+  <div class="heat-legend"><span>低</span><div class="heat-bar"></div><span>高</span></div>
+  <div class="heat-wrap" id="heat-wrap"><div class="empty">加載中…</div></div>
+</div>
+
+<!-- 人物 -->
+<div class="pane" id="pane-person">
+  <p style="font-size:.85em;color:var(--muted);margin:8px 0">37 位先秦兩漢諸子人物在本體化典籍中的提及分佈（按別名字符串匹配，點擊書名可跳轉典籍詳解）。</p>
+  <div class="filter-bar"><input class="search-input" id="p-search" placeholder="🔍 搜索人物…"></div>
+  <div class="person-grid" id="person-grid"></div>
+</div>
+
+<!-- 引文锚点 -->
+<div class="pane" id="pane-anchor">
+  <p style="font-size:.85em;color:var(--muted);margin:8px 0">成語典故、術語、注疏異文的典籍出處錨定，鏈接到原文閱讀器（典源多出自《論語》《老子》《孟子》《左傳》《莊子》等早期典籍，部分當前子藏文本庫未收錄）。</p>
+  <div class="filter-bar">
+    <span class="cat-chip on" data-type="all">全部</span>
+    <span class="cat-chip" data-type="idiom">成語典故</span>
+    <span class="cat-chip" data-type="term">術語</span>
+    <span class="cat-chip" data-type="commentary">注疏異文</span>
+  </div>
+  <div style="overflow-x:auto"><table class="atable" id="anchor-table"></table></div>
+</div>
+
+<!-- RDF -->
+<div class="pane" id="pane-rdf">
+  <p style="font-size:.85em;color:var(--muted);margin:8px 0">將當前已構建的 TBox + ABox 輸出為 Turtle / JSON-LD 格式。命名空間 <code>@prefix zc: &lt;https://yejinlei.github.io/Zi-Cang/ontology#&gt;</code>。數據為裁剪版（書 + 章 + 頂層概念/人物），完整版可下載 chapters.js 自行加工。</p>
+  <div class="rdf-box">
+    <button class="rdf-btn" id="btn-turtle">📥 Turtle (.ttl)</button>
+    <button class="rdf-btn" id="btn-jsonld">📥 JSON-LD (.jsonld)</button>
+    <button class="rdf-btn" id="btn-copy">📋 複製到剪貼板</button>
+  </div>
+  <pre class="rdf-out" id="rdf-out">點擊上方按鈕生成 RDF…</pre>
+</div>
+
+</div>
+<script src="data/chapters.js?v=12"></script>
+<script src="data/concept_book.js?v=12"></script>
+<script src="data/mention_book.js?v=12"></script>
+<script src="data/anchors.js?v=12"></script>
+<script src="data/ontobuild_summary.js?v=12"></script>
+<script src="data/people_ext.js?v=12"></script>
+<script src="data/books.js?v=12"></script>
+<script src="data/classics.js?v=12"></script>
+<script src="js/common.js?v=12"></script>
+<script>
+// ======== 初始化 KPI ========
+(function(){
+  const s = window.ONTOBUILD_SUMMARY;
+  document.getElementById('kpi-books').textContent = s.booksProcessed;
+  document.getElementById('kpi-chapters').textContent = s.totalChapters.toLocaleString();
+  document.getElementById('kpi-chars').textContent = (s.totalChars/10000).toFixed(0);
+  document.getElementById('kpi-concepts').textContent = s.conceptsTotal;
+  document.getElementById('kpi-persons').textContent = s.mentionEdges.toLocaleString();
+  document.getElementById('kpi-anchors').textContent = s.anchorsTotal;
+})();
+
+// ======== Tab 切换 ========
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.pane').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.pane).classList.add('active');
+    if(t.dataset.pane==='pane-heat' && !window._heatBuilt) buildHeatmap();
+    if(t.dataset.pane==='pane-person' && !window._personBuilt) buildPersons();
+    if(t.dataset.pane==='pane-anchor' && !window._anchorBuilt) buildAnchors();
+  });
+});
+
+// ======== 书名→path、personId→name 映射 ========
+const PERSON_NAME = {
+  kongzi:'孔子',zengzi:'曾子',zisi:'子思',mengzi:'孟子',xunzi:'荀子',laozi:'老子',
+  zhuangzi:'庄子',liezi:'列子',wenzi:'文子',guanyin:'关尹子',hanfeizi:'韩非子',
+  shangjun:'商子',shenzi:'申子',shenzi2:'慎子','li kui':'李悝',guanzi:'管子',wuqi:'吴子',
+  mozi:'墨子',sunzi:'孙子',sunbin:'孙膑',huishi:'惠子','gongsunlong':'公孙龙子',
+  zouyan:'邹子',guiguzi:'鬼谷子',suqin:'苏秦',zhangyi:'张仪',lvbuwei:'吕不韦',
+  heguanzi:'鹖冠子',shizi:'尸子',yinwenzi:'尹文子',dengxizi:'邓析子',xuxing:'许行',
+  dongzhongshu:'董仲舒',liuan:'刘安',simaqian:'司马迁',wangchong:'王充',yanzhitui:'颜之推'
+};
+const CLASSIC_BY_PATH = {};
+if(window.CLASSICS_DATA){
+  window.CLASSICS_DATA.forEach(c=>{ if(c.path) CLASSIC_BY_PATH[c.path]=c; });
+}
+function bookNameByPath(p){
+  const c = CLASSIC_BY_PATH[p];
+  if(c) return c.name;
+  // 从 ALL_BOOKS 查
+  if(window.ALL_BOOKS){
+    const b = window.ALL_BOOKS.find(x=>x.path===p);
+    if(b) return b.name;
+  }
+  return p;
+}
+function bookReaderLink(p){
+  const c = CLASSIC_BY_PATH[p];
+  return c && c.path ? 'reader.html?b='+encodeURIComponent(c.path) : 'library.html';
+}
+
+// ======== 篇章树 ========
+let currentCat = 'all';
+let currentBook = null;
+function renderBookList(){
+  const q = (document.getElementById('bk-search').value||'').trim();
+  const list = document.getElementById('book-list');
+  const chapters = window.CHAPTERS_DATA || [];
+  let arr = chapters.filter(b=>b.chapters.length>0);
+  if(currentCat!=='all') arr = arr.filter(b=>b.cat===currentCat);
+  if(q) arr = arr.filter(b=>b.name.includes(q));
+  arr.sort((a,b)=>b.chars_total-a.chars_total);
+  list.innerHTML = arr.map(b=>`
+    <div class="book-item ${currentBook===b.path?'active':''}" data-path="${b.path}">
+      <span>${b.name}</span>
+      <span class="cnt">${b.chapters.length} 篇</span>
+    </div>`).join('') || '<div class="empty">未找到匹配典籍</div>';
+  list.querySelectorAll('.book-item').forEach(el=>{
+    el.addEventListener('click',()=>{
+      currentBook = el.dataset.path;
+      renderBookList();
+      renderChapters(currentBook);
+    });
+  });
+}
+function renderChapters(bp){
+  const panel = document.getElementById('chapter-panel');
+  const book = (window.CHAPTERS_DATA||[]).find(b=>b.path===bp);
+  if(!book){ panel.innerHTML='<div class="empty">未找到</div>'; return; }
+  const cc = CLASSIC_BY_PATH[bp];
+  const summary = (window.CONCEPT_BOOK_DATA||{})[bp]||{};
+  const topConcepts = Object.entries(summary).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  panel.innerHTML = `
+    <div class="bktitle">${book.name}</div>
+    <div class="bkmeta">${book.cat||''} · ${book.chapters.length} 篇 · ${((book.chapters.reduce((s,c)=>s+c.chars,0))/10000).toFixed(1)} 萬字</div>
+    ${topConcepts.length?'<div style="margin-bottom:12px"><span style="font-size:.82em;color:var(--muted)">核心概念：</span>'+
+      topConcepts.map(([n,c])=>`<span class="chip">${n} <b style="color:var(--gold)">${c}</b></span>`).join('')+'</div>':''}
+    <div style="margin-bottom:8px"><a href="reader.html?b=${encodeURIComponent(bp)}" style="color:var(--gold);text-decoration:none;font-size:.88em" target="_blank">📖 打開閱讀器 →</a></div>
+    <div class="ch-list">${book.chapters.map((ch,i)=>`
+      <div class="ch" data-idx="${i}">
+        <div class="ct">${ch.title}</div>
+        <div class="cc">${(ch.chars/1000).toFixed(1)}k${ch.topConcepts.length?' · ':''}${ch.topConcepts.slice(0,3).map(x=>`<span class="chip">${x.n}</span>`).join('')}</div>
+      </div>`).join('')}</div>`;
+}
+// 分类 chip
+(function buildCats(){
+  const chapters = window.CHAPTERS_DATA||[];
+  const cats = {};
+  chapters.forEach(b=>{
+    if(b.chapters.length===0) return;
+    const c = b.cat||'其他';
+    cats[c] = (cats[c]||0)+1;
+  });
+  const wrap = document.getElementById('cat-filter');
+  const chip = (k,n,active)=>`<span class="cat-chip ${active?'on':''}" data-cat="${k}">${n} (${cats[k]||0})</span>`;
+  wrap.innerHTML = chip('all','全部',true) + Object.keys(cats).sort((a,b)=>cats[b]-cats[a]).map(k=>chip(k,k,false)).join('');
+  wrap.querySelectorAll('.cat-chip').forEach(el=>{
+    el.addEventListener('click',()=>{
+      wrap.querySelectorAll('.cat-chip').forEach(x=>x.classList.remove('on'));
+      el.classList.add('on');
+      currentCat = el.dataset.cat;
+      renderBookList();
+    });
+  });
+})();
+document.getElementById('bk-search').addEventListener('input',renderBookList);
+renderBookList();
+
+// ======== 概念热力图 ========
+window._heatBuilt = false;
+function buildHeatmap(){
+  window._heatBuilt = true;
+  const cb = window.CONCEPT_BOOK_DATA||{};
+  // Top 20 概念
+  const conceptTotals = {};
+  Object.values(cb).forEach(cmap=>{
+    Object.entries(cmap).forEach(([n,c])=>{ conceptTotals[n]=(conceptTotals[n]||0)+c; });
+  });
+  const topConcepts = Object.entries(conceptTotals).sort((a,b)=>b[1]-a[1]).slice(0,24).map(x=>x[0]);
+  // 取出现概念数最多的 Top 25 典籍
+  const bookScores = Object.entries(cb).map(([p,cm])=>{
+    let s=0,cnt=0;
+    topConcepts.forEach(n=>{ if(cm[n]){ s+=cm[n]; cnt++; } });
+    return {p,s,cnt};
+  }).sort((a,b)=>b.s-a.s).slice(0,30);
+  const wrap = document.getElementById('heat-wrap');
+  // 计算最大值做归一
+  let maxV=0;
+  bookScores.forEach(b=>{
+    topConcepts.forEach(c=>{ const v=(cb[b.p]||{})[c]||0; if(v>maxV)maxV=v; });
+  });
+  function colorFor(v){
+    if(v===0) return '#f5f0e1';
+    const t = Math.log(v+1)/Math.log(maxV+1);
+    // 浅黄→棕金
+    const r = Math.round(245 - (245-139)*t);
+    const g = Math.round(240 - (240-90)*t);
+    const b = Math.round(225 - (225-43)*t);
+    return `rgb(${r},${g},${b})`;
+  }
+  let html = '<table class="heat-table"><thead><tr><th class="rowh">概念 \\ 典籍</th>';
+  bookScores.forEach(b=>{ html+=`<th title="${bookNameByPath(b.p)} (${b.s}次)">${bookNameByPath(b.p).slice(0,3)}</th>`; });
+  html += '</tr></thead><tbody>';
+  topConcepts.forEach(cn=>{
+    html += `<tr><th class="rowh">${cn} <span style="font-weight:400;color:var(--muted);font-size:.85em">(${conceptTotals[cn]})</span></th>`;
+    bookScores.forEach(b=>{
+      const v = (cb[b.p]||{})[cn]||0;
+      html += `<td style="background:${colorFor(v)}" title="${cn} in ${bookNameByPath(b.p)}: ${v}次">${v>0?v:''}</td>`;
+    });
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  wrap.innerHTML = html;
+}
+
+// ======== 人物提及 ========
+window._personBuilt = false;
+function buildPersons(){
+  window._personBuilt = true;
+  const mb = window.MENTION_BOOK_DATA||{};
+  const grid = document.getElementById('person-grid');
+  function render(q){
+    const entries = Object.entries(PERSON_NAME).filter(([id,n])=>{
+      if(!q) return true;
+      return n.includes(q) || id.includes(q);
+    });
+    grid.innerHTML = entries.map(([id,n])=>{
+      const books = Object.entries(mb).filter(([p,pids])=>pids.includes(id)).map(([p])=>p);
+      books.sort((a,b)=>((mb[b]||[]).length)-((mb[a]||[]).length));
+      return `<div class="pcard">
+        <div class="pn">${n}</div>
+        <div class="pc">提及於 <b style="color:var(--gold)">${books.length}</b> 部典籍</div>
+        <div class="blist">${books.slice(0,20).map(p=>`<a href="classics.html#${encodeURIComponent(p)}" title="${bookNameByPath(p)}">${bookNameByPath(p)}</a>`).join('')}${books.length>20?`<span style="font-size:.78em;color:var(--muted)">等 ${books.length} 部</span>`:''}</div>
+      </div>`;
+    }).join('') || '<div class="empty">未找到人物</div>';
+  }
+  render('');
+  document.getElementById('p-search').addEventListener('input',e=>render(e.target.value.trim()));
+}
+
+// ======== 引文锚点 ========
+window._anchorBuilt = false;
+let anchorFilter = 'all';
+function buildAnchors(){
+  window._anchorBuilt = true;
+  const ancs = window.ANCHORS_DATA||[];
+  function render(){
+    let arr = ancs;
+    if(anchorFilter!=='all') arr = arr.filter(a=>a.type===anchorFilter);
+    const tbl = document.getElementById('anchor-table');
+    const typeLabel = {idiom:'成語',term:'術語',commentary:'注疏'};
+    const typeColor = {idiom:'#6b4520',term:'#2d5a2d',commentary:'#5a2d5a'};
+    tbl.innerHTML = `<thead><tr><th>類型</th><th>條目</th><th>典源原文</th><th>對應典籍/篇章</th><th>操作</th></tr></thead><tbody>`+
+      arr.map(a=>{
+        const bn = a.bookPath?bookNameByPath(a.bookPath):'(未在子藏文本庫)';
+        const chT = a.chapterTitle?` · ${a.chapterTitle}`:'';
+        const link = a.bookPath?`<a href="${bookReaderLink(a.bookPath)}" target="_blank" style="color:var(--gold)">打開原典 →</a>`:'<span style="color:var(--muted)">—</span>';
+        return `<tr>
+          <td><span class="type-tag ${a.type}" style="color:${typeColor[a.type]}">${typeLabel[a.type]||a.type}</span></td>
+          <td><b>${a.key}</b></td>
+          <td style="max-width:280px;font-size:.82em">${a.source}</td>
+          <td>${bn}${chT}</td>
+          <td>${link}</td>
+        </tr>`;
+      }).join('')+'</tbody>';
+  }
+  render();
+  document.querySelectorAll('#pane-anchor .cat-chip').forEach(el=>{
+    el.addEventListener('click',()=>{
+      document.querySelectorAll('#pane-anchor .cat-chip').forEach(x=>x.classList.remove('on'));
+      el.classList.add('on');
+      anchorFilter = el.dataset.type;
+      render();
+    });
+  });
+}
+
+// ======== RDF 导出 ========
+function buildTurtle(){
+  const s = window.ONTOBUILD_SUMMARY;
+  const chapters = window.CHAPTERS_DATA||[];
+  const cb = window.CONCEPT_BOOK_DATA||{};
+  const mb = window.MENTION_BOOK_DATA||{};
+  const prefix = `@prefix zc: <https://yejinlei.github.io/Zi-Cang/ontology#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+
+# ============================================
+# 子藏全文本体化 · ABox 实例 (${s.generatedAt})
+# 处理典籍 ${s.booksProcessed} 部 | 篇章 ${s.totalChapters} | 概念 ${s.conceptsTotal} | 提及 ${s.mentionEdges}
+# ============================================
+
+`;
+  let triples = '';
+  // 输出前 300 部典籍的 Work+Chapter 实例（避免输出过大），并输出全部概念-书关系
+  let bookCount = 0, chapCount = 0;
+  for(const b of chapters){
+    if(bookCount>=300) break;
+    if(b.chapters.length===0) continue;
+    bookCount++;
+    const bid = 'zc:work-'+b.path.replace(/[^\w\u4e00-\u9fa5]/g,'_');
+    triples += `\n# 典籍: ${b.name}\n`;
+    triples += `${bid} a zc:Work ;\n`;
+    triples += `  rdfs:label "${b.name}"@zh ;\n`;
+    triples += `  zc:category "${b.cat}"@zh ;\n`;
+    triples += `  zc:charCount "${b.chars_total||0}"^^xsd:integer ;\n`;
+    triples += `  zc:chapterCount "${b.chapters.length}"^^xsd:integer .\n`;
+    for(let i=0;i<b.chapters.length;i++){
+      const ch = b.chapters[i];
+      chapCount++;
+      const cid = bid+'-ch'+i;
+      triples += `${cid} a zc:Chapter ;\n`;
+      triples += `  rdfs:label "${ch.title}"@zh ;\n`;
+      triples += `  zc:charCount "${ch.chars}"^^xsd:integer ;\n`;
+      triples += `  zc:isChapterOf ${bid} ;\n`;
+      triples += `  zc:chapterIndex "${ch.idx}"^^xsd:integer .\n`;
+    }
+    // 概念出现关系（前 10 高频）
+    const cmap = cb[b.path]||{};
+    const topC = Object.entries(cmap).sort((x,y)=>y[1]-x[1]).slice(0,10);
+    for(const [cn,cv] of topC){
+      const cid = 'zc:concept-'+cn.replace(/[^\w\u4e00-\u9fa5]/g,'_');
+      triples += `${bid} zc:mentionsConcept ${cid} ;\n`;
+      triples += `  zc:conceptFrequency [ zc:concept ${cid} ; zc:count "${cv}"^^xsd:integer ] .\n`;
+    }
+  }
+  // 人物提及
+  for(const [pid,pname] of Object.entries(PERSON_NAME)){
+    const prsId = 'zc:person-'+pid;
+    triples += `\n# 人物: ${pname}\n`;
+    triples += `${prsId} a zc:Person ; rdfs:label "${pname}"@zh .\n`;
+  }
+  let pRel=0;
+  for(const [bp,pids] of Object.entries(mb)){
+    if(bookCount>=300 && !chapters.slice(0,300).some(b=>b.path===bp)) continue;
+    const bid = 'zc:work-'+bp.replace(/[^\w\u4e00-\u9fa5]/g,'_');
+    for(const pid of pids){
+      const prsId = 'zc:person-'+pid;
+      triples += `${bid} zc:mentionsPerson ${prsId} .\n`;
+      pRel++;
+    }
+  }
+  triples += `\n# 导出统计: ${bookCount} 部典籍 / ${chapCount} 篇章 / ${pRel} 人物提及关系\n`;
+  return prefix + triples;
+}
+function buildJSONLD(){
+  const s = window.ONTOBUILD_SUMMARY;
+  const chapters = window.CHAPTERS_DATA||[];
+  const cb = window.CONCEPT_BOOK_DATA||{};
+  const mb = window.MENTION_BOOK_DATA||{};
+  const out = {
+    "@context": {
+      "zc": "https://yejinlei.github.io/Zi-Cang/ontology#",
+      "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+      "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+      "xsd": "http://www.w3.org/2001/XMLSchema#",
+      "label": "rdfs:label",
+      "category": "zc:category",
+      "charCount": "zc:charCount",
+      "chapterCount": "zc:chapterCount",
+      "isChapterOf": "zc:isChapterOf",
+      "mentionsConcept": "zc:mentionsConcept",
+      "mentionsPerson": "zc:mentionsPerson"
+    },
+    "@graph": []
+  };
+  let bookCount=0;
+  for(const b of chapters){
+    if(bookCount>=300) break;
+    if(b.chapters.length===0) continue;
+    bookCount++;
+    const bid = 'zc:work-'+b.path.replace(/[^\w\u4e00-\u9fa5]/g,'_');
+    const node = {"@id":bid,"@type":"zc:Work","label":b.name+"@zh","category":b.cat,"charCount":b.chars_total||0,"chapterCount":b.chapters.length,"chapters":[]};
+    for(let i=0;i<b.chapters.length;i++){
+      const ch=b.chapters[i];
+      node.chapters.push({"@id":bid+'-ch'+i,"@type":"zc:Chapter","label":ch.title+"@zh","charCount":ch.chars,"chapterIndex":ch.idx});
+    }
+    const cmap=cb[b.path]||{};
+    const topC=Object.entries(cmap).sort((x,y)=>y[1]-x[1]).slice(0,10);
+    node.concepts=topC.map(([n,c])=>({"@id":'zc:concept-'+n.replace(/[^\w\u4e00-\u9fa5]/g,'_'),"label":n+"@zh","count":c}));
+    node.mentionsPerson = (mb[b.path]||[]).map(pid=>({"@id":'zc:person-'+pid,"label":(PERSON_NAME[pid]||pid)+"@zh"}));
+    out["@graph"].push(node);
+  }
+  return JSON.stringify(out,null,2);
+}
+let lastRDF='';
+document.getElementById('btn-turtle').addEventListener('click',()=>{
+  lastRDF = buildTurtle();
+  document.getElementById('rdf-out').textContent = lastRDF;
+});
+document.getElementById('btn-jsonld').addEventListener('click',()=>{
+  lastRDF = buildJSONLD();
+  document.getElementById('rdf-out').textContent = lastRDF;
+});
+document.getElementById('btn-copy').addEventListener('click',()=>{
+  if(!lastRDF){ alert('請先生成 RDF'); return; }
+  navigator.clipboard.writeText(lastRDF).then(()=>{
+    const btn=document.getElementById('btn-copy');
+    const old=btn.textContent; btn.textContent='✓ 已複製';
+    setTimeout(()=>btn.textContent=old,1500);
+  });
+});
+
+// ======== 链接互见（让正文里的概念/人名字可点） ========
+if(window.linkifyText){
+  // 复用全局 linkify，但这里主要是面板动态渲染的内容，后续再加
+}
+</script>
+</body>
+</html>

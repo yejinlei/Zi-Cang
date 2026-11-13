@@ -72,7 +72,8 @@ function buildNav(active){
       {key:'terms',    href:'terms.html',    label:'🔖 術語詞典'},
       {key:'idioms',   href:'idioms.html',   label:'🀄 成語典故'},
       {key:'tools',    href:'tools.html',    label:'⿴ 研讀工具'},
-      {key:'spec',     href:'spec.html',     label:'📐 本體規範'}
+      {key:'spec',     href:'spec.html',     label:'📐 本體規範'},
+      {key:'full-ontology', href:'full-ontology.html', label:'🔬 全文本體化'}
     ]},
     {key:'research',icon:'✦', label:'義理研究', children:[
       {key:'people',    href:'people.html',    label:'👤 諸子人物'},
@@ -179,6 +180,7 @@ function getProgress(path){
     'idioms.html': 'idioms',
     'tools.html': 'tools',
     'spec.html': 'spec',
+    'full-ontology.html': 'full-ontology',
     'people.html': 'people',
     'panjiao.html': 'panjiao',
     'timeline.html': 'timeline',

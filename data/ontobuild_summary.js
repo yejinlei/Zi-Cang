@@ -1,0 +1,1 @@
+window.ONTOBUILD_SUMMARY = {"generatedAt":"2026-11-13T00:26:24.617Z","booksProcessed":576,"totalChapters":4635,"totalChars":94067121,"conceptsTotal":64,"personsTotal":36,"personAliases":82,"anchorsTotal":39,"mentionEdges":6365};

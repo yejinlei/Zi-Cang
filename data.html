@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>數據下載 · 子藏本體論 Zi-Cang</title>
-<link rel="stylesheet" href="css/common.css?v=11">
+<link rel="stylesheet" href="css/common.css?v=12">
 <style>
   :root{--ink:#2c1810;--sub:#6b4423;--paper:#f5ecd7;--card:#faf4e3;--border:#d4b896;--gold:#8b2500;--accent:#a0522d}
   .data-hero{padding:48px 28px 24px;text-align:center;max-width:900px;margin:0 auto}
@@ -71,7 +71,7 @@
 </div>
 </div>
 
-<script src="js/common.js?v=11"></script>
+<script src="js/common.js?v=12"></script>
 <script>
 injectLayout('data');
 
@@ -104,6 +104,14 @@ const FILES=[
    files:[{name:'panjiao.json',url:'data/panjiao.js',label:'JS數據'}]},
   {ico:'⇌',title:'典籍引文關聯數據',desc:'38部先秦兩漢核心典籍之間的引用、批評、注釋、繼承、並稱五類關係共68條，每條關係附原文證據與出處。',meta:['引文關聯','~24KB','38部·68關係'],
    files:[{name:'citation.json',url:'data/citation.js',label:'JS數據'}]},
+  {ico:'📚',title:'篇章切分數據',desc:'576部典籍的自動篇章切分結果，共4635個Chapter實例，每篇含標題、字數、Top 5高頻概念、提及人物。',meta:['篇章','~850KB','576書·4635章'],
+   files:[{name:'chapters.json',url:'data/chapters.js',label:'JS數據',isBig:true}]},
+  {ico:'🔥',title:'概念分佈矩陣',desc:'64個核心概念（83術語+37道體去重後）在576部典籍中的出現頻次矩陣，供概念熱力圖、詞頻查詢、跨書對比使用。',meta:['概念頻次','~130KB','64概念'],
+   files:[{name:'concept-book.json',url:'data/concept_book.js',label:'JS數據'}]},
+  {ico:'👤',title:'人物提及網絡',desc:'37位先秦兩漢諸子人物在576部典籍中的提及分佈（按別名字符串匹配），共6365條書級提及邊。',meta:['人物提及','~80KB','6365邊'],
+   files:[{name:'mention-book.json',url:'data/mention_book.js',label:'JS數據'}]},
+  {ico:'⚓',title:'引文錨點數據',desc:'成語典故、術語、注疏異文的典籍出處錨定，包含對應典籍路徑、篇章、典源原文片段，用於語義溯源。',meta:['引文錨點','~6KB','39條'],
+   files:[{name:'anchors.json',url:'data/anchors.js',label:'JS數據'}]},
   {ico:'⚙',title:'本體推理規則與查詢',desc:'9條TBox推理規則（師承傳遞、創始人歸屬、類傳遞等）、7個示例查詢（含SPARQL形式、推理邏輯、答案），含演示用ABox三元組。',meta:['推理','~10KB','9規則·7查詢'],
    files:[{name:'reasoning.json',url:'data/reasoning.js',label:'JS數據'}]},
   {ico:'🗂',title:'完整本體包',desc:'將以上所有文件打包為zip，含README說明與SPARQL查詢示例。',meta:['ZIP','一次性下載'],

@@ -1,4 +1,4 @@
-const CACHE = 'zicang-v11';
+const CACHE = 'zicang-v12';
 const APP_SHELL = [
   './',
   './index.html',
@@ -18,6 +18,7 @@ const APP_SHELL = [
   './citation.html',
   './reasoning.html',
   './statistics.html',
+  './full-ontology.html',
   './map.html',
   './data.html',
   './css/common.css',
@@ -40,6 +41,11 @@ const APP_SHELL = [
   './data/panjiao.js',
   './data/citation.js',
   './data/reasoning.js',
+  './data/chapters.js',
+  './data/concept_book.js',
+  './data/mention_book.js',
+  './data/anchors.js',
+  './data/ontobuild_summary.js',
   './manifest.json'
 ];
 self.addEventListener('install', e => {
