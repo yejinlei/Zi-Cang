@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>全文本體化 · 子藏</title>
-<link rel="stylesheet" href="css/common.css?v=12">
+<link rel="stylesheet" href="css/common.css?v=13">
 <style>
 .kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:20px 0}
 .kpi{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center}
@@ -62,6 +62,31 @@
 .type-tag.commentary{background:#d4b9d4;color:#5a2d5a}
 /* RDF */
 .rdf-box{display:flex;gap:10px;margin:12px 0;flex-wrap:wrap}
+/* 概念检索 */
+.cs-wrap{margin-top:10px}
+.cs-bar{display:flex;gap:8px;align-items:center;margin:10px 0;flex-wrap:wrap;position:relative}
+.cs-input{padding:8px 14px;border:1px solid var(--border);border-radius:20px;background:var(--card);color:var(--text);font-size:.95em;min-width:260px;outline:none;font-family:serif}
+.cs-input:focus{border-color:var(--gold)}
+.cs-btn{padding:8px 18px;border:1px solid var(--gold);background:var(--gold);color:#fff;border-radius:20px;cursor:pointer;font-size:.92em}
+.cs-btn:hover{opacity:.88}
+.cs-suggest{position:absolute;top:42px;left:0;width:280px;background:var(--card);border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 14px rgba(0,0,0,.15);z-index:10;max-height:280px;overflow-y:auto;display:none}
+.cs-suggest.show{display:block}
+.cs-s-item{padding:8px 12px;cursor:pointer;font-size:.9em;border-bottom:1px solid var(--border)}
+.cs-s-item:last-child{border-bottom:none}
+.cs-s-item:hover{background:var(--hover)}
+.cs-s-item .sn{font-family:serif;font-weight:600;color:var(--gold)}
+.cs-s-item .sc{font-size:.78em;color:var(--muted);margin-left:6px}
+.cs-stats{font-size:.88em;color:var(--muted);margin:6px 0 10px}
+.cs-chart{width:100%;height:520px;border:1px solid var(--border);border-radius:8px;background:var(--card)}
+.cs-list{margin-top:14px}
+.cs-list-title{font-size:.95em;font-weight:700;color:var(--gold);font-family:serif;margin:14px 0 8px}
+.cs-row{display:grid;grid-template-columns:minmax(80px,1fr) 120px 70px 70px;gap:8px;padding:8px 12px;border-bottom:1px solid var(--border);font-size:.88em;align-items:center}
+.cs-row.head{background:var(--bg2);font-weight:600;font-size:.82em;color:var(--muted)}
+.cs-row .bar{height:6px;background:rgba(139,90,43,.12);border-radius:3px;overflow:hidden}
+.cs-row .bar i{display:block;height:100%;background:var(--gold);border-radius:3px}
+.cs-row a{color:var(--link);text-decoration:none}
+.cs-row a:hover{color:var(--gold)}
+.cs-empty{padding:40px;text-align:center;color:var(--muted);font-size:.92em}
 .rdf-btn{padding:8px 16px;border:1px solid var(--gold);background:transparent;color:var(--gold);border-radius:6px;cursor:pointer;font-size:.9em}
 .rdf-btn:hover{background:var(--gold);color:#fff}
 pre.rdf-out{background:#f5f0e1;border:1px solid var(--border);border-radius:8px;padding:14px;max-height:480px;overflow:auto;font-size:.78em;line-height:1.5;font-family:monospace;white-space:pre-wrap;word-break:break-all}
@@ -89,6 +114,7 @@ pre.rdf-out{background:#f5f0e1;border:1px solid var(--border);border-radius:8px;
 <div class="tabs">
   <div class="tab active" data-pane="pane-tree">📚 篇章樹瀏覽</div>
   <div class="tab" data-pane="pane-heat">🔥 概念分佈熱力</div>
+  <div class="tab" data-pane="pane-search">🔍 概念檢索</div>
   <div class="tab" data-pane="pane-person">👤 人物提及網絡</div>
   <div class="tab" data-pane="pane-anchor">⚓ 引文錨點</div>
   <div class="tab" data-pane="pane-rdf">🔗 RDF 導出</div>
@@ -111,6 +137,22 @@ pre.rdf-out{background:#f5f0e1;border:1px solid var(--border);border-radius:8px;
   <p style="font-size:.85em;color:var(--muted);margin:8px 0">縱軸為核心概念（取全庫出現次數 Top 20），橫軸為典籍（按分類彙總），色深代表該概念在典籍中的出現頻次。</p>
   <div class="heat-legend"><span>低</span><div class="heat-bar"></div><span>高</span></div>
   <div class="heat-wrap" id="heat-wrap"><div class="empty">加載中…</div></div>
+</div>
+
+<!-- 概念检索 -->
+<div class="pane" id="pane-search">
+  <p style="font-size:.85em;color:var(--muted);margin:8px 0">輸入一個概念（如「<b style="color:var(--gold)">道</b>」「<b style="color:var(--gold)">仁</b>」「<b style="color:var(--gold)">法</b>」「<b style="color:var(--gold)">兵</b>」「<b style="color:var(--gold)">無為</b>」），即可查看其在全部已本體化典籍中的分佈柱狀圖與完整頻次表。</p>
+  <div class="cs-bar">
+    <input class="cs-input" id="cs-input" placeholder="🔍 輸入概念（支持联想）…" autocomplete="off">
+    <div class="cs-suggest" id="cs-suggest"></div>
+    <button class="cs-btn" id="cs-go">檢 索</button>
+    <span id="cs-quick" style="display:flex;gap:4px;flex-wrap:wrap;margin-left:6px"></span>
+  </div>
+  <div class="cs-stats" id="cs-stats">← 請輸入概念後點「檢索」</div>
+  <div class="cs-wrap">
+    <div class="cs-chart" id="cs-chart"><div class="cs-empty">柱狀圖區域（輸入概念後顯示 Top 30 典籍）</div></div>
+    <div class="cs-list" id="cs-list"></div>
+  </div>
 </div>
 
 <!-- 人物 -->
@@ -144,15 +186,16 @@ pre.rdf-out{background:#f5f0e1;border:1px solid var(--border);border-radius:8px;
 </div>
 
 </div>
-<script src="data/chapters.js?v=12"></script>
-<script src="data/concept_book.js?v=12"></script>
-<script src="data/mention_book.js?v=12"></script>
-<script src="data/anchors.js?v=12"></script>
-<script src="data/ontobuild_summary.js?v=12"></script>
-<script src="data/people_ext.js?v=12"></script>
-<script src="data/books.js?v=12"></script>
-<script src="data/classics.js?v=12"></script>
-<script src="js/common.js?v=12"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<script src="data/chapters.js?v=13"></script>
+<script src="data/concept_book.js?v=13"></script>
+<script src="data/mention_book.js?v=13"></script>
+<script src="data/anchors.js?v=13"></script>
+<script src="data/ontobuild_summary.js?v=13"></script>
+<script src="data/people_ext.js?v=13"></script>
+<script src="data/books.js?v=13"></script>
+<script src="data/classics.js?v=13"></script>
+<script src="js/common.js?v=13"></script>
 <script>
 // ======== 初始化 KPI ========
 (function(){
@@ -173,6 +216,7 @@ document.querySelectorAll('.tab').forEach(t=>{
     t.classList.add('active');
     document.getElementById(t.dataset.pane).classList.add('active');
     if(t.dataset.pane==='pane-heat' && !window._heatBuilt) buildHeatmap();
+    if(t.dataset.pane==='pane-search' && !window._csBuilt) initConceptSearch();
     if(t.dataset.pane==='pane-person' && !window._personBuilt) buildPersons();
     if(t.dataset.pane==='pane-anchor' && !window._anchorBuilt) buildAnchors();
   });
@@ -381,6 +425,190 @@ function buildAnchors(){
       render();
     });
   });
+}
+
+// ======== 概念检索 ========
+window._csBuilt = false;
+function initConceptSearch(){
+  window._csBuilt = true;
+  const cb = window.CONCEPT_BOOK_DATA||{};
+  const chapters = window.CHAPTERS_DATA||[];
+  const input = document.getElementById('cs-input');
+  const suggest = document.getElementById('cs-suggest');
+  const btn = document.getElementById('cs-go');
+  const stats = document.getElementById('cs-stats');
+  const chartDom = document.getElementById('cs-chart');
+  const listWrap = document.getElementById('cs-list');
+  const quickWrap = document.getElementById('cs-quick');
+
+  // 统计所有概念总频次并按总频次排序
+  const conceptTotals = {};
+  Object.values(cb).forEach(cmap=>{
+    Object.entries(cmap).forEach(([n,c])=>{ conceptTotals[n]=(conceptTotals[n]||0)+c; });
+  });
+  const allConcepts = Object.entries(conceptTotals).sort((a,b)=>b[1]-a[1]);
+
+  // 快捷热门概念
+  const quickConcepts = allConcepts.slice(0,8).map(x=>x[0]);
+  quickWrap.innerHTML = quickConcepts.map(n=>`<span class="cat-chip" data-q="${n}" style="cursor:pointer">${n}</span>`).join('');
+  quickWrap.querySelectorAll('.cat-chip').forEach(el=>{
+    el.addEventListener('click',()=>{ input.value=el.dataset.q; suggest.classList.remove('show'); doSearch(el.dataset.q); });
+  });
+
+  let csChart = null;
+
+  function doSearch(termRaw){
+    const term = (termRaw||'').trim();
+    if(!term){ stats.textContent='← 請輸入概念後點「檢索」'; listWrap.innerHTML=''; if(csChart){csChart.dispose(); csChart=null;} chartDom.innerHTML='<div class="cs-empty">柱狀圖區域（輸入概念後顯示 Top 30 典籍）</div>'; return; }
+    // 1) 精确匹配
+    let matchedTerm = term;
+    let rows = Object.entries(cb).map(([p,cm])=>({p,name:bookNameByPath(p),cat:chapters.find(b=>b.path===p)?.cat||'',cnt:cm[term]||0})).filter(x=>x.cnt>0);
+    let aggregated = false;
+    let subConcepts = [];
+    if(rows.length===0 && term.length===1){
+      // 单字查询：聚合所有含该字的多字概念
+      subConcepts = allConcepts.filter(([n])=>n.includes(term)).map(([n])=>n);
+      if(subConcepts.length>0){
+        aggregated = true;
+        matchedTerm = term;
+        const agg = {};
+        Object.entries(cb).forEach(([p,cm])=>{
+          let s=0;
+          subConcepts.forEach(n=>{ s += cm[n]||0; });
+          if(s>0) agg[p]=s;
+        });
+        rows = Object.entries(agg).map(([p,c])=>({p,name:bookNameByPath(p),cat:chapters.find(b=>b.path===p)?.cat||'',cnt:c}));
+      }
+    }
+    if(rows.length===0){
+      // 2) 前缀匹配优先于包含匹配（多字查询）
+      let fuzzy = allConcepts.filter(([n])=>n===term);
+      if(fuzzy.length===0) fuzzy = allConcepts.filter(([n])=>n.startsWith(term));
+      if(fuzzy.length===0) fuzzy = allConcepts.filter(([n])=>n.includes(term));
+      if(fuzzy.length>0){
+        matchedTerm = fuzzy[0][0];
+        if(matchedTerm!==term) input.value = matchedTerm;
+        rows = Object.entries(cb).map(([p,cm])=>({p,name:bookNameByPath(p),cat:chapters.find(b=>b.path===p)?.cat||'',cnt:cm[matchedTerm]||0})).filter(x=>x.cnt>0);
+      }
+    }
+    if(rows.length===0){
+      stats.innerHTML = `<span style="color:var(--muted)">概念「<b>${term}</b>」在當前本體化典籍中未檢出。試試：${quickConcepts.slice(0,5).map(n=>`<span class="cat-chip" data-q="${n}" style="cursor:pointer" onclick="document.getElementById('cs-input').value='${n}';doSearch('${n}')">${n}</span>`).join(' ')}</span>`;
+      listWrap.innerHTML='';
+      if(csChart){csChart.dispose();csChart=null;}
+      chartDom.innerHTML='<div class="cs-empty">未匹配到概念</div>';
+      return;
+    }
+    rows.sort((a,b)=>b.cnt-a.cnt);
+    const total = rows.reduce((s,x)=>s+x.cnt,0);
+    const subNote = aggregated ? `（聚合 <b>${subConcepts.length}</b> 個含「${term}」概念：${subConcepts.slice(0,8).join('、')}${subConcepts.length>8?'…':''}）` : '';
+    stats.innerHTML = `概念「<b style="color:var(--gold);font-size:1.05em">${matchedTerm}</b>」在 <b style="color:var(--gold)">${rows.length}</b> 部典籍中共出現 <b style="color:var(--gold)">${total.toLocaleString()}</b> 次${subNote?`<br><span style="font-size:.82em;color:var(--muted)">${subNote}</span>`:''}。柱狀圖展示出現次數 Top 30 典籍；下方列出全部匹配典籍。`;
+
+    // 柱状图 Top 30
+    const top = rows.slice(0,30);
+    chartDom.innerHTML='';
+    csChart = echarts.init(chartDom);
+    const names = top.map(r=>r.name);
+    const vals = top.map(r=>r.cnt);
+    const cats = top.map(r=>r.cat);
+    const catColor = {
+      '諸子':'#8b5a2b','兵家':'#6b4520','法家':'#4a2f6b','農家':'#2d5a2d','醫家':'#8b2b4b',
+      '算術':'#2d4a5a','筆記':'#6b6b2d','類書':'#5a4a2b','藝術':'#4a5a2d'
+    };
+    csChart.setOption({
+      backgroundColor:'transparent',
+      tooltip:{trigger:'axis',axisPointer:{type:'shadow'},formatter:p=>{
+        const d = p[0];
+        return `<b>${d.name}</b><br/>「${term}」出現 <b style="color:#c9a55c">${d.value}</b> 次<br/>${cats[d.dataIndex]||''}`;
+      }},
+      grid:{left:80,right:30,top:20,bottom:90},
+      xAxis:{type:'category',data:names,axisLabel:{rotate:45,fontSize:11,interval:0,color:'var(--muted, #6b4520)'},axisLine:{lineStyle:{color:'var(--border)'}}},
+      yAxis:{type:'value',name:'出現次數',axisLabel:{color:'var(--muted)'},splitLine:{lineStyle:{color:'var(--border, #e8d5b0)'}}},
+      series:[{
+        type:'bar',data:vals,
+        itemStyle:{color:p=>catColor[cats[p.dataIndex]]||'#8b5a2b',borderRadius:[4,4,0,0]},
+        emphasis:{itemStyle:{color:'#c9a55c'}},
+        label:{show:true,position:'top',fontSize:10,color:'var(--muted)'}
+      }]
+    });
+    csChart.on('click',p=>{
+      const r = top[p.dataIndex];
+      if(r) window.open('classics.html#'+encodeURIComponent(r.p),'_blank');
+    });
+    window.addEventListener('resize',()=>csChart && csChart.resize());
+
+    // 完整列表（按分类分组）
+    const catGroups = {};
+    rows.forEach(r=>{
+      const k = r.cat||'其他';
+      if(!catGroups[k]) catGroups[k]=[];
+      catGroups[k].push(r);
+    });
+    const maxV = rows[0].cnt;
+    let html = '<div class="cs-list-title">📊 全部典籍分佈（共 '+rows.length+' 部）</div>';
+    html += '<div class="cs-row head"><span>典籍</span><span>分類</span><span>次數</span><span>分佈</span></div>';
+    // 先显示Top 30，再折叠剩余
+    const top30 = rows.slice(0,30);
+    const rest = rows.slice(30);
+    top30.forEach(r=>{
+      html += `<div class="cs-row">
+        <span><a href="classics.html#${encodeURIComponent(r.p)}" target="_blank">${r.name}</a></span>
+        <span style="color:var(--muted);font-size:.82em">${r.cat||'—'}</span>
+        <span style="color:var(--gold);font-weight:600">${r.cnt}</span>
+        <span class="bar"><i style="width:${(r.cnt/maxV*100).toFixed(1)}%"></i></span>
+      </div>`;
+    });
+    if(rest.length>0){
+      html += `<div class="cs-row" style="justify-content:center;color:var(--gold);cursor:pointer" id="cs-expand"><span colspan="4" style="text-align:center">▾ 展開其餘 ${rest.length} 部典籍</span></div>`;
+      html += `<div id="cs-rest" style="display:none">`;
+      rest.forEach(r=>{
+        html += `<div class="cs-row">
+          <span><a href="classics.html#${encodeURIComponent(r.p)}" target="_blank">${r.name}</a></span>
+          <span style="color:var(--muted);font-size:.82em">${r.cat||'—'}</span>
+          <span style="color:var(--gold);font-weight:600">${r.cnt}</span>
+          <span class="bar"><i style="width:${(r.cnt/maxV*100).toFixed(1)}%"></i></span>
+        </div>`;
+      });
+      html += `</div>`;
+    }
+    listWrap.innerHTML = html;
+    const exp = document.getElementById('cs-expand');
+    if(exp){
+      exp.addEventListener('click',()=>{
+        const restBox = document.getElementById('cs-rest');
+        if(restBox.style.display==='none'){ restBox.style.display=''; exp.innerHTML='<span colspan="4" style="text-align:center">▴ 收起</span>'; }
+        else{ restBox.style.display='none'; exp.innerHTML=`<span colspan="4" style="text-align:center">▾ 展開其餘 ${rest.length} 部典籍</span>`; }
+      });
+    }
+  }
+
+  // 联想下拉
+  function showSuggest(q){
+    q = q.trim();
+    if(!q){ suggest.classList.remove('show'); return; }
+    const matches = allConcepts.filter(([n])=>n.includes(q)||n.startsWith(q)).slice(0,10);
+    if(matches.length===0){ suggest.classList.remove('show'); return; }
+    suggest.innerHTML = matches.map(([n,c])=>`<div class="cs-s-item" data-n="${n}"><span class="sn">${n}</span><span class="sc">${c} 次</span></div>`).join('');
+    suggest.classList.add('show');
+    suggest.querySelectorAll('.cs-s-item').forEach(el=>{
+      el.addEventListener('mousedown',e=>{
+        e.preventDefault();
+        input.value = el.dataset.n;
+        suggest.classList.remove('show');
+        doSearch(el.dataset.n);
+      });
+    });
+  }
+  input.addEventListener('input',e=>showSuggest(e.target.value));
+  input.addEventListener('focus',e=>{ if(e.target.value) showSuggest(e.target.value); });
+  input.addEventListener('blur',()=>setTimeout(()=>suggest.classList.remove('show'),150));
+  input.addEventListener('keydown',e=>{
+    if(e.key==='Enter'){ suggest.classList.remove('show'); doSearch(input.value); }
+  });
+  btn.addEventListener('click',()=>{ suggest.classList.remove('show'); doSearch(input.value); });
+
+  // 默认演示：道
+  input.value = '道';
+  doSearch('道');
 }
 
 // ======== RDF 导出 ========
