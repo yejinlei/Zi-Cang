@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>全文本體化 · 子藏</title>
-<link rel="stylesheet" href="css/common.css?v=17">
+<link rel="stylesheet" href="css/common.css?v=18">
 <style>
 .kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:20px 0}
 .kpi{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center}
@@ -89,6 +89,13 @@
 .cs-empty{padding:40px;text-align:center;color:var(--muted);font-size:.92em}
 .rdf-btn{padding:8px 16px;border:1px solid var(--gold);background:transparent;color:var(--gold);border-radius:6px;cursor:pointer;font-size:.9em}
 .rdf-btn:hover{background:var(--gold);color:#fff}
+.rdf-btn.active{background:var(--gold);color:#fff}
+.rdf-modules{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;margin:10px 0;padding:12px;border:1px dashed var(--border);border-radius:8px;background:rgba(139,69,19,.04)}
+.rdf-modules label{display:flex;align-items:center;gap:6px;font-size:.88em;cursor:pointer;padding:4px 8px;border-radius:4px}
+.rdf-modules label:hover{background:rgba(139,69,19,.08)}
+.rdf-modules input[type=checkbox]{accent-color:var(--gold)}
+.rdf-stats{font-size:.82em;color:var(--muted);margin:8px 0;padding:8px 12px;background:#f5f0e1;border-radius:6px;display:flex;gap:18px;flex-wrap:wrap}
+.rdf-stats b{color:var(--text)}
 pre.rdf-out{background:#f5f0e1;border:1px solid var(--border);border-radius:8px;padding:14px;max-height:480px;overflow:auto;font-size:.78em;line-height:1.5;font-family:monospace;white-space:pre-wrap;word-break:break-all}
 .filter-bar{margin:10px 0;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .search-input{padding:6px 12px;border:1px solid var(--border);border-radius:20px;background:var(--card);color:var(--text);font-size:.9em;min-width:200px;outline:none}
@@ -176,26 +183,44 @@ pre.rdf-out{background:#f5f0e1;border:1px solid var(--border);border-radius:8px;
 
 <!-- RDF -->
 <div class="pane" id="pane-rdf">
-  <p style="font-size:.85em;color:var(--muted);margin:8px 0">將當前已構建的 TBox + ABox 輸出為 Turtle / JSON-LD 格式。命名空間 <code>@prefix zc: &lt;https://yejinlei.github.io/Zi-Cang/ontology#&gt;</code>。數據為裁剪版（書 + 章 + 頂層概念/人物），完整版可下載 chapters.js 自行加工。</p>
-  <div class="rdf-box">
+  <p style="font-size:.88em;color:var(--muted);margin:8px 0">將子藏全文本體化的 <b style="color:var(--text)">TBox（類與屬性）+ ABox（全部實例）</b> 輸出為標準 RDF。命名空間 <code>@prefix zc: &lt;https://yejinlei.github.io/Zi-Cang/ontology#&gt;</code>，可導入 Protégé / GraphDB / Apache Jena / Blazegraph 等工具進一步推理。</p>
+  <div class="rdf-stats" id="rdf-stats">載入中…</div>
+  <p style="font-size:.85em;margin:8px 0 4px;color:var(--text)">📦 導出模塊（可勾選）：</p>
+  <div class="rdf-modules" id="rdf-modules"></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 4px">
+    <button class="rdf-btn" id="btn-sel-all">✔ 全選</button>
+    <button class="rdf-btn" id="btn-sel-none">✘ 全不選</button>
+    <button class="rdf-btn" id="btn-sel-core">★ 核心集</button>
+  </div>
+  <div class="rdf-box" style="margin-top:14px">
     <button class="rdf-btn" id="btn-turtle">📥 Turtle (.ttl)</button>
     <button class="rdf-btn" id="btn-jsonld">📥 JSON-LD (.jsonld)</button>
+    <button class="rdf-btn" id="btn-nt">📥 N-Triples (.nt)</button>
     <button class="rdf-btn" id="btn-copy">📋 複製到剪貼板</button>
+    <button class="rdf-btn" id="btn-download-all">💾 三格式全部下載</button>
   </div>
-  <pre class="rdf-out" id="rdf-out">點擊上方按鈕生成 RDF…</pre>
+  <p id="rdf-msg" style="font-size:.82em;color:var(--muted);margin:4px 0"></p>
+  <pre class="rdf-out" id="rdf-out">選擇模塊，點擊上方按鈕生成或下載 RDF。首次生成全量數據約需 1-2 秒。</pre>
 </div>
 
 </div>
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
-<script src="data/chapters.js?v=17"></script>
-<script src="data/concept_book.js?v=17"></script>
-<script src="data/mention_book.js?v=17"></script>
-<script src="data/anchors.js?v=17"></script>
-<script src="data/ontobuild_summary.js?v=17"></script>
-<script src="data/people_ext.js?v=17"></script>
-<script src="data/books.js?v=17"></script>
-<script src="data/classics.js?v=17"></script>
-<script src="js/common.js?v=17"></script>
+<script src="data/chapters.js?v=18"></script>
+<script src="data/concept_book.js?v=18"></script>
+<script src="data/mention_book.js?v=18"></script>
+<script src="data/anchors.js?v=18"></script>
+<script src="data/ontobuild_summary.js?v=18"></script>
+<script src="data/people_ext.js?v=18"></script>
+<script src="data/books.js?v=18"></script>
+<script src="data/classics.js?v=18"></script>
+<script src="data/schools.js?v=18"></script>
+<script src="data/terms.js?v=18"></script>
+<script src="data/daoti.js?v=18"></script>
+<script src="data/idioms.js?v=18"></script>
+<script src="data/cross.js?v=18"></script>
+<script src="data/rdf-export.js?v=18"></script>
+<script src="js/linkify.js?v=18"></script>
+<script src="js/common.js?v=18"></script>
 <script>
 // ======== 初始化 KPI ========
 (function(){
@@ -611,134 +636,121 @@ function initConceptSearch(){
   doSearch('道');
 }
 
-// ======== RDF 导出 ========
-function buildTurtle(){
-  const s = window.ONTOBUILD_SUMMARY;
-  const chapters = window.CHAPTERS_DATA||[];
-  const cb = window.CONCEPT_BOOK_DATA||{};
-  const mb = window.MENTION_BOOK_DATA||{};
-  const prefix = `@prefix zc: <https://yejinlei.github.io/Zi-Cang/ontology#> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix dc: <http://purl.org/dc/elements/1.1/> .
+// ======== RDF 全量导出 ========
+(function(){
+  const EXP = window.RDFExport;
+  if(!EXP) return;
+  const MODULES = EXP.MODULES;
+  const modBox = document.getElementById('rdf-modules');
+  const stats = document.getElementById('rdf-stats');
+  const out = document.getElementById('rdf-out');
+  const msg = document.getElementById('rdf-msg');
+  let lastRDF='', lastFmt='turtle', lastMods=[];
 
-# ============================================
-# 子藏全文本体化 · ABox 实例 (${s.generatedAt})
-# 处理典籍 ${s.booksProcessed} 部 | 篇章 ${s.totalChapters} | 概念 ${s.conceptsTotal} | 提及 ${s.mentionEdges}
-# ============================================
-
-`;
-  let triples = '';
-  // 输出前 300 部典籍的 Work+Chapter 实例（避免输出过大），并输出全部概念-书关系
-  let bookCount = 0, chapCount = 0;
-  for(const b of chapters){
-    if(bookCount>=300) break;
-    if(b.chapters.length===0) continue;
-    bookCount++;
-    const bid = 'zc:work-'+b.path.replace(/[^\w\u4e00-\u9fa5]/g,'_');
-    triples += `\n# 典籍: ${b.name}\n`;
-    triples += `${bid} a zc:Work ;\n`;
-    triples += `  rdfs:label "${b.name}"@zh ;\n`;
-    triples += `  zc:category "${b.cat}"@zh ;\n`;
-    triples += `  zc:charCount "${b.chars_total||0}"^^xsd:integer ;\n`;
-    triples += `  zc:chapterCount "${b.chapters.length}"^^xsd:integer .\n`;
-    for(let i=0;i<b.chapters.length;i++){
-      const ch = b.chapters[i];
-      chapCount++;
-      const cid = bid+'-ch'+i;
-      triples += `${cid} a zc:Chapter ;\n`;
-      triples += `  rdfs:label "${ch.title}"@zh ;\n`;
-      triples += `  zc:charCount "${ch.chars}"^^xsd:integer ;\n`;
-      triples += `  zc:isChapterOf ${bid} ;\n`;
-      triples += `  zc:chapterIndex "${ch.idx}"^^xsd:integer .\n`;
-    }
-    // 概念出现关系（前 10 高频）
-    const cmap = cb[b.path]||{};
-    const topC = Object.entries(cmap).sort((x,y)=>y[1]-x[1]).slice(0,10);
-    for(const [cn,cv] of topC){
-      const cid = 'zc:concept-'+cn.replace(/[^\w\u4e00-\u9fa5]/g,'_');
-      triples += `${bid} zc:mentionsConcept ${cid} ;\n`;
-      triples += `  zc:conceptFrequency [ zc:concept ${cid} ; zc:count "${cv}"^^xsd:integer ] .\n`;
-    }
+  // 渲染模块复选
+  const defaults = ['tbox','schools','works','concepts','persons','mentions']; // 核心集
+  for(const [key,info] of Object.entries(MODULES)){
+    const lab = document.createElement('label');
+    lab.innerHTML = `<input type="checkbox" value="${key}" ${defaults.includes(key)?'checked':''}> <span>${info.label}</span>`;
+    modBox.appendChild(lab);
   }
-  // 人物提及
-  for(const [pid,pname] of Object.entries(PERSON_NAME)){
-    const prsId = 'zc:person-'+pid;
-    triples += `\n# 人物: ${pname}\n`;
-    triples += `${prsId} a zc:Person ; rdfs:label "${pname}"@zh .\n`;
+  function getSelected(){
+    return [...modBox.querySelectorAll('input:checked')].map(i=>i.value);
   }
-  let pRel=0;
-  for(const [bp,pids] of Object.entries(mb)){
-    if(bookCount>=300 && !chapters.slice(0,300).some(b=>b.path===bp)) continue;
-    const bid = 'zc:work-'+bp.replace(/[^\w\u4e00-\u9fa5]/g,'_');
-    for(const pid of pids){
-      const prsId = 'zc:person-'+pid;
-      triples += `${bid} zc:mentionsPerson ${prsId} .\n`;
-      pRel++;
-    }
+  function setSelected(keys){
+    modBox.querySelectorAll('input').forEach(i=>{ i.checked = keys.includes(i.value); });
   }
-  triples += `\n# 导出统计: ${bookCount} 部典籍 / ${chapCount} 篇章 / ${pRel} 人物提及关系\n`;
-  return prefix + triples;
-}
-function buildJSONLD(){
-  const s = window.ONTOBUILD_SUMMARY;
-  const chapters = window.CHAPTERS_DATA||[];
-  const cb = window.CONCEPT_BOOK_DATA||{};
-  const mb = window.MENTION_BOOK_DATA||{};
-  const out = {
-    "@context": {
-      "zc": "https://yejinlei.github.io/Zi-Cang/ontology#",
-      "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-      "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-      "xsd": "http://www.w3.org/2001/XMLSchema#",
-      "label": "rdfs:label",
-      "category": "zc:category",
-      "charCount": "zc:charCount",
-      "chapterCount": "zc:chapterCount",
-      "isChapterOf": "zc:isChapterOf",
-      "mentionsConcept": "zc:mentionsConcept",
-      "mentionsPerson": "zc:mentionsPerson"
-    },
-    "@graph": []
-  };
-  let bookCount=0;
-  for(const b of chapters){
-    if(bookCount>=300) break;
-    if(b.chapters.length===0) continue;
-    bookCount++;
-    const bid = 'zc:work-'+b.path.replace(/[^\w\u4e00-\u9fa5]/g,'_');
-    const node = {"@id":bid,"@type":"zc:Work","label":b.name+"@zh","category":b.cat,"charCount":b.chars_total||0,"chapterCount":b.chapters.length,"chapters":[]};
-    for(let i=0;i<b.chapters.length;i++){
-      const ch=b.chapters[i];
-      node.chapters.push({"@id":bid+'-ch'+i,"@type":"zc:Chapter","label":ch.title+"@zh","charCount":ch.chars,"chapterIndex":ch.idx});
-    }
-    const cmap=cb[b.path]||{};
-    const topC=Object.entries(cmap).sort((x,y)=>y[1]-x[1]).slice(0,10);
-    node.concepts=topC.map(([n,c])=>({"@id":'zc:concept-'+n.replace(/[^\w\u4e00-\u9fa5]/g,'_'),"label":n+"@zh","count":c}));
-    node.mentionsPerson = (mb[b.path]||[]).map(pid=>({"@id":'zc:person-'+pid,"label":(PERSON_NAME[pid]||pid)+"@zh"}));
-    out["@graph"].push(node);
-  }
-  return JSON.stringify(out,null,2);
-}
-let lastRDF='';
-document.getElementById('btn-turtle').addEventListener('click',()=>{
-  lastRDF = buildTurtle();
-  document.getElementById('rdf-out').textContent = lastRDF;
-});
-document.getElementById('btn-jsonld').addEventListener('click',()=>{
-  lastRDF = buildJSONLD();
-  document.getElementById('rdf-out').textContent = lastRDF;
-});
-document.getElementById('btn-copy').addEventListener('click',()=>{
-  if(!lastRDF){ alert('請先生成 RDF'); return; }
-  navigator.clipboard.writeText(lastRDF).then(()=>{
-    const btn=document.getElementById('btn-copy');
-    const old=btn.textContent; btn.textContent='✓ 已複製';
-    setTimeout(()=>btn.textContent=old,1500);
+  document.getElementById('btn-sel-all').addEventListener('click',()=>{
+    modBox.querySelectorAll('input').forEach(i=>i.checked=true);
   });
-});
+  document.getElementById('btn-sel-none').addEventListener('click',()=>{
+    modBox.querySelectorAll('input').forEach(i=>i.checked=false);
+  });
+  document.getElementById('btn-sel-core').addEventListener('click',()=>setSelected(defaults));
+
+  // KPI 统计
+  function updateStats(){
+    const s = window.ONTOBUILD_SUMMARY||{};
+    const schs = (window.SCHOOLS_DATA||[]).length;
+    const tcnt = (window.TERMS_DATA||[]).length + (window.DAOTI_CONCEPTS||[]).length;
+    const pcnt = Object.keys(window.PEOPLE_EXT||{}).length;
+    const icnt = (window.IDIOMS_DATA||[]).length;
+    const acnt = (window.ANCHORS_DATA||[]).length;
+    const cnodes = window.CROSS_DATA?.nodes?.length||0;
+    const cedges = window.CROSS_DATA?.edges?.length||0;
+    stats.innerHTML =
+      `<span>📚 典籍 <b>${s.booksProcessed||0}</b></span>`+
+      `<span>📖 篇章 <b>${(s.totalChapters||0).toLocaleString()}</b></span>`+
+      `<span>🏫 學派 <b>${schs}</b></span>`+
+      `<span>💡 概念 <b>${tcnt}</b></span>`+
+      `<span>👤 人物 <b>${pcnt}</b></span>`+
+      `<span>💬 提及邊 <b>${(s.mentionEdges||0).toLocaleString()}</b></span>`+
+      `<span>🗞 典故 <b>${icnt}</b></span>`+
+      `<span>⚓ 錨點 <b>${acnt}</b></span>`+
+      `<span>⇌ 跨藏 <b>${cnodes} 節點 / ${cedges} 邊</b></span>`;
+  }
+  setTimeout(updateStats, 500);
+
+  function gen(fmt){
+    const mods = getSelected();
+    if(!mods.length){ msg.textContent='⚠ 請至少勾選一個模塊'; msg.style.color='#b35'; return null; }
+    msg.textContent = '⏳ 正在生成…（全量可能稍候）'; msg.style.color='var(--muted)';
+    const t0 = performance.now();
+    let content = '';
+    if(fmt==='turtle') content = EXP.buildTurtle(mods);
+    else if(fmt==='jsonld') content = EXP.buildJSONLD(mods);
+    else if(fmt==='nt'){
+      const ttl = EXP.buildTurtle(mods);
+      content = EXP.buildNTriples(ttl);
+    }
+    const t1 = performance.now();
+    const sizeKB = (new Blob([content]).size/1024).toFixed(1);
+    const triples = EXP.countStats(EXP.buildTurtle(mods));
+    lastRDF = content; lastFmt=fmt; lastMods=mods;
+    out.textContent = content;
+    msg.innerHTML = `✓ 已生成 <b>${mods.length}</b> 個模塊 · <b>${triples.toLocaleString()}</b> 條三元組 · ${sizeKB} KB · 用時 ${(t1-t0).toFixed(0)}ms`;
+    msg.style.color='#3a7';
+    return content;
+  }
+
+  function extOf(fmt){ return fmt==='turtle'?'ttl':(fmt==='jsonld'?'jsonld':'nt'); }
+  function mimeOf(fmt){ return fmt==='turtle'?'text/turtle':(fmt==='jsonld'?'application/ld+json':'application/n-triples'); }
+  function fname(fmt){
+    const mods = lastMods.join('_');
+    return `zicang-ontology-${mods}-${new Date().toISOString().slice(0,10)}.${extOf(fmt)}`;
+  }
+
+  document.getElementById('btn-turtle').addEventListener('click',()=>{ gen('turtle'); out.scrollTop=0; });
+  document.getElementById('btn-jsonld').addEventListener('click',()=>{ gen('jsonld'); out.scrollTop=0; });
+  document.getElementById('btn-nt').addEventListener('click',()=>{ gen('nt'); out.scrollTop=0; });
+  document.getElementById('btn-copy').addEventListener('click',()=>{
+    if(!lastRDF){ gen('turtle'); }
+    if(!lastRDF) return;
+    navigator.clipboard.writeText(lastRDF).then(()=>{
+      const btn=document.getElementById('btn-copy');
+      const old=btn.textContent; btn.textContent='✓ 已複製';
+      setTimeout(()=>btn.textContent=old,1500);
+    });
+  });
+  document.getElementById('btn-download-all').addEventListener('click',()=>{
+    const mods = getSelected();
+    if(!mods.length){ msg.textContent='⚠ 請至少勾選一個模塊'; return; }
+    msg.textContent='⏳ 正在打包三格式…'; msg.style.color='var(--muted)';
+    setTimeout(()=>{
+      for(const fmt of ['turtle','jsonld','nt']){
+        let content;
+        if(fmt==='turtle') content = EXP.buildTurtle(mods);
+        else if(fmt==='jsonld') content = EXP.buildJSONLD(mods);
+        else { const ttl = EXP.buildTurtle(mods); content = EXP.buildNTriples(ttl); }
+        EXP.download(`zicang-${fmt==='turtle'?'turtle':fmt==='jsonld'?'jsonld':'ntriples'}-${new Date().toISOString().slice(0,10)}.${extOf(fmt)}`, content, mimeOf(fmt));
+      }
+      msg.innerHTML='✓ 三格式已開始下載'; msg.style.color='#3a7';
+    },30);
+  });
+
+  // 默认选核心集并提示
+  msg.textContent='提示：點「📥 Turtle」生成預覽，點「💾 三格式全部下載」直接保存為文件';
+})();
 
 // ======== 链接互见（让正文里的概念/人名字可点） ========
 if(window.linkifyText){
@@ -748,13 +760,11 @@ if(window.linkifyText){
 // ======== URL 参数定位：?tab=xxx 切 tab；?hl=pid 人物定位 ========
 (function(){
   const params=new URLSearchParams(location.search);
-  // tab 切换
   const tab=params.get('tab');
   if(tab){
     const t=document.querySelector('.tab[data-pane="pane-'+tab+'"]');
     if(t)t.click();
   }
-  // 人物定位：切到人物提及 tab，搜索该人并高亮
   const hl=params.get('hl');
   if(hl){
     setTimeout(()=>{
@@ -763,12 +773,10 @@ if(window.linkifyText){
       setTimeout(()=>{
         const inp=document.getElementById('p-search');
         if(inp){
-          // 优先按 PEOPLE_EXT 找名字
           const PE=window.PEOPLE_EXT||{};
           const p=PE[hl];
           inp.value=p?p.name:hl;
           inp.dispatchEvent(new Event('input'));
-          // 找该人物卡高亮
           setTimeout(()=>{
             const cards=[...document.querySelectorAll('.pcard')];
             for(const c of cards){

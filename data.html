@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>數據下載 · 子藏本體論 Zi-Cang</title>
-<link rel="stylesheet" href="css/common.css?v=17">
+<link rel="stylesheet" href="css/common.css?v=18">
 <style>
   :root{--ink:#2c1810;--sub:#6b4423;--paper:#f5ecd7;--card:#faf4e3;--border:#d4b896;--gold:#8b2500;--accent:#a0522d}
   .data-hero{padding:48px 28px 24px;text-align:center;max-width:900px;margin:0 auto}
@@ -71,7 +71,7 @@
 </div>
 </div>
 
-<script src="js/common.js?v=17"></script>
+<script src="js/common.js?v=18"></script>
 <script>
 injectLayout('data');
 
@@ -122,6 +122,8 @@ const FILES=[
    files:[{name:'people-pairs.json',url:'data/people-pairs.js',label:'JS數據'}]},
   {ico:'🧭',title:'人物跨頁反向鏈接索引',desc:'為諸子人物譜36位人物生成的跨頁面反向鏈接索引：每位人物對應到達譜系圖/時間長卷/歷代評騭/六藏互通/引文關聯/全文本體化/典籍詳解/術語詞典的定位鏈接（含人名高亮與概念聚焦參數）。',meta:['反向鏈接','~6KB','36位人物·8視圖'],
    files:[{name:'people-links.json',url:'data/people-links.js',label:'JS數據'}]},
+  {ico:'🔗',title:'RDF 全量導出器',desc:'子藏 TBox+ABox 全量 RDF 生成器（瀏覽器端）：支持 9 大模塊可選（TBox 類與屬性/學派/典籍+篇章全量/概念/人物/人物提及關係/典故成語/引文錨點/跨藏橋接），輸出 Turtle / JSON-LD / N-Triples 三種標準格式，支持文件 Blob 下載，可直接導入 Protégé / GraphDB / Apache Jena 等語義網工具。',meta:['RDF 導出','~33KB','9模塊·3格式·全量 576部'],
+   files:[{name:'rdf-export.js',url:'data/rdf-export.js',label:'JS數據'}]},
   {ico:'⚙',title:'本體推理規則與查詢',desc:'9條TBox推理規則（師承傳遞、創始人歸屬、類傳遞等）、7個示例查詢（含SPARQL形式、推理邏輯、答案），含演示用ABox三元組。',meta:['推理','~10KB','9規則·7查詢'],
    files:[{name:'reasoning.json',url:'data/reasoning.js',label:'JS數據'}]},
   {ico:'🗂',title:'完整本體包',desc:'將以上所有文件打包為zip，含README說明與SPARQL查詢示例。',meta:['ZIP','一次性下載'],

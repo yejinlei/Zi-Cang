@@ -1,4 +1,4 @@
-const CACHE = 'zicang-v17';
+const CACHE = 'zicang-v18';
 const APP_SHELL = [
   './',
   './index.html',
@@ -52,6 +52,7 @@ const APP_SHELL = [
   './data/concept-pairs.js',
   './data/people-pairs.js',
   './data/people-links.js',
+  './data/rdf-export.js',
   './manifest.json'
 ];
 self.addEventListener('install', e => {
