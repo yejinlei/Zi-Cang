@@ -268,7 +268,7 @@ function buildHTML(book){
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>《${esc(D.title)}》深度研究 · 子藏本体论</title>
-<link rel="stylesheet" href="css/common.css?v=22">
+<link rel="stylesheet" href="css/common.css?v=23">
 <style>${STYLE}</style>
 ${D.themeCss||''}
 </head>
@@ -305,8 +305,8 @@ ${panelsHtml}
 <footer class="site-footer">
   <p>子藏 Zi-Cang Ontology · 诸子百家深度研究 · CC BY-SA 4.0</p>
 </footer>
-<script src="js/common.js?v=22"></script>
-<script src="data/${D.bookId}-data.js?v=22"></script>
+<script src="js/common.js?v=23"></script>
+<script src="data/${D.bookId}-data.js?v=23"></script>
 <script>
 function jumpTo(b,ch,s){window.open('reader.html?b='+encodeURIComponent(b)+'&ch='+ch+'&s='+s,'_blank');}
 const tabBtns=document.querySelectorAll('.tab-btn');

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>典籍閱讀 · 子藏本體論</title>
-<link rel="stylesheet" href="css/common.css?v=22">
+<link rel="stylesheet" href="css/common.css?v=23">
 <style>
   body{background:var(--paper);color:var(--ink);margin:0;font-family:'Noto Serif SC','Source Han Serif SC','SimSun',serif;line-height:1.8;overflow-x:hidden}
   .reader-wrap{max-width:860px;margin:0 auto;padding:24px 28px 120px}
@@ -65,7 +65,7 @@
 <div class="reader-wrap">
   <div class="reader-toolbar">
     <button class="tool-btn" onclick="toggleToc()">📋 目錄</button>
-    <button class="tool-btn" id="favBtn" onclick="toggleFav()">☆ 收藏</button>
+    <button class="tool-btn" id="favBtn" onclick="toggleFavBook()">☆ 收藏</button>
     <select class="tool-select" id="volSelect" style="display:none" onchange="switchVol(this.value)"></select>
     <input class="reader-search" id="bookSearch" placeholder="本書內搜索…" onkeydown="if(event.key==='Enter')inBookSearch(this.value)">
     <button class="tool-btn" id="tradBtn" onclick="toggleSimp()">繁</button>
@@ -85,7 +85,7 @@
 </div>
 <div class="toast" id="toast"></div>
 
-<script src="js/common.js?v=22"></script>
+<script src="js/common.js?v=23"></script>
 <script>
 // ========== 核心状态 ==========
 const params = new URLSearchParams(location.search);
@@ -127,13 +127,18 @@ function fmtChars(n){return n>=10000?(n/10000).toFixed(1)+'萬':n.toString();}
 
 function toast(msg){
   const t=document.getElementById('toast');
+  if(!t){ console.log('toast:',msg); return; }
   t.textContent=msg; t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),1600);
 }
 function setProgress(pct){
-  document.getElementById('loadProgress').style.width = Math.min(100,pct)+'%';
+  const el = document.getElementById('loadProgress');
+  if(el) el.style.width = Math.min(100,pct)+'%';
 }
-function setStatus(msg){document.getElementById('loadText').textContent=msg;}
+function setStatus(msg){
+  const el = document.getElementById('loadText');
+  if(el) el.textContent=msg;
+}
 
 function escapeHTML(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
@@ -150,8 +155,8 @@ function parseUrlParams(){
 async function loadPreciseData(){
   try{
     const [r1,r2] = await Promise.all([
-      fetch('data/chapters_full.js?v=22',{cache:'force-cache'}).then(r=>r.text()).catch(()=>null),
-      fetch('data/sentence_index.js?v=22',{cache:'force-cache'}).then(r=>r.text()).catch(()=>null),
+      fetch('data/chapters_full.js?v=23',{cache:'force-cache'}).then(r=>r.text()).catch(()=>null),
+      fetch('data/sentence_index.js?v=23',{cache:'force-cache'}).then(r=>r.text()).catch(()=>null),
     ]);
     if(r1){ const w={}; new Function('window',r1)(w); CHAPTERS_FULL=w.CHAPTERS_FULL; }
     if(r2){ const w={}; new Function('window',r2)(w); SENT_INDEX=w.SENT_INDEX; }
@@ -225,7 +230,7 @@ function scrollToOffset(){
 let BOOKS = [];
 async function loadBooksInfo(){
   try{
-    const r = await fetch('data/books.json?v=22',{cache:'force-cache'});
+    const r = await fetch('data/books.json?v=23',{cache:'force-cache'});
     if(!r.ok) return null;
     BOOKS = await r.json();
     return BOOKS;
@@ -238,8 +243,21 @@ function parseChapters(text){
   // 优先用精准数据
   const precise = getPreciseChapters(currentLoadPath||'');
   if(precise && precise.part && precise.part.chapters && precise.part.chapters.length>2){
-    currentPartInfo = precise;
-    return precise.part.chapters.map((c,i)=>({title:c.title, pos:c.partOffset||0, index:i}));
+    // 校验：精准数据里的章节 title 是否都能在文本中按顺序找到
+    const titles = precise.part.chapters.map(c=>c.title);
+    let searchFrom = 0;
+    let allFound = true;
+    for(const t of titles){
+      const idx = text.indexOf(t, searchFrom);
+      if(idx < 0){ allFound = false; break; }
+      searchFrom = idx + t.length;
+    }
+    if(allFound){
+      currentPartInfo = precise;
+      return precise.part.chapters.map((c,i)=>({title:c.title, pos:c.partOffset||0, index:i}));
+    }
+    // 精准数据不匹配当前文本（可能文件版本不同），回退到正则解析
+    console.warn('精準章節數據與文本不匹配，回退到正則解析:', currentLoadPath);
   }
   currentPartInfo = null;
   // 回退到正则解析
@@ -313,6 +331,7 @@ function formatText(text){
 async function renderText(text){
   const ct=document.getElementById('content');
   const loader=document.getElementById('loader');
+  try {
   setStatus('正在解析…'); setProgress(70);
   
   chapters = parseChapters(text);
@@ -363,13 +382,23 @@ async function renderText(text){
   }else{
     currentHTML = formatText(text);
     ct.innerHTML = currentHTML;
-    ct.style.display='block';
   }
   
-  setProgress(98); setStatus('完成');
+  // 【关键修复】无论哪种分支都强制显示正文、隐藏loader
+  ct.style.display='block';
   loader.style.display='none';
+  
+  setProgress(98); setStatus('完成');
   setProgress(100);
   updateProgress();
+  } catch(err) {
+    console.error('renderText error:', err);
+    // 兜底：不经过章节解析，直接按段落渲染
+    ct.innerHTML = '<h3>正文</h3>' + text.split('\n').filter(l=>l.trim()).map(l=>'<p>'+escapeHTML(l.trim())+'</p>').join('');
+    ct.style.display='block';
+    loader.style.display='none';
+    toast('渲染出現小問題，已用簡化模式顯示');
+  }
 }
 
 // ========== 下载文本（带进度、缓存、超时） ==========
@@ -384,42 +413,35 @@ async function loadText(fullPath){
   const ctrl = new AbortController();
   const timer = setTimeout(()=>ctrl.abort(),90000);
   try{
-    const r = await fetch(fullPath, {signal:ctrl.signal, cache:'force-cache'});
+    const r = await fetch(fullPath, {signal:ctrl.signal, cache:'no-cache'});
     clearTimeout(timer);
     if(!r.ok) throw new Error('HTTP '+r.status+' ('+fullPath+')');
     
-    // 流式下载进度
-    const reader = r.body.getReader();
-    const contentLength = +(r.headers.get('Content-Length')||0);
-    let received=0, chunks=[];
-    while(true){
-      const {done,value} = await reader.read();
-      if(done) break;
-      chunks.push(value);
-      received += value.length;
-      if(contentLength>0){
-        setProgress(Math.min(65, (received/contentLength)*65));
-        setStatus(`下載中… ${(received/1048576).toFixed(1)}MB`);
-      }else{
-        setStatus(`下載中… ${(received/1048576).toFixed(1)}MB`);
-      }
-    }
+    setProgress(50); setStatus('正在下載文本…');
+    // 用 text() 直接解码，避免手动拼接Uint8Array在某些缓存场景下出错
+    const text = await r.text();
     setProgress(68); setStatus('正在解碼…');
-    
-    // 拼接Uint8Array并解码
-    let all = new Uint8Array(received);
-    let pos=0;
-    for(const c of chunks){all.set(c,pos); pos+=c.length;}
-    const text = new TextDecoder('utf-8').decode(all);
     
     rawText = text.replace(/\r/g,'');
     setProgress(70);
     await renderText(rawText);
   }catch(e){
     clearTimeout(timer);
+    // 尝试回退到缓存
+    try{
+      const cached = await caches.match(fullPath);
+      if(cached){
+        const text = await cached.text();
+        rawText = text.replace(/\r/g,'');
+        await renderText(rawText);
+        toast('已使用離緩存顯示');
+        return;
+      }
+    }catch(ce){}
     if(e.name==='AbortError'){
       showError('下載超時（90秒），請檢查網絡后重試',fullPath);
     }else{
+      console.error('loadText error:',e);
       showError('文本加載失敗: '+e.message,fullPath);
     }
   }
@@ -498,13 +520,14 @@ function toggleVert(){
   if(isVertical){ct.classList.add('vertical');btn.classList.add('on');toast('已切換豎排');}
   else{ct.classList.remove('vertical');btn.classList.remove('on');toast('已切換橫排');}
 }
-function toggleFav(){
+function toggleFavBook(){
   const added = toggleFav(decodedPath,bookName);
   updateFavBtn();
   toast(added?'已加入收藏':'已取消收藏');
 }
 function updateFavBtn(){
   const btn=document.getElementById('favBtn');
+  if(!btn) return;
   if(isFav(decodedPath)){btn.classList.add('on');btn.innerHTML='★ 已收藏';}
   else{btn.classList.remove('on');btn.innerHTML='☆ 收藏';}
 }
@@ -541,6 +564,7 @@ function showError(msg,path){
 
 // ========== 初始化 ==========
 async function init(){
+  try {
   parseUrlParams();
   await loadPreciseData();
   if(!decodedPath){showError('未指定書籍路徑');return;}
@@ -560,17 +584,19 @@ async function init(){
       || BOOKS.find(b=>b.title===bookName);
     if(bookInfo){
       const chars = fmtChars(bookInfo.chars||0);
-      document.getElementById('bookMeta').textContent = `${bookInfo.catName} · ${chars}字${bookInfo.volumes>1?' · 共'+bookInfo.volumes+'卷':''}`;
+      const metaEl = document.getElementById('bookMeta');
+      if(metaEl) metaEl.textContent = `${bookInfo.catName||cat} · ${chars}字${bookInfo.volumes>1?' · 共'+bookInfo.volumes+'卷':''}`;
       if(bookInfo.volFiles && bookInfo.volFiles.length>1){
         volumes = bookInfo.volFiles.map(encodeFullPath);
-        // 定位当前卷
         const curEnc = encodeURI(decodedPath);
         curVol = bookInfo.volFiles.findIndex(v=>v===curEnc);
         if(curVol<0) curVol=0;
         const sel=document.getElementById('volSelect');
-        sel.style.display='inline-block';
-        sel.innerHTML = bookInfo.volFiles.map((v,i)=>
-          `<option value="${i}" ${i===curVol?'selected':''}>第${i+1}卷</option>`).join('');
+        if(sel){
+          sel.style.display='inline-block';
+          sel.innerHTML = bookInfo.volFiles.map((v,i)=>
+            `<option value="${i}" ${i===curVol?'selected':''}>第${i+1}卷</option>`).join('');
+        }
       }else{
         volumes = [resolvePath(decodedPath)];
       }
@@ -590,6 +616,10 @@ async function init(){
     setTimeout(scrollToOffset, 600);
   }else if(saved>0){setTimeout(()=>{window.scrollTo(0,Math.min(saved,document.documentElement.scrollHeight-100));updateProgress();},200);}
   window.addEventListener('scroll',updateProgress,{passive:true});
+  } catch(err) {
+    console.error('init error:', err);
+    showError('初始化失敗: '+err.message, decodedPath);
+  }
 }
 
 function encodeFullPath(enc){
