@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>《庄子》内七篇深度研究 · 子藏本体论</title>
-<link rel="stylesheet" href="css/common.css?v=27">
+<link rel="stylesheet" href="css/common.css?v=28">
 <style>
 .zhuang-hero{background:linear-gradient(135deg,#1a2a3f 0%,#2d4258 60%,#4a6481 100%);color:#f5efe0;padding:32px 28px;border-radius:10px;margin-bottom:22px;position:relative;overflow:hidden}
 .zhuang-hero::before{content:"莊";position:absolute;right:-20px;top:-40px;font-size:260px;color:rgba(245,239,224,.06);font-family:"KaiTi","STKaiti",serif;font-weight:900;line-height:1}
@@ -14,23 +14,23 @@
 .zhuang-hero .chip{background:rgba(245,239,224,.12);border:1px solid rgba(201,185,143,.35);padding:6px 14px;border-radius:20px;font-size:13px;color:#e8dec4}
 .zhuang-hero .chip b{color:#f2d98a;margin-right:4px}
 .zhuang-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:20px 0}
-.zhuang-kpi{background:#faf6ec;border:1px solid #e2d8bc;padding:14px 16px;border-radius:8px;text-align:center}
+.zhuang-kpi{background:var(--card);color:var(--ink-2);border:1px solid var(--border);padding:14px 16px;border-radius:8px;text-align:center}
 .zhuang-kpi .num{font-size:28px;color:#8b3a2f;font-weight:700;font-family:"KaiTi",serif}
-.zhuang-kpi .lbl{color:#6a5a3c;font-size:12px;margin-top:4px;letter-spacing:1px}
+.zhuang-kpi .lbl{color:var(--ink-3);font-size:12px;margin-top:4px;letter-spacing:1px}
 .tabs{display:flex;gap:6px;border-bottom:2px solid #c9b98f;margin:20px 0 16px;flex-wrap:wrap}
-.tab-btn{padding:10px 18px;background:#faf6ec;border:1px solid #e2d8bc;border-bottom:none;border-radius:8px 8px 0 0;cursor:pointer;font-size:14px;color:#6a5a3c;font-family:"KaiTi",serif;letter-spacing:1px;transition:all .2s}
-.tab-btn:hover{background:#f0e8cf}
+.tab-btn{padding:10px 18px;background:var(--card);color:var(--ink-2);border:1px solid var(--border);border-bottom:none;border-radius:8px 8px 0 0;cursor:pointer;font-size:14px;color:var(--ink-3);font-family:"KaiTi",serif;letter-spacing:1px;transition:all .2s}
+.tab-btn:hover{background:rgba(212,176,121,.12);color:var(--gold-bright)}
 .tab-btn.active{background:#8b3a2f;color:#f5efe0;border-color:#8b3a2f;transform:translateY(2px)}
 .tab-panel{display:none}
 .tab-panel.active{display:block}
-.pian-card{background:#fff;border:1px solid #e2d8bc;border-radius:10px;padding:18px 22px;margin-bottom:18px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.pian-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:18px 22px;margin-bottom:18px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
 .pian-card h3{margin:0 0 6px 0;font-size:22px;color:#2d4258;font-family:"KaiTi",serif;letter-spacing:3px;border-left:4px solid #8b3a2f;padding-left:12px}
 .pian-card .pian-sub{color:#8a7a5c;font-size:13px;margin-bottom:10px}
 .pian-card .pian-stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
-.pian-card .pian-stats span{background:#f0e8cf;padding:3px 10px;border-radius:12px;font-size:12px;color:#6a5a3c}
+.pian-card .pian-stats span{background:#f0e8cf;padding:3px 10px;border-radius:12px;font-size:12px;color:var(--ink-3)}
 .pian-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-top:10px}
 .pian-grid.col-1{grid-template-columns:1fr}
-.unit-block{background:#faf6ec;border-radius:8px;padding:12px 14px;border-left:3px solid #8b3a2f;cursor:pointer;transition:all .2s}
+.unit-block{background:var(--card);color:var(--ink-2);border-radius:8px;padding:12px 14px;border-left:3px solid #8b3a2f;cursor:pointer;transition:all .2s}
 .unit-block:hover{background:#f0e8cf;transform:translateX(3px);box-shadow:0 2px 6px rgba(139,58,47,.15)}
 .unit-block.fable{border-left-color:#2d7d46}
 .unit-block.claim{border-left-color:#8b3a2f}
@@ -40,7 +40,7 @@
 .unit-block .u-title{font-size:15px;font-weight:600;color:#2d4258;font-family:"KaiTi",serif;margin-bottom:4px}
 .unit-block .u-meta{font-size:11px;color:#8a7a5c;margin-bottom:6px;letter-spacing:.5px}
 .unit-block .u-desc{font-size:13px;color:#4a4a4a;line-height:1.6}
-.unit-block .u-scheme{display:inline-block;background:#efe5cf;color:#6a5a3c;padding:2px 8px;border-radius:10px;font-size:11px;margin:2px 4px 2px 0}
+.unit-block .u-scheme{display:inline-block;background:#efe5cf;color:var(--ink-3);padding:2px 8px;border-radius:10px;font-size:11px;margin:2px 4px 2px 0}
 .unit-block .u-concept{display:inline-block;background:#e7dcc0;color:#8b3a2f;padding:2px 8px;border-radius:10px;font-size:11px;margin:2px 4px 2px 0}
 .unit-block.jump{border-left-style:dashed}
 .arg-chain{background:#fff;border:1px dashed #b3a6cf;border-radius:8px;padding:14px;margin-top:8px}
@@ -49,17 +49,17 @@
 .arg-chain .premise{background:#f5ecf8;border-left:3px solid #b3a6cf;color:#4a3a60}
 .arg-chain .conclusion{background:#fdf4e3;border-left:3px solid #c9892d;color:#6a4a1a;font-weight:600;font-family:"KaiTi",serif}
 .concept-cloud{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0;justify-content:center}
-.concept-cloud .tag{padding:6px 14px;border-radius:20px;background:#faf6ec;border:1px solid #c9b98f;color:#8b3a2f;font-family:"KaiTi",serif;font-size:14px;cursor:pointer;transition:all .2s}
+.concept-cloud .tag{padding:6px 14px;border-radius:20px;background:var(--card);color:var(--ink-2);border:1px solid var(--border);color:#8b3a2f;font-family:"KaiTi",serif;font-size:14px;cursor:pointer;transition:all .2s}
 .concept-cloud .tag:hover{background:#8b3a2f;color:#f5efe0;transform:scale(1.08)}
 .concept-cloud .tag.core{background:#8b3a2f;color:#f5efe0;font-size:18px;padding:10px 20px}
 .read-link{display:inline-block;margin-top:6px;color:#4a6481;font-size:12px;text-decoration:none;border-bottom:1px dotted #4a6481}
 .read-link:hover{color:#8b3a2f;border-color:#8b3a2f}
 .intro-paragraph{font-size:14px;line-height:1.9;color:#4a4a4a;margin:14px 0;text-indent:2em}
-.section-note{background:#faf6ec;border-left:4px solid #c9b98f;padding:12px 16px;border-radius:0 6px 6px 0;font-size:13px;color:#6a5a3c;line-height:1.7;margin:12px 0}
+.section-note{background:var(--card);color:var(--ink-2);border-left:3px solid var(--gold);padding:12px 16px;border-radius:0 6px 6px 0;font-size:13px;color:var(--ink-3);line-height:1.7;margin:12px 0}
 .ontology-ref{display:inline-block;background:#eef3f7;color:#4a6481;padding:2px 8px;border-radius:4px;font-size:11px;font-family:monospace;margin-left:6px}
 #pian-timeline{position:relative;padding:20px 0;margin:20px 0}
 #pian-timeline::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:3px;background:linear-gradient(to bottom,#8b3a2f,#c9b98f,#2d7d46);transform:translateX(-50%)}
-.pian-node{position:relative;width:46%;padding:14px 18px;background:#fff;border:1px solid #e2d8bc;border-radius:8px;margin:14px 0;box-shadow:0 2px 6px rgba(0,0,0,.05)}
+.pian-node{position:relative;width:46%;padding:14px 18px;background:#fff;border:1px solid var(--border);border-radius:8px;margin:14px 0;box-shadow:0 2px 6px rgba(0,0,0,.05)}
 .pian-node:nth-child(odd){margin-right:auto;text-align:right}
 .pian-node:nth-child(even){margin-left:auto}
 .pian-node::before{content:"";position:absolute;top:20px;width:14px;height:14px;background:#8b3a2f;border:3px solid #f5efe0;border-radius:50%}
@@ -222,7 +222,7 @@
 </footer>
 </main>
 
-<script src="js/common.js?v=27"></script>
+<script src="js/common.js?v=28"></script>
 <script src="data/zhuangzi-data.js?v=27"></script>
 <script>
 (function(){

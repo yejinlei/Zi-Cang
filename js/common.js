@@ -3,36 +3,38 @@
  * 包含：主题切换/导航/页脚/繁简转换/收藏夹/阅读记忆/工具函数
  * ============================================================ */
 
-// ====== 主题切换 ======
+// ====== 主题切换（默认=星象羅盤） ======
 const THEMES = {
+  xingxiang:{ name:'星象羅盤', ink:'#e8edf5', sub:'#8a97ae', paper:'#0a1628', card:'rgba(18,34,64,.78)', border:'rgba(180,200,230,.18)', gold:'#d4b079', accent:'#d94a4a' },
   xuanzhi: { name:'宣紙古籍', ink:'#2c1810', sub:'#6b4423', paper:'#f5ecd7', card:'#faf4e3', border:'#d4b896', gold:'#8b2500', accent:'#a0522d' },
-  shuimo:  { name:'水墨山水', ink:'#1a1a1a', sub:'#4a4a4a', paper:'#e8e8e3', card:'#f4f4f0', border:'#a8a8a8', gold:'#2c3e50', accent:'#34495e' },
-  zhujian: { name:'竹簡漢簡', ink:'#1b0a00', sub:'#4a2810', paper:'#d4b98c', card:'#e3cdac', border:'#8b6f47', gold:'#5c2e0d', accent:'#8b4513' },
-  qingtong:{ name:'青銅吉金', ink:'#e8d5a0', sub:'#b8a068', paper:'#1a1f2e', card:'#262d40', border:'#5a6f8a', gold:'#c8a04e', accent:'#8a6d2c' },
-  xingxiang:{name:'星象羅盤', ink:'#d4c896', sub:'#9c8f5a', paper:'#0d0d1a', card:'#1a1a30', border:'#4a4a6a', gold:'#e8c848', accent:'#8a6abf' }
+  shuimo:  { name:'水墨山水', ink:'#22201c', sub:'#7a7468', paper:'#f5f2ea', card:'#ffffff', border:'rgba(40,40,35,.12)', gold:'#8a6d3b', accent:'#34495e' },
+  zhujian: { name:'竹簡漢簡', ink:'#f0ecd8', sub:'#9aa27c', paper:'#2a3829', card:'rgba(48,62,44,.85)', border:'rgba(200,210,170,.18)', gold:'#d9c878', accent:'#8b4513' },
+  qingtong:{ name:'青銅吉金', ink:'#e8dfc5', sub:'#8a805e', paper:'#13120e', card:'rgba(28,26,18,.82)', border:'rgba(180,150,80,.18)', gold:'#c9a15a', accent:'#b87333' }
 };
 function initTheme(){
-  const saved = localStorage.getItem('zicang-theme') || 'xuanzhi';
+  const saved = localStorage.getItem('zicang-theme') || 'xingxiang';
   applyTheme(saved);
+  document.documentElement.setAttribute('data-theme', saved);
 }
 function applyTheme(key){
   const t = THEMES[key]; if(!t) return;
   const r = document.documentElement;
-  Object.entries(t).forEach(([k,v])=>{ if(k!=='name') r.style.setProperty('--'+k,v); });
+  // 不再强制设置变量（由 CSS [data-theme] 统一管理），仅标记 data-theme 并同步按钮状态
+  r.setAttribute('data-theme', key);
   localStorage.setItem('zicang-theme', key);
   document.querySelectorAll('.theme-option').forEach(el=>{
     el.classList.toggle('active', el.dataset.theme===key);
   });
   const btn = document.getElementById('themeBtn');
   if(btn){
-    btn.innerHTML = `<span class="theme-dot" style="background:${t.accent};box-shadow:0 0 0 2px var(--paper),0 0 0 3px ${t.accent}"></span><span>${t.name}</span><span class="theme-caret">▾</span>`;
+    btn.innerHTML = `<span class="theme-dot" style="background:${t.accent};box-shadow:0 0 0 2px var(--paper),0 0 8px ${t.accent}66"></span><span>${t.name}</span><span class="theme-caret">▾</span>`;
   }
 }
 function buildThemeMenu(){
-  const saved = localStorage.getItem('zicang-theme') || 'xuanzhi';
-  const cur = THEMES[saved] || THEMES.xuanzhi;
+  const saved = localStorage.getItem('zicang-theme') || 'xingxiang';
+  const cur = THEMES[saved] || THEMES.xingxiang;
   return `<div class="theme-menu-wrap">
-    <button id="themeBtn" class="theme-btn" aria-open="false"><span class="theme-dot" style="background:${cur.accent};box-shadow:0 0 0 2px var(--paper),0 0 0 3px ${cur.accent}"></span><span>${cur.name}</span><span class="theme-caret">▾</span></button>
+    <button id="themeBtn" class="theme-btn" aria-open="false"><span class="theme-dot" style="background:${cur.accent};box-shadow:0 0 0 2px var(--paper),0 0 8px ${cur.accent}66"></span><span>${cur.name}</span><span class="theme-caret">▾</span></button>
     <div class="theme-dropdown" id="themeDropdown">
       ${Object.entries(THEMES).map(([k,v])=>`
         <div class="theme-option${k===saved?' active':''}" data-theme="${k}" onclick="applyTheme('${k}');closeThemeMenu()">

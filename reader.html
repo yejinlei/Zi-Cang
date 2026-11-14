@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>典籍閱讀 · 子藏本體論</title>
-<link rel="stylesheet" href="css/common.css?v=27">
+<link rel="stylesheet" href="css/common.css?v=28">
 <style>
   body{background:var(--paper);color:var(--ink);margin:0;font-family:'Noto Serif SC','Source Han Serif SC','SimSun',serif;line-height:1.8;overflow-x:hidden}
   .reader-wrap{max-width:860px;margin:0 auto;padding:24px 28px 120px}
@@ -22,7 +22,7 @@
   .reader-content.vertical{writing-mode:vertical-rl;max-width:none;height:calc(100vh - 130px);padding:0 20px;overflow-x:auto;overflow-y:hidden}
   .reader-content h3{font-size:1.2em;font-weight:700;text-align:center;margin:32px 0 16px;color:var(--gold);letter-spacing:.1em}
   .reader-content .juanname{text-align:center;color:var(--accent);font-size:1.05em;margin:24px 0 10px;font-weight:600}
-  .reader-content mark{background:#ffeb99;color:#8b2500;padding:1px 3px;border-radius:3px}
+  .reader-content mark{background:rgba(239,213,164,.55);color:#0a1628;padding:1px 3px;border-radius:3px}
   @keyframes targetPulse{0%{box-shadow:0 0 0 0 #ff6b35aa;}100%{box-shadow:0 0 0 12px #ff6b3500;}}
   .reader-content a.concept{color:var(--gold);border-bottom:1px dashed var(--gold);cursor:help;text-decoration:none}
   .font-small .reader-content{font-size:.95em}
@@ -33,7 +33,7 @@
   .toc-panel.open{left:0}
   .toc-panel h3{margin:0 0 12px;font-size:1.1em;color:var(--gold);padding-bottom:8px;border-bottom:1px solid var(--border)}
   .toc-item{padding:6px 10px;cursor:pointer;border-radius:6px;color:var(--ink);font-size:.94em;display:block;text-decoration:none;transition:all .15s}
-  .toc-item:hover{background:rgba(139,37,0,.08);color:var(--gold)}
+  .toc-item:hover{background:rgba(212,176,121,.12);color:var(--gold)}
   .toc-item.juan{font-weight:600;color:var(--accent);margin-top:8px}
   .toc-mask{position:fixed;inset:0;background:rgba(0,0,0,.25);z-index:39;display:none}
   .toc-mask.show{display:block}
@@ -85,7 +85,7 @@
 </div>
 <div class="toast" id="toast"></div>
 
-<script src="js/common.js?v=27"></script>
+<script src="js/common.js?v=28"></script>
 <script>
 // ========== 核心状态 ==========
 const params = new URLSearchParams(location.search);

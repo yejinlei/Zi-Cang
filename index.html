@@ -4,41 +4,46 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>子藏本体论 · Zi-Cang Ontology</title>
-<link rel="stylesheet" href="css/common.css?v=27">
+<link rel="stylesheet" href="css/common.css?v=28">
 </head>
 <body>
 <div id="siteNav"></div>
 <div class="page-wrap">
 
 <section class="hero">
-  <h1 class="hero-title">子藏本体论</h1>
+  <!-- 罗盘背景 SVG -->
+  <div class="hero-compass" id="heroCompass"></div>
+  <div class="hero-icon">☯</div>
+  <h1 class="hero-title title-zhu">子藏本体论</h1>
+  <div class="hero-subtitle-en">Zi-Cang Ontology · 九流十家 百家争鸣</div>
   <p class="hero-desc">
     先秦诸子、百家争鸣——以四轴×七层正交架构，整理子学文献。<br>
     道、法、儒、墨、兵、名、农、杂、阴阳、纵横、小说、算学，九流十家之学，尽在其中。
   </p>
+  <div class="hero-quote">
+    "天下大乱，贤圣不明，道德不一，天下多得一察焉以自好。"<br>
+    <span class="src">—— 《庄子·天下》</span>
+  </div>
   <div class="hero-actions">
     <a href="library.html" class="btn btn-primary">📜 进入全文库</a>
     <a href="ontology.html" class="btn btn-gold">⬡ 諸子本體</a>
     <a href="classics.html" class="btn btn-jade">📖 典籍詳解</a>
+    <a href="full-ontology.html" class="btn btn-ghost">🌌 三維星圖</a>
     <a href="#schools" class="btn btn-outline">九流十家</a>
-    <a href="#ontology" class="btn btn-jade">本體架構</a>
-    <a href="#thinkers" class="btn btn-indigo">諸子人物</a>
     <a href="zhuangzi.html" class="btn btn-gold">🦋 《莊子》深讀</a>
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-num">1157</div><div class="kpi-label">典籍</div><div class="kpi-sub">子部七大类</div></div>
+    <div class="kpi"><div class="kpi-num">296</div><div class="kpi-label">精編詳解</div><div class="kpi-sub">核心典籍</div></div>
+    <div class="kpi"><div class="kpi-num">83</div><div class="kpi-label">術語</div><div class="kpi-sub">本体概念</div></div>
+    <div class="kpi"><div class="kpi-num">132</div><div class="kpi-label">成語典故</div><div class="kpi-sub">义理关联</div></div>
+    <div class="kpi"><div class="kpi-num">2.06億</div><div class="kpi-label">總字數</div><div class="kpi-sub">全文文本</div></div>
+    <div class="kpi"><div class="kpi-num">32649</div><div class="kpi-label">篇章</div><div class="kpi-sub">精细切分</div></div>
+    <div class="kpi"><div class="kpi-num">80</div><div class="kpi-label">本體類</div><div class="kpi-sub">六模塊</div></div>
   </div>
 </section>
 
 <div class="main-content">
-
-<!-- KPI -->
-<div class="kpi-grid">
-  <div class="kpi-card"><div class="kpi-num">1157</div><div class="kpi-label">典籍总数</div></div>
-  <div class="kpi-card"><div class="kpi-num">296</div><div class="kpi-label">精編詳解</div></div>
-  <div class="kpi-card"><div class="kpi-num">83</div><div class="kpi-label">術語詞條</div></div>
-  <div class="kpi-card"><div class="kpi-num">132</div><div class="kpi-label">成語典故</div></div>
-  <div class="kpi-card"><div class="kpi-num">2.06億</div><div class="kpi-label">總字數</div></div>
-  <div class="kpi-card"><div class="kpi-num">1464</div><div class="kpi-label">篇章切分</div></div>
-  <div class="kpi-card"><div class="kpi-num">v2.0</div><div class="kpi-label">本體版本</div></div>
-</div>
 
 
 <!-- v20 亮点推荐 -->
@@ -1280,7 +1285,63 @@
 </div>
 
 </div>
-<script src="js/common.js?v=27"></script>
+<script src="js/common.js?v=28"></script>
+<script>
+// 罗盘 SVG（子藏版：将八卦替换为诸子九流十家）
+(function(){
+  // 二十八宿
+  var xings=['角','亢','氐','房','心','尾','箕','斗','牛','女','虚','危','室','壁',
+             '奎','娄','胃','昴','毕','觜','参','井','鬼','柳','星','张','翼','轸'];
+  var dizhi=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+  var tiangan=['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+  // 九流十家（8个方位：对应后天八卦）
+  var schools=[
+    {name:'儒',color:'rgba(217,74,74,.9)',dir:'南'},
+    {name:'道',color:'rgba(123,191,166,.9)',dir:'西南'},
+    {name:'法',color:'rgba(122,168,212,.9)',dir:'西'},
+    {name:'兵',color:'rgba(224,160,96,.9)',dir:'西北'},
+    {name:'墨',color:'rgba(40,40,40,.9)',dir:'北'},
+    {name:'名',color:'rgba(168,136,200,.9)',dir:'东北'},
+    {name:'农',color:'rgba(125,172,106,.9)',dir:'东'},
+    {name:'雜',color:'rgba(200,208,221,.9)',dir:'东南'}
+  ];
+  function polar(cx,cy,r,deg){var a=(deg-90)*Math.PI/180;return{x:cx+r*Math.cos(a),y:cy+r*Math.sin(a)};}
+  function txt(cx,cy,r,deg,text,opts){
+    opts=opts||{};var p=polar(cx,cy,r,deg);
+    return '<text x="'+p.x+'" y="'+p.y+'" fill="'+(opts.color||'#c8d3e5')+'" font-size="'+(opts.size||12)+'" font-family="STKaiti,KaiTi,serif" text-anchor="middle" dominant-baseline="middle">'+text+'</text>';
+  }
+  function ring(cx,cy,r,color,w,opacity){return'<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="'+(color||'rgba(200,215,240,.22)')+'" stroke-width="'+(w||1)+'" opacity="'+(opacity==null?1:opacity)+'"/>';}
+  function line(cx,cy,r1,r2,deg,color,w){var p1=polar(cx,cy,r1,deg),p2=polar(cx,cy,r2,deg);return'<line x1="'+p1.x+'" y1="'+p1.y+'" x2="'+p2.x+'" y2="'+p2.y+'" stroke="'+(color||'rgba(200,215,240,.22)')+'" stroke-width="'+(w||.6)+'"/>';}
+  function build(size){
+    size=size||560;var cx=size/2,cy=size/2,R=size/2-20,parts=[];
+    parts.push('<radialGradient id="zcg'+size+'"><stop offset="0%" stop-color="rgba(212,176,121,.55)"/><stop offset="40%" stop-color="rgba(100,60,90,.22)"/><stop offset="100%" stop-color="rgba(10,22,40,0)"/></radialGradient>');
+    parts.push('<circle cx="'+cx+'" cy="'+cy+'" r="'+(R*0.34)+'" fill="url(#zcg'+size+')"/>');
+    parts.push('<text x="'+cx+'" y="'+cy+'" fill="#efd5a4" font-size="'+Math.round(size*36/560)+'" font-family="Songti SC,STSong,serif" text-anchor="middle" dominant-baseline="central" font-weight="700" style="text-shadow:0 0 18px rgba(212,176,121,.5)">子</text>');
+    [R,R*0.88,R*0.78,R*0.60,R*0.45,R*0.34].forEach(function(r,i){
+      parts.push(ring(cx,cy,r,i===0?'rgba(200,215,240,.45)':(i===3?'rgba(217,74,74,.35)':'rgba(200,215,240,.18)'),i===0?1.2:(i===3?1:.7)));
+    });
+    var step28=360/28;
+    for(var i=0;i<28;i++){var deg=i*step28;parts.push(line(cx,cy,R*0.88,R,deg));parts.push(txt(cx,cy,R*0.94,deg+step28/2,xings[i],{size:Math.round(size*11/560)}));}
+    var step12=30;
+    for(var i=0;i<12;i++){var d=i*step12;parts.push(line(cx,cy,R*0.78,R*0.88,d,'rgba(239,213,164,.35)',.9));parts.push(txt(cx,cy,R*0.83,d+15,dizhi[i],{color:'#efd5a4',size:Math.round(size*13/560)}));}
+    var step10=36;
+    for(var i=0;i<10;i++){var d=i*step10;parts.push(txt(cx,cy,R*0.72,d+18,tiangan[i],{color:'rgba(239,213,164,.7)',size:Math.round(size*10/560)}));}
+    var bgDegs=[90,135,180,225,270,315,0,45];
+    for(var i=0;i<8;i++){var d=bgDegs[i];
+      parts.push(line(cx,cy,R*0.45,R*0.60,d,'rgba(217,74,74,.3)',.8));
+      var pp=polar(cx,cy,R*0.52,d);
+      parts.push('<text x="'+pp.x+'" y="'+pp.y+'" fill="'+schools[i].color+'" font-size="'+Math.round(size*22/560)+'" font-family="Songti SC,STSong,serif" text-anchor="middle" dominant-baseline="middle" font-weight="700" style="text-shadow:0 0 10px currentColor">'+schools[i].name+'</text>');
+    }
+    for(var i=0;i<32;i++){var ang=Math.random()*360,rr=R*(0.9+Math.random()*0.08),p=polar(cx,cy,rr,ang),sz=Math.random()<0.15?2:1;
+      parts.push('<circle cx="'+p.x+'" cy="'+p.y+'" r="'+sz+'" fill="rgba(255,245,210,'+(0.4+Math.random()*0.5)+')"/>');
+    }
+    return '<svg viewBox="0 0 '+size+' '+size+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;animation:compass-rot 240s linear infinite">'+parts.join('')+'</svg>'+
+      '<style>@keyframes compass-rot{to{transform:rotate(360deg);}}</style>';
+  }
+  var el=document.getElementById('heroCompass');
+  if(el){el.innerHTML=build(640);}
+})();
+</script>
 </div><!-- /page-wrap -->
 <div id="siteFooter"></div>
 </body>
