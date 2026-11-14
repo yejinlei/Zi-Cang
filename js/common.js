@@ -83,6 +83,7 @@ function buildNav(active){
       {key:'graph',     href:'graph.html',      label:'✺ 譜系圖譜'},
       {key:'citation',  href:'citation.html',   label:'⇌ 引文關聯'},
       {key:'reasoning', href:'reasoning.html',  label:'⚙ 本體推理'},
+      {key:'zhuangzi', href:'zhuangzi.html',  label:'🦋 《莊子》深讀'},
       {key:'statistics',href:'statistics.html',  label:'▤ 典籍統計'}
     ]},
     {key:'map',     href:'map.html',      icon:'🗺', label:'時空'},
@@ -189,6 +190,7 @@ function getProgress(path){
     'graph.html': 'graph',
     'citation.html': 'citation',
     'reasoning.html': 'reasoning',
+    'zhuangzi.html': 'zhuangzi',
     'statistics.html': 'statistics',
     'map.html': 'map',
     'data.html': 'data',

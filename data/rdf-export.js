@@ -1,4 +1,4 @@
-/* 子藏本体 · RDF 全量导出器 (TBox + ABox) v18
+/* 子藏本体 · RDF 全量导出器 (TBox + ABox) v20
  * 输出 Turtle / JSON-LD / N-Triples，支持模块选择与 Blob 下载。
  * 命名空间 zc: <https://yejinlei.github.io/Zi-Cang/ontology#>
  */
@@ -37,7 +37,27 @@
     // 已知前缀
     const m = p.match(/^([a-z]+):(.+)$/);
     if(m){
-      const map = {rdf:'http://www.w3.org/1999/02/22-rdf-syntax-ns#',rdfs:'http://www.w3.org/2000/01/rdf-schema#',xsd:'http://www.w3.org/2001/XMLSchema#',owl:'http://www.w3.org/2002/07/owl#',dc:'http://purl.org/dc/elements/1.1/',dcterms:'http://purl.org/dc/terms/',skos:'http://www.w3.org/2004/02/skos/core#',foaf:'http://xmlns.com/foaf/0.1/',schema:'http://schema.org/'};
+      const map = {
+        rdf:'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+        rdfs:'http://www.w3.org/2000/01/rdf-schema#',
+        xsd:'http://www.w3.org/2001/XMLSchema#',
+        owl:'http://www.w3.org/2002/07/owl#',
+        dc:'http://purl.org/dc/elements/1.1/',
+        dcterms:'http://purl.org/dc/terms/',
+        skos:'http://www.w3.org/2004/02/skos/core#',
+        foaf:'http://xmlns.com/foaf/0.1/',
+        schema:'http://schema.org/',
+        zcore:'https://yejinlei.github.io/Zi-Cang/ontology/core#',
+        zbib:'https://yejinlei.github.io/Zi-Cang/ontology/biblio#',
+        zcon:'https://yejinlei.github.io/Zi-Cang/ontology/concept#',
+        zsch:'https://yejinlei.github.io/Zi-Cang/ontology/school#',
+        zhev:'https://yejinlei.github.io/Zi-Cang/ontology/event#',
+        zexe:'https://yejinlei.github.io/Zi-Cang/ontology/exegesis#',
+        crm:'http://www.cidoc-crm.org/cidoc-crm/',
+        bf:'http://id.loc.gov/ontologies/bibframe/',
+        frbr:'http://purl.org/vocab/frbr/core#',
+        wd:'http://www.wikidata.org/entity/'
+      };
       if(map[m[1]]) return '<'+map[m[1]]+m[2]+'>';
     }
     return '<'+NS+p+'>';
@@ -52,6 +72,16 @@
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix zcore: <https://yejinlei.github.io/Zi-Cang/ontology/core#> .
+@prefix zbib: <https://yejinlei.github.io/Zi-Cang/ontology/biblio#> .
+@prefix zcon: <https://yejinlei.github.io/Zi-Cang/ontology/concept#> .
+@prefix zsch: <https://yejinlei.github.io/Zi-Cang/ontology/school#> .
+@prefix zhev: <https://yejinlei.github.io/Zi-Cang/ontology/event#> .
+@prefix zexe: <https://yejinlei.github.io/Zi-Cang/ontology/exegesis#> .
+@prefix crm: <http://www.cidoc-crm.org/cidoc-crm/> .
+@prefix bf: <http://id.loc.gov/ontologies/bibframe/> .
+@prefix frbr: <http://purl.org/vocab/frbr/core#> .
+@prefix wd: <http://www.wikidata.org/entity/> .
 
 `;
 
@@ -72,6 +102,52 @@
     if(sch.meta?.license) out += `  dc:rights ${ttlLit(sch.meta.license)} ;\n`;
     out += `  dcterms:license <https://creativecommons.org/licenses/by-sa/4.0/> .\n\n`;
 
+    // v20: 6 模块 owl:Ontology 声明 + owl:imports
+    out += '# ---- 模組化本體 (owl:Ontology imports) ----\n';
+    const MODS = sch.modules || [
+      {id:'zcore', name:'核心本體 (ZCore)', en:'ZCore', desc:'頂層類與通用屬性、外部本體對齊'},
+      {id:'zbib', name:'文獻目錄本體 (ZBib)', en:'ZBib', desc:'書目著錄、版本目錄、篇章結構，對齊 BIBFRAME/FRBR'},
+      {id:'zcon', name:'概念論證本體 (ZCon)', en:'ZCon', desc:'概念譜系、論證結構、命題/寓言/對話/譬喻，對齊 SKOS'},
+      {id:'zsch', name:'學派師承本體 (ZSch)', en:'ZSch', desc:'學派流變、師承傳授、人物世系，對齊 CBDB/FOAF'},
+      {id:'zhev', name:'歷史事件本體 (ZEv)', en:'ZEv', desc:'會聚辯難、著述年份、遊仕出處，對齊 CIDOC CRM'},
+      {id:'zexe', name:'注疏訓詁本體 (ZExe)', en:'ZExe', desc:'注/疏/集解/正義/訓詁/校勘、版本異文、引文溯源'}
+    ];
+    const MOD_NS = {zcore:'zcore',zbib:'zbib',zcon:'zcon',zsch:'zsch',zhev:'zhev',zexe:'zexe'};
+    for(const m of MODS){
+      const pfx = MOD_NS[m.id]||'zc';
+      out += `${pfx}:${m.id}-ontology a owl:Ontology ;\n`;
+      out += `  rdfs:label ${ttlLit(m.name,'zh')} ;\n`;
+      if(m.en) out += `  rdfs:label ${ttlLit(m.en,'en')} ;\n`;
+      if(m.desc) out += `  rdfs:comment ${ttlLit(m.desc,'zh')} ;\n`;
+      out += `  owl:versionInfo ${ttlLit(sch.meta?.version||'2.0')} ;\n`;
+      out += `  owl:imports zc:zicang-ontology ;\n`;
+      if(m.id==='zbib') out += `  owl:imports <http://id.loc.gov/ontologies/bibframe/> ;\n  owl:imports <http://purl.org/vocab/frbr/core#> ;\n`;
+      if(m.id==='zcon') out += `  owl:imports <http://www.w3.org/2004/02/skos/core> ;\n`;
+      if(m.id==='zsch') out += `  owl:imports <http://xmlns.com/foaf/0.1/> ;\n`;
+      if(m.id==='zhev') out += `  owl:imports <http://www.cidoc-crm.org/cidoc-crm/> ;\n`;
+      out += `  dcterms:license <https://creativecommons.org/licenses/by-sa/4.0/> .\n\n`;
+    }
+    // 外部本体对齐
+    out += '# ---- 外部本體對齊 (owl:equivalentClass/Property) ----\n';
+    const ALIGN = sch.alignments || [
+      {a:'zc:Person', b:'foaf:Person', t:'C'},
+      {a:'zc:Person', b:'crm:E21_Person', t:'C'},
+      {a:'zc:Work', b:'bf:Work', t:'C'},
+      {a:'zc:Work', b:'frbr:Work', t:'C'},
+      {a:'zc:Expression', b:'frbr:Expression', t:'C'},
+      {a:'zc:Manifestation', b:'bf:Instance', t:'C'},
+      {a:'zc:Manifestation', b:'frbr:Manifestation', t:'C'},
+      {a:'zc:Concept', b:'skos:Concept', t:'C'},
+      {a:'zc:authoredBy', b:'dc:creator', t:'P'},
+      {a:'zc:hasTitle', b:'dcterms:title', t:'P'},
+      {a:'zc:discussesConcept', b:'skos:isSubjectOf', t:'P'},
+      {a:'zc:bornIn', b:'schema:birthPlace', t:'P'}
+    ];
+    for(const a of ALIGN){
+      out += `${a.a} ${a.t==='C'?'owl:equivalentClass':'owl:equivalentProperty'} ${a.b} .\n`;
+    }
+    out += '\n';
+
     // 类
     out += '# ---- 類 (Classes) ----\n';
     for(const c of (sch.classes||[])){
@@ -81,6 +157,9 @@
       if(c.en) out += `  rdfs:label ${ttlLit(c.en,'en')} ;\n`;
       if(c.def) out += `  rdfs:comment ${ttlLit(c.def,'zh')} ;\n`;
       if(c.parent) out += `  rdfs:subClassOf ${c.parent} ;\n`;
+      if(c.parents) for(const pa of c.parents){ if(pa!==c.parent) out += `  rdfs:subClassOf ${pa} ;\n`; }
+      if(c.align) for(const ext of (Array.isArray(c.align)?c.align:[c.align])) out += `  owl:equivalentClass ${ext} ;\n`;
+      if(c.module && MOD_NS[c.module]) out += `  rdfs:isDefinedBy ${MOD_NS[c.module]}:${c.module}-ontology ;\n`;
       out += `  rdfs:isDefinedBy zc:zicang-ontology .\n`;
     }
     // 对象属性
@@ -90,6 +169,9 @@
       out += `  rdfs:label ${ttlLit(p.cn,'zh')} ;\n`;
       if(p.domain) out += `  rdfs:domain ${p.domain} ;\n`;
       if(p.range) out += `  rdfs:range ${p.range} ;\n`;
+      if(p.inverseOf) out += `  owl:inverseOf ${p.inverseOf} ;\n`;
+      if(p.subPropertyOf) out += `  rdfs:subPropertyOf ${p.subPropertyOf} ;\n`;
+      if(p.align) for(const ext of (Array.isArray(p.align)?p.align:[p.align])) out += `  owl:equivalentProperty ${ext} ;\n`;
       out += `  rdfs:isDefinedBy zc:zicang-ontology .\n`;
     }
     // 数据属性
@@ -99,8 +181,25 @@
       out += `  rdfs:label ${ttlLit(p.cn,'zh')} ;\n`;
       if(p.domain) out += `  rdfs:domain ${p.domain} ;\n`;
       if(p.range) out += `  rdfs:range ${p.range} ;\n`;
+      if(p.align) for(const ext of (Array.isArray(p.align)?p.align:[p.align])) out += `  owl:equivalentProperty ${ext} ;\n`;
       out += `  rdfs:isDefinedBy zc:zicang-ontology .\n`;
     }
+
+    // v20: 推理规则（rules）—— owl:propertyChainAxiom + rdfs:subPropertyOf
+    out += '\n# ---- 推理規則 (owl:propertyChainAxiom) ----\n';
+    const RULES = sch.rules || [];
+    for(const r of RULES){
+      const rid = 'zc:rule-'+(r.id||iri(r.cn||'rule'));
+      out += `${rid} a owl:Rule ; rdfs:label ${ttlLit(r.cn||r.id,'zh')} ;\n`;
+      if(r.desc) out += `  rdfs:comment ${ttlLit(r.desc,'zh')} ;\n`;
+      if(r.chain && r.chain.length && r.implies){
+        const chainStr = r.chain.join(' ');
+        out += `  owl:propertyChainAxiom ( ${chainStr} ) ;\n`;
+        out += `  rdfs:subPropertyOf ${r.implies} ;\n`;
+      }
+      out += `  .\n`;
+    }
+    out += '\n';
     return out;
   }
 
@@ -352,6 +451,98 @@
     return out;
   }
 
+
+  // ABox-9: 《莊子》內七篇深度語義標引 (命題/寓言/譬喻/對話/論證) v20
+  function buildZhuangziTurtle(){
+    const zd = window.ZHUANGZI_DATA||null;
+    if(!zd) return '';
+    let out = '\n# ---- 《莊子》內七篇深度語義標引 (zcon:Fable/Argument/Dialogue/Proposition/Analogy) ----\n';
+    const workId = workIri('诸子/庄子');
+    out += `# 典籍: ${workId}\n\n`;
+    function locIri(kind,ch,idx){ return 'zcon:'+kind+'-ch'+ch+'-'+idx; }
+    function chIriOf(ch){
+      // 计算章节 IRI：与 buildWorksChaptersTurtle 保持一致
+      return chapIri('诸子/庄子', ch-1);
+    }
+    // 命题
+    if(zd.propositions && zd.propositions.length){
+      out += '# 命題 (Proposition)\n';
+      zd.propositions.forEach((p,i)=>{
+        const id = locIri('proposition', p.ch, i);
+        out += `${id} a zcon:Proposition ; rdfs:label ${ttlLit(p.text||p.summary||('命題'+(i+1)),'zh')} ;\n`;
+        if(p.summary && p.summary!==p.text) out += `  rdfs:comment ${ttlLit(p.summary,'zh')} ;\n`;
+        out += `  zcon:statedIn ${workId} ;\n  dcterms:isPartOf ${chIriOf(p.ch)} ;\n`;
+        if(p.anchor) out += `  zcon:anchorText ${ttlLit(p.anchor,'zh')} ;\n`;
+        if(p.concepts) for(const c of p.concepts) out += `  zcon:dealsWithConcept ${conceptIri(c)} ;\n`;
+        out += `  .\n`;
+      });
+    }
+    // 寓言
+    if(zd.fables && zd.fables.length){
+      out += '\n# 寓言 (Fable)\n';
+      zd.fables.forEach((f,i)=>{
+        const id = locIri('fable', f.ch, i);
+        out += `${id} a zcon:Fable ; rdfs:label ${ttlLit(f.name||('寓言'+(i+1)),'zh')} ;\n`;
+        if(f.summary) out += `  rdfs:comment ${ttlLit(f.summary,'zh')} ;\n`;
+        out += `  zcon:statedIn ${workId} ;\n  dcterms:isPartOf ${chIriOf(f.ch)} ;\n`;
+        if(f.anchor) out += `  zcon:anchorText ${ttlLit(f.anchor,'zh')} ;\n`;
+        if(f.characters) for(const ch0 of f.characters) out += `  zcon:hasDramatisPersona ${ttlLit(ch0,'zh')} ;\n`;
+        if(f.moral) out += `  zcon:illustrates ${ttlLit(f.moral,'zh')} ;\n`;
+        if(typeof f.supportsProp==='number' && zd.propositions && zd.propositions[f.supportsProp]){
+          out += `  zcon:supportsProposition ${locIri('proposition', zd.propositions[f.supportsProp].ch, f.supportsProp)} ;\n`;
+        }
+        out += `  .\n`;
+      });
+    }
+    // 譬喻
+    if(zd.analogies && zd.analogies.length){
+      out += '\n# 譬喻 (Analogy)\n';
+      zd.analogies.forEach((a,i)=>{
+        const id = locIri('analogy', a.ch, i);
+        out += `${id} a zcon:Analogy ; rdfs:label ${ttlLit(a.vehicle||('譬喻'+(i+1)),'zh')} ;\n`;
+        if(a.vehicle && a.tenor) out += `  rdfs:comment ${ttlLit('以「'+a.vehicle+'」喻「'+a.tenor+'」','zh')} ;\n`;
+        if(a.vehicle) out += `  zcon:sourceDomain ${ttlLit(a.vehicle,'zh')} ;\n`;
+        if(a.tenor) out += `  zcon:targetDomain ${ttlLit(a.tenor,'zh')} ;\n`;
+        out += `  zcon:statedIn ${workId} ;\n  dcterms:isPartOf ${chIriOf(a.ch)} ;\n`;
+        if(a.anchor) out += `  zcon:anchorText ${ttlLit(a.anchor,'zh')} ;\n`;
+        out += `  .\n`;
+      });
+    }
+    // 对话
+    if(zd.dialogues && zd.dialogues.length){
+      out += '\n# 對話 (Dialogue)\n';
+      zd.dialogues.forEach((d,i)=>{
+        const id = locIri('dialogue', d.ch, i);
+        out += `${id} a zcon:Dialogue ; rdfs:label ${ttlLit((d.speakers||[]).join('與')||('對話'+(i+1)),'zh')} ;\n`;
+        if(d.topic) out += `  rdfs:comment ${ttlLit(d.topic,'zh')} ;\n`;
+        out += `  zcon:statedIn ${workId} ;\n  dcterms:isPartOf ${chIriOf(d.ch)} ;\n`;
+        if(d.anchor) out += `  zcon:anchorText ${ttlLit(d.anchor,'zh')} ;\n`;
+        if(d.speakers) for(const sp of d.speakers) out += `  zcon:hasInterlocutor ${ttlLit(sp,'zh')} ;\n`;
+        out += `  .\n`;
+      });
+    }
+    // 论证
+    if(zd.arguments && zd.arguments.length){
+      out += '\n# 論證 (Argument)\n';
+      zd.arguments.forEach((a,i)=>{
+        const id = locIri('argument', a.ch, i);
+        out += `${id} a zcon:Argument ; rdfs:label ${ttlLit((a.type||'論證')+'論證','zh')} ;\n`;
+        if(a.summary) out += `  rdfs:comment ${ttlLit(a.summary,'zh')} ;\n`;
+        if(a.type) out += `  zcon:argumentType ${ttlLit(a.type,'zh')} ;\n`;
+        out += `  zcon:statedIn ${workId} ;\n  dcterms:isPartOf ${chIriOf(a.ch)} ;\n`;
+        if(a.anchor) out += `  zcon:anchorText ${ttlLit(a.anchor,'zh')} ;\n`;
+        if(a.conclusion) out += `  zcon:conclusion ${ttlLit(a.conclusion,'zh')} ;\n`;
+        if(typeof a.supportsProp==='number' && zd.propositions && zd.propositions[a.supportsProp]){
+          out += `  zcon:supportsProposition ${locIri('proposition', zd.propositions[a.supportsProp].ch, a.supportsProp)} ;\n`;
+        }
+        out += `  .\n`;
+      });
+    }
+    const nP=(zd.propositions||[]).length, nF=(zd.fables||[]).length, nA=(zd.analogies||[]).length, nD=(zd.dialogues||[]).length, nAr=(zd.arguments||[]).length;
+    out += `\n# 統計: ${nP} 命題 / ${nF} 寓言 / ${nA} 譬喻 / ${nD} 對話 / ${nAr} 論證\n`;
+    return out;
+  }
+
   // 模块调度
   const MODULES = {
     tbox:{label:'TBox 類與屬性',fn:buildTBoxTurtle},
@@ -362,7 +553,8 @@
     mentions:{label:'人物提及關係 (mentionsPerson · 全量 6365)',fn:buildMentionsTurtle},
     idioms:{label:'典故成語 (Idiom)',fn:buildIdiomsTurtle},
     anchors:{label:'引文錨點 (Quotation)',fn:buildAnchorsTurtle},
-    cross:{label:'跨藏橋接 (六藏互通)',fn:buildCrossTurtle}
+    cross:{label:'跨藏橋接 (六藏互通)',fn:buildCrossTurtle},
+    zhuangzi:{label:'《莊子》內七篇深度語義標引 (命題/論證/寓言/譬喻/對話)',fn:buildZhuangziTurtle}
   };
 
   function buildTurtle(modules, opts){
@@ -532,6 +724,8 @@
     const out = {
       "@context":{
         "zc":NS,"rdf":"http://www.w3.org/1999/02/22-rdf-syntax-ns#","rdfs":"http://www.w3.org/2000/01/rdf-schema#","xsd":"http://www.w3.org/2001/XMLSchema#","owl":"http://www.w3.org/2002/07/owl#","dc":"http://purl.org/dc/elements/1.1/","dcterms":"http://purl.org/dc/terms/","skos":"http://www.w3.org/2004/02/skos/core#","foaf":"http://xmlns.com/foaf/0.1/",
+        "zcore":"https://yejinlei.github.io/Zi-Cang/ontology/core#","zbib":"https://yejinlei.github.io/Zi-Cang/ontology/biblio#","zcon":"https://yejinlei.github.io/Zi-Cang/ontology/concept#","zsch":"https://yejinlei.github.io/Zi-Cang/ontology/school#","zhev":"https://yejinlei.github.io/Zi-Cang/ontology/event#","zexe":"https://yejinlei.github.io/Zi-Cang/ontology/exegesis#",
+        "crm":"http://www.cidoc-crm.org/cidoc-crm/","bf":"http://id.loc.gov/ontologies/bibframe/","frbr":"http://purl.org/vocab/frbr/core#","wd":"http://www.wikidata.org/entity/",
         "label":"rdfs:label","comment":"rdfs:comment"
       },
       "@graph": graph

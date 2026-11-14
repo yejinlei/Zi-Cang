@@ -1,1 +1,1 @@
-window.ONTOBUILD_SUMMARY = {"generatedAt":"2026-11-13T00:26:24.617Z","booksProcessed":576,"totalChapters":4635,"totalChars":94067121,"conceptsTotal":64,"personsTotal":36,"personAliases":82,"anchorsTotal":39,"mentionEdges":6365};
+window.ONTO_SUMMARY = {"totalBooks":1463,"coreBooks":228,"totalChapters":27234,"coreSentences":386061,"conceptHits":22762,"personHits":22406,"anchoredAnchors":0,"totalAnchors":39,"dataFiles":{"chapters_full":3104720,"sentence_index":6445279,"concept_full":4548691,"mention_full":4804391,"anchors_precise":6636}};

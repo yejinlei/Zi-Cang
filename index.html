@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>子藏本体论 · Zi-Cang Ontology</title>
-<link rel="stylesheet" href="css/common.css?v=18">
+<link rel="stylesheet" href="css/common.css?v=20">
 </head>
 <body>
 <div id="siteNav"></div>
@@ -23,6 +23,7 @@
     <a href="#schools" class="btn btn-outline">九流十家</a>
     <a href="#ontology" class="btn btn-jade">本體架構</a>
     <a href="#thinkers" class="btn btn-indigo">諸子人物</a>
+    <a href="zhuangzi.html" class="btn btn-gold">🦋 《莊子》深讀</a>
   </div>
 </section>
 
@@ -35,9 +36,29 @@
   <div class="kpi-card"><div class="kpi-num">83</div><div class="kpi-label">術語詞條</div></div>
   <div class="kpi-card"><div class="kpi-num">132</div><div class="kpi-label">成語典故</div></div>
   <div class="kpi-card"><div class="kpi-num">2.06億</div><div class="kpi-label">總字數</div></div>
-  <div class="kpi-card"><div class="kpi-num">7</div><div class="kpi-label">子部分類</div></div>
+  <div class="kpi-card"><div class="kpi-num">1464</div><div class="kpi-label">篇章切分</div></div>
+  <div class="kpi-card"><div class="kpi-num">v2.0</div><div class="kpi-label">本體版本</div></div>
 </div>
 
+
+<!-- v20 亮点推荐 -->
+<div class="section" style="margin-top:1.6rem;">
+  <h2 class="section-title">✨ v2.0 亮點</h2>
+  <div class="grid grid-3" style="gap:1rem;">
+    <a href="spec.html" class="link-block" style="padding:1rem 1.2rem;">
+      <h3 style="margin:0 0 .4rem 0;font-size:1.1rem;color:var(--ink);">📐 模組化本體 v2.0</h3>
+      <p style="margin:0;color:var(--sub);font-size:.9rem;">80 類 / 135 屬性 / 21 推理規則，分為 ZCore / ZBib / ZCon / ZSch / ZEv / ZExe 六模塊，對齊 CIDOC CRM · BIBFRAME · FRBR · SKOS · FOAF。</p>
+    </a>
+    <a href="zhuangzi.html" class="link-block" style="padding:1rem 1.2rem;border-color:var(--gold);">
+      <h3 style="margin:0 0 .4rem 0;font-size:1.1rem;color:var(--gold);">🦋 《莊子》內七篇深讀</h3>
+      <p style="margin:0;color:var(--sub);font-size:.9rem;">命題 / 寓言 / 譬喻 / 對話 / 論證 五級語義標引——43 寓言、25 對話、36 命題、22 譬喻、11 論證，句級錨點全量匹配。</p>
+    </a>
+    <a href="data.html" class="link-block" style="padding:1rem 1.2rem;">
+      <h3 style="margin:0 0 .4rem 0;font-size:1.1rem;color:var(--ink);">💾 RDF / OWL 全量導出</h3>
+      <p style="margin:0;color:var(--sub);font-size:.9rem;">TBox + ABox 一次導出 Turtle / JSON-LD / N-Triples，含六模塊 owl:imports、外部本體對齊與推理規則鏈。</p>
+    </a>
+  </div>
+</div>
 
 <!-- 子部七大类 -->
 <div class="section">
@@ -1201,7 +1222,7 @@
   <div class="link-block-icon">🔬</div>
   <div>
     <h4>全文本體化</h4>
-    <p>576 部典籍自動切分出 4635 個篇章，標註 64 個核心概念、37 位人物、39 條引文錨點；模塊化全量 RDF 導出（Turtle/JSON-LD/N-Triples 三格式，支持文件下載），可直接導入 Protégé、GraphDB、Apache Jena 等語義網工具。</p>
+    <p>全庫 1463 部典籍自動切分為 27,234 個篇章（核心 228 部保留句級偏移，共 38.6 萬句），標註 64 個核心概念 22,762 次命中、36 位人物 22,406 次提及、39 條引文錨點中 27 條精確到篇章+字符位置；閱讀器支持 ?ch=章節&kw=關鍵詞 句級跳轉高亮；模塊化全量 RDF 導出（Turtle/JSON-LD/N-Triples 三格式文件下載），可直接導入 Protégé、GraphDB、Apache Jena 等語義網工具。</p>
   </div>
 </a>
 </div>
@@ -1221,7 +1242,7 @@
 </div>
 
 </div>
-<script src="js/common.js?v=18"></script>
+<script src="js/common.js?v=20"></script>
 </div><!-- /page-wrap -->
 <div id="siteFooter"></div>
 </body>

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>典籍閱讀 · 子藏本體論</title>
-<link rel="stylesheet" href="css/common.css?v=18">
+<link rel="stylesheet" href="css/common.css?v=20">
 <style>
   body{background:var(--paper);color:var(--ink);margin:0;font-family:'Noto Serif SC','Source Han Serif SC','SimSun',serif;line-height:1.8;overflow-x:hidden}
   .reader-wrap{max-width:860px;margin:0 auto;padding:24px 28px 120px}
@@ -23,6 +23,7 @@
   .reader-content h3{font-size:1.2em;font-weight:700;text-align:center;margin:32px 0 16px;color:var(--gold);letter-spacing:.1em}
   .reader-content .juanname{text-align:center;color:var(--accent);font-size:1.05em;margin:24px 0 10px;font-weight:600}
   .reader-content mark{background:#ffeb99;color:#8b2500;padding:1px 3px;border-radius:3px}
+  @keyframes targetPulse{0%{box-shadow:0 0 0 0 #ff6b35aa;}100%{box-shadow:0 0 0 12px #ff6b3500;}}
   .reader-content a.concept{color:var(--gold);border-bottom:1px dashed var(--gold);cursor:help;text-decoration:none}
   .font-small .reader-content{font-size:.95em}
   .font-normal .reader-content{font-size:1.08em}
@@ -84,7 +85,7 @@
 </div>
 <div class="toast" id="toast"></div>
 
-<script src="js/common.js?v=18"></script>
+<script src="js/common.js?v=20"></script>
 <script>
 // ========== 核心状态 ==========
 const params = new URLSearchParams(location.search);
@@ -99,6 +100,7 @@ function resolvePath(p){
 }
 let rawText = '', bookName = '', chapters = [], curVol = 0, volumes = [];
 let isSimplified = false, isVertical = false, currentFontSize = 0, currentHTML = '';
+let currentLoadPath = "";
 
 // ========== 概念高亮：预编译为单个正则（O(n) 而非 O(n×36)） ==========
 const CONCEPTS = ['道','无为','自然','仁','义','礼','智','信','兼爱','非攻','尚贤','法','术','势','刑名','奇正','虚实','庙算','白马非马','坚白','齐物','逍遥','性善','性恶','四端','浩然之气','仁政','王霸','义利','天人合一','知行合一','中庸','格物','致知','名实','正名'];
@@ -122,19 +124,112 @@ function setStatus(msg){document.getElementById('loadText').textContent=msg;}
 
 function escapeHTML(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
+
+// ========== 加載精準篇章與句級索引 ==========
+let CHAPTERS_FULL = null, SENT_INDEX = null;
+let targetChapter = null, targetOffset = null, targetKeyword = null;
+function parseUrlParams(){
+  const sp = new URLSearchParams(location.search);
+  targetChapter = sp.get('ch') ? parseInt(sp.get('ch')) : null;
+  targetOffset = sp.get('s') ? parseInt(sp.get('s')) : null;
+  targetKeyword = sp.get('kw') ? decodeURIComponent(sp.get('kw')) : null;
+}
+async function loadPreciseData(){
+  try{
+    const [r1,r2] = await Promise.all([
+      fetch('data/chapters_full.js?v=20',{cache:'force-cache'}).then(r=>r.text()).catch(()=>null),
+      fetch('data/sentence_index.js?v=20',{cache:'force-cache'}).then(r=>r.text()).catch(()=>null),
+    ]);
+    if(r1){ const w={}; new Function('window',r1)(w); CHAPTERS_FULL=w.CHAPTERS_FULL; }
+    if(r2){ const w={}; new Function('window',r2)(w); SENT_INDEX=w.SENT_INDEX; }
+  }catch(e){ console.warn('精准索引加载失败',e); }
+}
+function getPreciseChapters(partPath){
+  if(!CHAPTERS_FULL) return null;
+  // books.js path 是相对 texts/ 的路径，partPath 是完整URL
+  const rel = partPath.replace(/.*texts//,'').replace(/^texts//,'');
+  for(const b of CHAPTERS_FULL){
+    for(const pt of b.parts){
+      if(pt.path === rel || partPath.endsWith(pt.path)){
+        return {book:b, part:pt};
+      }
+    }
+  }
+  return null;
+}
+function highlightKeyword(){
+  if(!targetKeyword) return;
+  const ct=document.getElementById('content');
+  // 在DOM中查找关键词
+  const walker = document.createTreeWalker(ct, NodeFilter.SHOW_TEXT, null, false);
+  let node;
+  while((node = walker.nextNode())){
+    const idx = node.textContent.indexOf(targetKeyword);
+    if(idx>=0){
+      const range = document.createRange();
+      range.setStart(node, idx);
+      range.setEnd(node, idx+targetKeyword.length);
+      const mark = document.createElement('mark');
+      mark.className = 'target-hit';
+      mark.style.cssText='background:#ff6b35;color:#fff;padding:2px 4px;border-radius:3px;box-shadow:0 0 0 2px #ff6b3544;animation:targetPulse 1.5s ease-out 2;';
+      range.surroundContents(mark);
+      setTimeout(()=>mark.scrollIntoView({behavior:'smooth',block:'center'}), 300);
+      return;
+    }
+  }
+}
+function scrollToOffset(){
+  if(targetChapter!==null){
+    // 按章节跳转
+    const el = document.getElementById('ch_'+targetChapter);
+    if(el){ setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'start'}), 400); }
+    else{
+      // 用parseChapters的结果
+      const ch = chapters[targetChapter];
+      if(ch){
+        // 遍历p标签定位到大约位置
+        setTimeout(()=>{
+          const ps = document.querySelectorAll('#content p,#content h3,#content .juanname');
+          // 粗略估算
+          window.scrollTo(0, document.documentElement.scrollHeight * (targetChapter/Math.max(chapters.length-1,1)));
+        },400);
+      }
+    }
+  }
+  if(targetOffset!==null){
+    // 按字符偏移粗略定位（用全文估算）
+    setTimeout(()=>{
+      const ct=document.getElementById('content');
+      const total = ct.textContent.length;
+      const ratio = Math.min(1, targetOffset/Math.max(total,1));
+      window.scrollTo(0, (document.documentElement.scrollHeight - window.innerHeight) * ratio);
+    },500);
+  }
+  highlightKeyword();
+}
+
 // ========== 加载 books.json ==========
 let BOOKS = [];
 async function loadBooksInfo(){
   try{
-    const r = await fetch('data/books.json?v=18',{cache:'force-cache'});
+    const r = await fetch('data/books.json?v=20',{cache:'force-cache'});
     if(!r.ok) return null;
     BOOKS = await r.json();
     return BOOKS;
   }catch(e){return null;}
 }
 
-// ========== 解析章节（一次遍历，O(n)） ==========
+// ========== 解析章节：优先使用精准数据 ==========
+let currentPartInfo = null;
 function parseChapters(text){
+  // 优先用精准数据
+  const precise = getPreciseChapters(currentLoadPath||'');
+  if(precise && precise.part && precise.part.chapters && precise.part.chapters.length>2){
+    currentPartInfo = precise;
+    return precise.part.chapters.map((c,i)=>({title:c.title, pos:c.partOffset||0, index:i}));
+  }
+  currentPartInfo = null;
+  // 回退到正则解析
   const chs=[];
   const lines=text.split('\n');
   let pos=0, idx=0;
@@ -265,6 +360,7 @@ async function renderText(text){
 
 // ========== 下载文本（带进度、缓存、超时） ==========
 async function loadText(fullPath){
+  currentLoadPath = fullPath;
   const loader=document.getElementById('loader');
   const ct=document.getElementById('content');
   loader.style.display='block';
@@ -431,6 +527,8 @@ function showError(msg,path){
 
 // ========== 初始化 ==========
 async function init(){
+  parseUrlParams();
+  await loadPreciseData();
   if(!decodedPath){showError('未指定書籍路徑');return;}
   
   bookName = decodedPath.split('/').pop().replace(/\.txt$/,'').replace(/_卷\d+$/,'');
@@ -474,7 +572,9 @@ async function init(){
   const loadPath = volumes[curVol]||volumes[0];
   await loadText(loadPath);
   updateFavBtn();
-  if(saved>0){setTimeout(()=>{window.scrollTo(0,Math.min(saved,document.documentElement.scrollHeight-100));updateProgress();},200);}
+  if(targetChapter!==null || targetOffset!==null || targetKeyword){
+    setTimeout(scrollToOffset, 600);
+  }else if(saved>0){setTimeout(()=>{window.scrollTo(0,Math.min(saved,document.documentElement.scrollHeight-100));updateProgress();},200);}
   window.addEventListener('scroll',updateProgress,{passive:true});
 }
 

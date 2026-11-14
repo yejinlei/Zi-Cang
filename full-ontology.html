@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>全文本體化 · 子藏</title>
-<link rel="stylesheet" href="css/common.css?v=18">
+<link rel="stylesheet" href="css/common.css?v=20">
 <style>
 .kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:20px 0}
 .kpi{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center}
@@ -205,22 +205,178 @@ pre.rdf-out{background:#f5f0e1;border:1px solid var(--border);border-radius:8px;
 
 </div>
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
-<script src="data/chapters.js?v=18"></script>
-<script src="data/concept_book.js?v=18"></script>
-<script src="data/mention_book.js?v=18"></script>
-<script src="data/anchors.js?v=18"></script>
-<script src="data/ontobuild_summary.js?v=18"></script>
-<script src="data/people_ext.js?v=18"></script>
-<script src="data/books.js?v=18"></script>
-<script src="data/classics.js?v=18"></script>
-<script src="data/schools.js?v=18"></script>
-<script src="data/terms.js?v=18"></script>
-<script src="data/daoti.js?v=18"></script>
-<script src="data/idioms.js?v=18"></script>
-<script src="data/cross.js?v=18"></script>
-<script src="data/rdf-export.js?v=18"></script>
-<script src="js/linkify.js?v=18"></script>
-<script src="js/common.js?v=18"></script>
+
+// ========== v19 全量数据适配：reader跳转 + 全量KPI计算 ==========
+function readerLink(partPath, chIdx, keyword){
+  // 构造reader链接：从CHAPTERS_FULL找到bookPath
+  let bookPath = '';
+  if(window.CHAPTERS_FULL){
+    for(const b of window.CHAPTERS_FULL){
+      for(const pt of b.parts){
+        if(pt.path === partPath){ bookPath = b.path; break; }
+      }
+      if(bookPath) break;
+    }
+  }
+  let url = 'reader.html?b=' + encodeURIComponent(partPath);
+  if(chIdx != null) url += '&ch=' + chIdx;
+  if(keyword) url += '&kw=' + encodeURIComponent(keyword);
+  return url;
+}
+
+function flatChapters(book){
+  const out = [];
+  if(!book.parts) return out;
+  for(const pt of book.parts){
+    for(const ch of pt.chapters){
+      out.push({...ch, partPath: pt.path});
+    }
+  }
+  return out;
+}
+
+// ========== 数据适配层：把v19新数据结构映射为旧代码期望的格式 ==========
+window._adapterReady = false;
+function buildAdapters(){
+  if(window._adapterReady) return;
+  window._adapterReady = true;
+  
+  // 1. CHAPTERS_FULL 格式适配：把多parts展平，并给每部书加 .chapters 数组（合并所有parts的章节）
+  if(window.CHAPTERS_FULL){
+    window.CHAPTERS_FULL.forEach(b=>{
+      b.chapters = [];
+      b._parts = b.parts;
+      for(const pt of b.parts){
+        for(const ch of pt.chapters){
+          b.chapters.push({
+            idx: ch.idx, title: ch.title,
+            chars: ch.chars, startLine: ch.startLine,
+            topConcepts: [], mentions: [],
+            partPath: pt.path, partOffset: ch.partOffset,
+          });
+        }
+      }
+    });
+  }
+  
+  // 2. CONCEPT_FULL -> CONCEPT_BOOK_DATA  {bookPath: {concept: count}}
+  window.CONCEPT_BOOK_DATA = {};
+  if(window.CONCEPT_FULL){
+    for(const [bp, cmap] of Object.entries(window.CONCEPT_FULL)){
+      const out = {};
+      for(const [cn, hits] of Object.entries(cmap)){
+        out[cn] = hits.length;
+      }
+      window.CONCEPT_BOOK_DATA[bp] = out;
+    }
+  }
+  
+  // 3. MENTION_FULL -> MENTION_BOOK_DATA  {bookPath: [personId,...]} (去重)
+  window.MENTION_BOOK_DATA = {};
+  if(window.MENTION_FULL){
+    for(const [bp, pmap] of Object.entries(window.MENTION_FULL)){
+      const set = new Set();
+      for(const [pid, hits] of Object.entries(pmap)){
+        hits.forEach(()=>set.add(pid));
+      }
+      window.MENTION_BOOK_DATA[bp] = [...set];
+    }
+  }
+  
+  // 4. ANCHORS_PRECISE 加 .key / 跳转链接
+  if(window.ANCHORS_PRECISE){
+    window.ANCHORS_PRECISE.forEach(a=>{
+      if(a.precise){
+        a.chapterTitle = a.precise.chapterTitle;
+        a.key = (a.source||'').replace(/^《[^》]+》/,'').slice(0,10);
+      }
+    });
+  }
+  
+  // 4.5 CLASSIC_BY_PATH 补全
+  if(window.CLASSICS_DATA){
+    window.CLASSICS_DATA.forEach(c=>{ if(c.path) CLASSIC_BY_PATH[c.path]=c; });
+  }
+  // 5. 辅助：人名映射
+  window.PERSON_NAME = {};
+  if(window.PEOPLE_EXT){
+    for(const [id, p] of Object.entries(window.PEOPLE_EXT)){
+      window.PERSON_NAME[id] = p.name || id;
+    }
+  }
+}
+// 等所有脚本加载完成后构建适配
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded', buildAdapters);
+}else{
+  buildAdapters();
+}
+function bookReaderLink(bookPath, chIdx, keyword){
+  let url = 'reader.html?b='+encodeURIComponent(bookPath);
+  if(chIdx!=null) url += '&ch='+chIdx;
+  if(keyword) url += '&kw='+encodeURIComponent(keyword);
+  return url;
+}
+function bookNameByPath(p){
+  if(window.CLASSIC_BY_PATH && window.CLASSIC_BY_PATH[p]) return window.CLASSIC_BY_PATH[p].name;
+  if(window.CHAPTERS_FULL){
+    const b = window.CHAPTERS_FULL.find(x=>x.path===p);
+    if(b) return b.name;
+  }
+  return p.split('/').pop().replace(/.txt$/,'');
+}
+
+function calcV19Stats(){
+  if(!window.CHAPTERS_FULL) return null;
+  let totalBooks=0, totalCh=0, coreBooks=0, coreSents=0, conceptHits=0, personHits=0, anchors=0;
+  for(const b of window.CHAPTERS_FULL){
+    totalBooks++;
+    let chCount=0;
+    for(const pt of b.parts) chCount += pt.chapters.length;
+    totalCh += chCount;
+  }
+  if(window.SENT_INDEX){
+    for(const bp in window.SENT_INDEX){
+      const book = window.SENT_INDEX[bp];
+      if(book.core){
+        coreBooks++;
+        for(const pt of book.p) for(const ch of pt.chs) coreSents += ch.sc;
+      }
+    }
+  }
+  if(window.CONCEPT_FULL){
+    for(const bp in window.CONCEPT_FULL){
+      for(const cn in window.CONCEPT_FULL[bp]) conceptHits += window.CONCEPT_FULL[bp][cn].length;
+    }
+  }
+  if(window.MENTION_FULL){
+    for(const bp in window.MENTION_FULL){
+      for(const pid in window.MENTION_FULL[bp]) personHits += window.MENTION_FULL[bp][pid].length;
+    }
+  }
+  if(window.ANCHORS_PRECISE){
+    anchors = window.ANCHORS_PRECISE.filter(a=>a.precise).length;
+  }
+  return {totalBooks, totalCh, coreBooks, coreSents, conceptHits, personHits, anchors,
+    totalAnchors: window.ANCHORS_PRECISE?window.ANCHORS_PRECISE.length:0};
+}
+<script src="data/chapters_full.js?v=20"></script>
+<script src="data/concept_full.js?v=20"></script>
+<script src="data/mention_full.js?v=20"></script>
+<script src="data/anchors_precise.js?v=20"></script>
+<script src="data/sentence_index.js?v=20"></script>
+<script src="data/ontobuild_summary.js?v=20"></script>
+<script src="data/people_ext.js?v=20"></script>
+<script src="data/books.js?v=20"></script>
+<script src="data/classics.js?v=20"></script>
+<script src="data/schools.js?v=20"></script>
+<script src="data/terms.js?v=20"></script>
+<script src="data/daoti.js?v=20"></script>
+<script src="data/idioms.js?v=20"></script>
+<script src="data/cross.js?v=20"></script>
+<script src="data/rdf-export.js?v=20"></script>
+<script src="js/linkify.js?v=20"></script>
+<script src="js/common.js?v=20"></script>
 <script>
 // ======== 初始化 KPI ========
 (function(){
@@ -247,34 +403,12 @@ document.querySelectorAll('.tab').forEach(t=>{
   });
 });
 
-// ======== 书名→path、personId→name 映射 ========
-const PERSON_NAME = {
-  kongzi:'孔子',zengzi:'曾子',zisi:'子思',mengzi:'孟子',xunzi:'荀子',laozi:'老子',
-  zhuangzi:'庄子',liezi:'列子',wenzi:'文子',guanyin:'关尹子',hanfeizi:'韩非子',
-  shangjun:'商子',shenzi:'申子',shenzi2:'慎子','li kui':'李悝',guanzi:'管子',wuqi:'吴子',
-  mozi:'墨子',sunzi:'孙子',sunbin:'孙膑',huishi:'惠子','gongsunlong':'公孙龙子',
-  zouyan:'邹子',guiguzi:'鬼谷子',suqin:'苏秦',zhangyi:'张仪',lvbuwei:'吕不韦',
-  heguanzi:'鹖冠子',shizi:'尸子',yinwenzi:'尹文子',dengxizi:'邓析子',xuxing:'许行',
-  dongzhongshu:'董仲舒',liuan:'刘安',simaqian:'司马迁',wangchong:'王充',yanzhitui:'颜之推'
-};
+// ======== 书名/人物映射（由适配层提供）========
 const CLASSIC_BY_PATH = {};
 if(window.CLASSICS_DATA){
   window.CLASSICS_DATA.forEach(c=>{ if(c.path) CLASSIC_BY_PATH[c.path]=c; });
 }
-function bookNameByPath(p){
-  const c = CLASSIC_BY_PATH[p];
-  if(c) return c.name;
-  // 从 ALL_BOOKS 查
-  if(window.ALL_BOOKS){
-    const b = window.ALL_BOOKS.find(x=>x.path===p);
-    if(b) return b.name;
-  }
-  return p;
-}
-function bookReaderLink(p){
-  const c = CLASSIC_BY_PATH[p];
-  return c && c.path ? 'reader.html?b='+encodeURIComponent(c.path) : 'library.html';
-}
+// bookNameByPath / bookReaderLink / PERSON_NAME 已在 v19 适配层定义
 
 // ======== 篇章树 ========
 let currentCat = 'all';
@@ -282,7 +416,7 @@ let currentBook = null;
 function renderBookList(){
   const q = (document.getElementById('bk-search').value||'').trim();
   const list = document.getElementById('book-list');
-  const chapters = window.CHAPTERS_DATA || [];
+  const chapters = window.CHAPTERS_FULL || [];
   let arr = chapters.filter(b=>b.chapters.length>0);
   if(currentCat!=='all') arr = arr.filter(b=>b.cat===currentCat);
   if(q) arr = arr.filter(b=>b.name.includes(q));
@@ -302,7 +436,7 @@ function renderBookList(){
 }
 function renderChapters(bp){
   const panel = document.getElementById('chapter-panel');
-  const book = (window.CHAPTERS_DATA||[]).find(b=>b.path===bp);
+  const book = (window.CHAPTERS_FULL||[]).find(b=>b.path===bp);
   if(!book){ panel.innerHTML='<div class="empty">未找到</div>'; return; }
   const cc = CLASSIC_BY_PATH[bp];
   const summary = (window.CONCEPT_BOOK_DATA||{})[bp]||{};
@@ -314,14 +448,15 @@ function renderChapters(bp){
       topConcepts.map(([n,c])=>`<span class="chip">${n} <b style="color:var(--gold)">${c}</b></span>`).join('')+'</div>':''}
     <div style="margin-bottom:8px"><a href="reader.html?b=${encodeURIComponent(bp)}" style="color:var(--gold);text-decoration:none;font-size:.88em" target="_blank">📖 打開閱讀器 →</a></div>
     <div class="ch-list">${book.chapters.map((ch,i)=>`
+      <a href="${bookReaderLink(ch.partPath||bp, ch.idx, ch.title)}" target="_blank" style="text-decoration:none;color:inherit;display:block">
       <div class="ch" data-idx="${i}">
         <div class="ct">${ch.title}</div>
         <div class="cc">${(ch.chars/1000).toFixed(1)}k${ch.topConcepts.length?' · ':''}${ch.topConcepts.slice(0,3).map(x=>`<span class="chip">${x.n}</span>`).join('')}</div>
-      </div>`).join('')}</div>`;
+      </div></a>`).join('')}</div>`;
 }
 // 分类 chip
 (function buildCats(){
-  const chapters = window.CHAPTERS_DATA||[];
+  const chapters = window.CHAPTERS_FULL||[];
   const cats = {};
   chapters.forEach(b=>{
     if(b.chapters.length===0) return;
@@ -407,7 +542,7 @@ function buildPersons(){
       return `<div class="pcard">
         <div class="pn">${n}</div>
         <div class="pc">提及於 <b style="color:var(--gold)">${books.length}</b> 部典籍</div>
-        <div class="blist">${books.slice(0,20).map(p=>`<a href="classics.html#${encodeURIComponent(p)}" title="${bookNameByPath(p)}">${bookNameByPath(p)}</a>`).join('')}${books.length>20?`<span style="font-size:.78em;color:var(--muted)">等 ${books.length} 部</span>`:''}</div>
+        <div class="blist">${books.slice(0,20).map(p=>`<a href="${bookReaderLink(p)}" target="_blank" title="${bookNameByPath(p)}">${bookNameByPath(p)}</a>`).join('')}${books.length>20?`<span style="font-size:.78em;color:var(--muted)">等 ${books.length} 部</span>`:''}</div>
       </div>`;
     }).join('') || '<div class="empty">未找到人物</div>';
   }
@@ -420,7 +555,7 @@ window._anchorBuilt = false;
 let anchorFilter = 'all';
 function buildAnchors(){
   window._anchorBuilt = true;
-  const ancs = window.ANCHORS_DATA||[];
+  const ancs = window.ANCHORS_PRECISE||[];
   function render(){
     let arr = ancs;
     if(anchorFilter!=='all') arr = arr.filter(a=>a.type===anchorFilter);
@@ -431,7 +566,7 @@ function buildAnchors(){
       arr.map(a=>{
         const bn = a.bookPath?bookNameByPath(a.bookPath):'(未在子藏文本庫)';
         const chT = a.chapterTitle?` · ${a.chapterTitle}`:'';
-        const link = a.bookPath?`<a href="${bookReaderLink(a.bookPath)}" target="_blank" style="color:var(--gold)">打開原典 →</a>`:'<span style="color:var(--muted)">—</span>';
+        const link = a.precise?`<a href="${bookReaderLink(a.precise.part, a.precise.chapterIdx, a.precise.keyword)}" target="_blank" style="color:var(--gold)">定位原文 →</a>` : (a.bookPath?`<a href="${bookReaderLink(a.bookPath)}" target="_blank" style="color:var(--gold)">打開原典 →</a>`:'<span style="color:var(--muted)">—</span>';
         return `<tr>
           <td><span class="type-tag ${a.type}" style="color:${typeColor[a.type]}">${typeLabel[a.type]||a.type}</span></td>
           <td><b>${a.key}</b></td>
@@ -457,7 +592,7 @@ window._csBuilt = false;
 function initConceptSearch(){
   window._csBuilt = true;
   const cb = window.CONCEPT_BOOK_DATA||{};
-  const chapters = window.CHAPTERS_DATA||[];
+  const chapters = window.CHAPTERS_FULL||[];
   const input = document.getElementById('cs-input');
   const suggest = document.getElementById('cs-suggest');
   const btn = document.getElementById('cs-go');
@@ -675,7 +810,7 @@ function initConceptSearch(){
     const tcnt = (window.TERMS_DATA||[]).length + (window.DAOTI_CONCEPTS||[]).length;
     const pcnt = Object.keys(window.PEOPLE_EXT||{}).length;
     const icnt = (window.IDIOMS_DATA||[]).length;
-    const acnt = (window.ANCHORS_DATA||[]).length;
+    const acnt = (window.ANCHORS_PRECISE||[]).length;
     const cnodes = window.CROSS_DATA?.nodes?.length||0;
     const cedges = window.CROSS_DATA?.edges?.length||0;
     stats.innerHTML =

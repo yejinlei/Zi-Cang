@@ -4,15 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>子藏本體論 · Zi-Cang Ontology</title>
-<link rel="stylesheet" href="css/common.css?v=18">
-<script src="data/people_ext.js?v=18"></script>
-<script src="js/linkify.js?v=18"></script>
-<script src="js/common.js?v=18"></script>
+<link rel="stylesheet" href="css/common.css?v=20">
+<script src="data/people_ext.js?v=20"></script>
+<script src="js/linkify.js?v=20"></script>
+<script src="js/common.js?v=20"></script>
+<script src="data/ontology-schema.js?v=20"></script>
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
-<script src="data/daoti.js?v=18"></script>
-<script src="data/schools.js?v=18"></script>
-<script src="data/people.js?v=18"></script>
-<script src="data/debates.js?v=18"></script>
+<script src="data/daoti.js?v=20"></script>
+<script src="data/schools.js?v=20"></script>
+<script src="data/people.js?v=20"></script>
+<script src="data/debates.js?v=20"></script>
 <style>
 /* ===== 本体论页面专属样式 ===== */
 .ont-hero{padding:60px 28px 40px;text-align:center;position:relative;overflow:hidden}
@@ -131,14 +132,14 @@
   <h1>子藏本體論</h1>
   <p class="subtitle">
     以先秦子学为核心，九流十家为框架，道体·义理·人物·事件四轴正交，<br>
-    构建诸子百家之语义网络：从老子之道、孔子之仁，到韩非之法、公孙龙之辩。
+    构建诸子百家之<b>模块化本体（1+6栈）</b>：zcore 顶层、zbib 文献（FRBR/BIBFRAME）、zcon 概念论证、zsch 学派师承、zhev 历史事件（CIDOC CRM）、zexe 注疏训诂（Open Annotation），对齐国际主流本体。
   </p>
   <div class="ont-kpi">
-    <div class="kpi"><div class="kpi-num">36</div><div class="kpi-lbl">道體概念</div></div>
-    <div class="kpi"><div class="kpi-num">12</div><div class="kpi-lbl">流派學派</div></div>
-    <div class="kpi"><div class="kpi-num">42</div><div class="kpi-lbl">核心人物</div></div>
-    <div class="kpi"><div class="kpi-num">12</div><div class="kpi-lbl">經典論辯</div></div>
-    <div class="kpi"><div class="kpi-num">84</div><div class="kpi-lbl">義理範疇</div></div>
+    <div class="kpi"><div class="kpi-num">80</div><div class="kpi-lbl">本體類 (TBox)</div></div>
+    <div class="kpi"><div class="kpi-num">6</div><div class="kpi-lbl">模組</div></div>
+    <div class="kpi"><div class="kpi-num">135</div><div class="kpi-lbl">對象/數據屬性</div></div>
+    <div class="kpi"><div class="kpi-num">21</div><div class="kpi-lbl">推理規則</div></div>
+    <div class="kpi"><div class="kpi-num">9</div><div class="kpi-lbl">對齊本體 (CRM/BF/SKOS/...)</div></div>
   </div>
 </section>
 
@@ -148,7 +149,7 @@
   <a href="terms.html" class="deeplink"><span class="dl-ico">辭</span><div><b>諸子術語詞典</b><small>83條範疇 · 222條各家異解</small></div></a>
   <a href="idioms.html" class="deeplink"><span class="dl-ico">🀄</span><div><b>成語典故庫</b><small>132條典源 · 原文義訓</small></div></a>
   <a href="tools.html" class="deeplink"><span class="dl-ico">⿴</span><div><b>研讀工具</b><small>路徑推演 · 異文對照 · 學派比較</small></div></a>
-  <a href="spec.html" class="deeplink"><span class="dl-ico">📐</span><div><b>本體規範總綱</b><small>24類 · 42屬性 · 七層抽象</small></div></a>
+  <a href="spec.html" class="deeplink"><span class="dl-ico">📐</span><div><b>本體規範總綱</b><small>80類·135屬性·21規則·6模組·對齊9國際本體</small></div></a>
 </div>
 
 <!-- ===== 进阶研究入口 ===== -->
@@ -163,7 +164,8 @@
   <a href="citation.html" class="deeplink"><span class="dl-ico">⇌</span><div><b>引文關聯圖</b><small>38部典籍·68條引用/批評/注釋關係</small></div></a>
   <a href="reasoning.html" class="deeplink"><span class="dl-ico">⚙</span><div><b>本體推理器</b><small>9規則 · 7查詢 · 可運行</small></div></a>
   <a href="statistics.html" class="deeplink"><span class="dl-ico">▤</span><div><b>典籍統計</b><small>分類/字數/學派可視化</small></div></a>
-  <a href="full-ontology.html" class="deeplink"><span class="dl-ico">🔬</span><div><b>全文本體化</b><small>576書·4635篇·64概念·RDF 全量三格式導出 (Turtle/JSON-LD/N-Triples)</small></div></a>
+  <a href="zhuangzi.html" class="deeplink"><span class="dl-ico">☯</span><div><b>莊子內七篇深度標引</b><small>7篇·36命題·11論證·43寓言·25對話·22譬喻·137句級錨點 · zcon本體示範</small></div></a>
+  <a href="full-ontology.html" class="deeplink"><span class="dl-ico">🔬</span><div><b>全文本體化</b><small>1464書·27241篇·句級錨點·RDF全量三格式導出</small></div></a>
 </div>
 </div>
 
@@ -174,6 +176,7 @@
   <button class="ont-tab" data-pan="pan-people">☗ 諸子傳承譜</button>
   <button class="ont-tab" data-pan="pan-debates">✕ 百家爭鳴場</button>
   <button class="ont-tab" data-pan="pan-cats">☘ 義理範疇雲</button>
+  <button class="ont-tab" data-pan="pan-schema" style="color:#b83a7f">✦ 模組化本體 v2.0</button>
 </div>
 
 <!-- ===== 道体本体树 ===== -->
@@ -233,6 +236,17 @@
   <p class="panel-desc">84个子学核心义理范畴，按宇宙论、心性论、政治论、知识论、伦理论、兵法学、名辩学、治术论八大类聚类。点击可高亮（核心范畴字号更大）。</p>
   <div class="cat-cloud" id="catCloud"></div>
   <div class="cat-groups" id="catGroups"></div>
+<div class="ont-panel" id="pan-schema">
+  <h2>模組化本體棧 v2.0 · 1+6 模組架構</h2>
+  <p class="panel-desc">子藏本體升級為模組化「1+6」本體棧：<b style="color:#8b3a2f">zcore</b> 為頂層核心，<b>zbib</b>（文獻目錄，對齊 FRBR/BIBFRAME）、<b>zcon</b>（概念論證，對齊 SKOS/AIF）、<b>zsch</b>（學派師承）、<b>zhev</b>（歷史事件，對齊 CIDOC CRM）、<b>zexe</b>（注疏訓詁，對齊 Open Annotation/OntoLex）五個領域本體透過 owl:imports 橋接。共計 <b>80 類 · 135 屬性 · 21 推理規則</b>，並對齊 9 個國際主流本體。</p>
+  <div id="schemaModules" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;margin:18px 0"></div>
+  <h3 style="margin:24px 0 10px;color:var(--accent)">本體類層次（按模組）</h3>
+  <div id="schemaClasses" style="background:var(--paper-soft);border:1px solid var(--border);border-radius:8px;padding:16px;max-height:520px;overflow:auto;font-size:13.5px;line-height:1.8"></div>
+  <h3 style="margin:24px 0 10px;color:var(--accent)">推理規則（21條，SWRL 式）</h3>
+  <div id="schemaRules" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:10px"></div>
+  <h3 style="margin:24px 0 10px;color:var(--accent)">外部本體對齊</h3>
+  <div id="schemaAlign" style="background:var(--paper-soft);border:1px solid var(--border);border-radius:8px;padding:16px;font-size:13px;line-height:1.9"></div>
+</div>
 </div>
 </div>
 
@@ -533,6 +547,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   buildPeopleGraph();
   buildDebates();
   buildCategories();
+  buildSchema();
 });
 </script>
 <div id="siteFooter"></div>

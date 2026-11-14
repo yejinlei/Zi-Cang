@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>數據下載 · 子藏本體論 Zi-Cang</title>
-<link rel="stylesheet" href="css/common.css?v=18">
+<link rel="stylesheet" href="css/common.css?v=20">
 <style>
   :root{--ink:#2c1810;--sub:#6b4423;--paper:#f5ecd7;--card:#faf4e3;--border:#d4b896;--gold:#8b2500;--accent:#a0522d}
   .data-hero{padding:48px 28px 24px;text-align:center;max-width:900px;margin:0 auto}
@@ -71,7 +71,7 @@
 </div>
 </div>
 
-<script src="js/common.js?v=18"></script>
+<script src="js/common.js?v=20"></script>
 <script>
 injectLayout('data');
 
@@ -104,14 +104,16 @@ const FILES=[
    files:[{name:'panjiao.json',url:'data/panjiao.js',label:'JS數據'}]},
   {ico:'⇌',title:'典籍引文關聯數據',desc:'38部先秦兩漢核心典籍之間的引用、批評、注釋、繼承、並稱五類關係共68條，每條關係附原文證據與出處。',meta:['引文關聯','~24KB','38部·68關係'],
    files:[{name:'citation.json',url:'data/citation.js',label:'JS數據'}]},
-  {ico:'📚',title:'篇章切分數據',desc:'576部典籍的自動篇章切分結果，共4635個Chapter實例，每篇含標題、字數、Top 5高頻概念、提及人物。',meta:['篇章','~850KB','576書·4635章'],
-   files:[{name:'chapters.json',url:'data/chapters.js',label:'JS數據',isBig:true}]},
-  {ico:'🔥',title:'概念分佈矩陣',desc:'64個核心概念（83術語+37道體去重後）在576部典籍中的出現頻次矩陣，供概念熱力圖、詞頻查詢、跨書對比使用。',meta:['概念頻次','~130KB','64概念'],
-   files:[{name:'concept-book.json',url:'data/concept_book.js',label:'JS數據'}]},
-  {ico:'👤',title:'人物提及網絡',desc:'37位先秦兩漢諸子人物在576部典籍中的提及分佈（按別名字符串匹配），共6365條書級提及邊。',meta:['人物提及','~80KB','6365邊'],
-   files:[{name:'mention-book.json',url:'data/mention_book.js',label:'JS數據'}]},
-  {ico:'⚓',title:'引文錨點數據',desc:'成語典故、術語、注疏異文的典籍出處錨定，包含對應典籍路徑、篇章、典源原文片段，用於語義溯源。',meta:['引文錨點','~6KB','39條'],
-   files:[{name:'anchors.json',url:'data/anchors.js',label:'JS數據'}]},
+  {ico:'📚',title:'全量篇章切分數據 (v19)',desc:'全庫1463部典籍的精準篇章切分結果，共27,234個篇章；其中228部核心典籍（諸子/兵家/法家/農家/算學+重點筆記）保留精確字符偏移與句邊界，其餘類書大書保留章節級信息；每篇含標題、字數、part路徑、偏移。',meta:['篇章全量','~3.0MB','1463書·27234章'],
+   files:[{name:'chapters_full.js',url:'data/chapters_full.js',label:'JS數據',isBig:true}]},
+  {ico:'💬',title:'句級索引 (v19)',desc:'228部核心典籍（約386,061句）的精確句邊界索引，支持句級檢索與引文高亮跳轉；非核心典籍保留句數統計不存偏移以控體積。',meta:['句級索引','~6.2MB','38.6萬句·228書'],
+   files:[{name:'sentence_index.js',url:'data/sentence_index.js',label:'JS數據',isBig:true}]},
+  {ico:'🔥',title:'概念全文命中 (v19)',desc:'64個核心子學概念在1463部典籍中的章節級精確命中（含part/ch/偏移/前後文snippet），每概念每書保留前3次命中，總計約22,762條概念命中，用於概念檢索、單概念分佈柱狀圖。',meta:['概念命中','~4.3MB','64概念·22,762命中'],
+   files:[{name:'concept_full.js',url:'data/concept_full.js',label:'JS數據',isBig:true}]},
+  {ico:'👤',title:'人物提及句級定位 (v19)',desc:'36位核心諸子人物（108個別名合併匹配）在1463部典籍中的精確章節與字符偏移命中，含命中前後文snippet，共約22,406條人物提及邊，支持句級人物互見跳轉。',meta:['人物提及','~4.6MB','36人·108別名·22,406命中'],
+   files:[{name:'mention_full.js',url:'data/mention_full.js',label:'JS數據',isBig:true}]},
+  {ico:'⚓',title:'引文錨點精確定位 (v19)',desc:'39條引文/術語/注疏出處錨定：去標點異文匹配+章節定位，其中27條精確定位到具體典籍+篇章+字符提示位置；閱讀器可直接打開並跳至關鍵詞高亮位置。',meta:['引文錨點','~7KB','39條·27精確定位'],
+   files:[{name:'anchors_precise.js',url:'data/anchors_precise.js',label:'JS數據'}]},
   {ico:'🎯',title:'概念三教流轉數據',desc:'道/空性/太極/仁/無為/陰陽/氣/良知八大核心概念在六藏中的朝代演化流變（先秦→魏晉玄學→禪宗→宋明理學），共37個朝代節點、含人物典籍義理說明。',meta:['概念演化','~20KB','8概念·37朝代'],
    files:[{name:'concept-evolve.json',url:'data/concept-evolve.js',label:'JS數據'}]},
   {ico:'⚖️',title:'雙概念對比數據',desc:'八組核心概念的三教分合對比（道vs空性、仁vs兼愛、性善vs性惡、有為vs無為、理vs氣、天理vs良知、漸修vs頓悟、入世vs出世），每組含左右兩家分歧點與跨時代會通人物典籍。',meta:['概念對比','~17KB','8組三教分合'],

@@ -1,180 +1,240 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>本體規範總綱 | 子藏本體論</title>
-<link rel="stylesheet" href="css/common.css?v=18">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>子藏本體規範總綱 v2.0 · Zi-Cang Ontology Specification</title>
+<link rel="stylesheet" href="css/common.css?v=20">
 <style>
-  .sp-wrap { max-width:1240px; margin:0 auto; padding:24px 20px 70px; }
-  .sp-title { font-family:"STKaiti",serif; font-size:34px; color:var(--ink); letter-spacing:3px; margin-bottom:6px; }
-  .sp-sub { color:var(--ink-soft); font-size:14px; margin-bottom:22px; }
-  .meta-card { background:var(--paper); border:1px solid var(--border); border-radius:12px; padding:20px 24px; margin-bottom:22px; }
-  .meta-card .lede { font-size:14.5px; line-height:1.9; color:var(--ink); margin-bottom:14px; }
-  .meta-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; }
-  .meta-item { font-size:13px; }
-  .meta-item .k { color:var(--ink-soft); font-size:12px; letter-spacing:1px; }
-  .meta-item .v { color:var(--ink); font-family:"STKaiti",serif; font-size:15px; }
-  .ns { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:12.5px; color:var(--accent);
-    background:var(--bg-soft); padding:3px 9px; border-radius:6px; display:inline-block; margin-top:3px; }
-  .imp-chips { margin-top:12px; }
-  .imp-chips span { display:inline-block; font-size:12px; padding:3px 11px; margin:3px 4px 0 0; border-radius:999px;
-    background:var(--bg-soft); color:var(--accent); border:1px solid var(--border); }
-
-  .sec-title { font-family:"STKaiti",serif; font-size:23px; color:var(--gold); letter-spacing:2px; margin:28px 0 6px; }
-  .sec-note { font-size:13px; color:var(--ink-soft); margin-bottom:14px; }
-  .kpi-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:12px; margin:16px 0; }
-  .kpi { background:var(--paper); border:1px solid var(--border); border-radius:10px; padding:13px; text-align:center; }
-  .kpi-num { font-size:24px; font-weight:900; color:var(--accent); font-family:"STKaiti",serif; }
-  .kpi-label { font-size:12px; color:var(--ink-soft); margin-top:3px; }
-
-  table { width:100%; border-collapse:collapse; font-size:13.5px; }
-  th { background:var(--bg-soft); color:var(--accent); font-size:12.5px; padding:10px 12px; text-align:left;
-    border:1px solid var(--border); letter-spacing:1px; position:sticky; top:0; }
-  td { padding:10px 12px; border:1px solid var(--border); vertical-align:top; line-height:1.7; }
-  tr:hover td { background:var(--bg-soft); }
-  .cls-id { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:12.5px; color:var(--accent); }
-  .cls-cn { font-family:"STKaiti",serif; font-size:15px; color:var(--ink); font-weight:700; }
-  .num { text-align:right; font-family:ui-monospace,monospace; color:var(--ink-soft); }
-  .parent { font-family:ui-monospace,monospace; font-size:12px; color:var(--ink-soft); }
-  .filter-bar { display:flex; gap:10px; margin-bottom:12px; flex-wrap:wrap; align-items:center; }
-  .sp-search { flex:1; min-width:220px; padding:10px 16px; border:1px solid var(--border); border-radius:10px;
-    background:var(--paper); color:var(--ink); font-size:14.5px; outline:none; }
-  .sp-search:focus { border-color:var(--accent); }
-  .arch { background:var(--paper); border:1px solid var(--border); border-radius:12px; padding:20px 24px; margin-top:16px; }
-  .arch pre { margin:0; font-family:ui-monospace,Menlo,Consolas,monospace; font-size:12.5px; line-height:1.8;
-    color:var(--ink); overflow-x:auto; white-space:pre; }
-  .layer { display:flex; gap:12px; margin-bottom:10px; align-items:flex-start; }
-  .layer .n { flex:0 0 34px; height:34px; border-radius:8px; background:var(--accent); color:#fff;
-    display:flex; align-items:center; justify-content:center; font-family:"STKaiti",serif; font-size:15px; }
-  .layer .t { font-size:13.5px; line-height:1.75; color:var(--ink); }
-  .layer .t b { color:var(--gold); font-family:"STKaiti",serif; font-size:15px; }
-  @media(max-width:768px){ .sp-title{font-size:26px;} .sec-title{font-size:19px;} table{font-size:12.5px;} }
+.spec-hero{background:linear-gradient(135deg,#1a2a3f,#2d4258 60%,#8b3a2f);color:#f5efe0;padding:32px 28px;border-radius:10px;margin-bottom:24px}
+.spec-hero h1{margin:0 0 8px;font-size:32px;letter-spacing:4px;font-family:"KaiTi",serif}
+.spec-hero .sub{color:#c9b98f;font-size:14px;letter-spacing:2px;margin-bottom:14px}
+.spec-hero .intro{font-size:14px;line-height:1.8;max-width:860px;color:#e8dec4}
+.spec-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-top:16px}
+.spec-kpi .k{background:rgba(245,239,224,.1);border:1px solid rgba(201,185,143,.3);padding:10px;border-radius:8px;text-align:center}
+.spec-kpi .kn{font-size:24px;color:#f2d98a;font-weight:700;font-family:KaiTi,serif}
+.spec-kpi .kl{font-size:11px;color:#c9b98f;margin-top:3px;letter-spacing:1px}
+.toc{background:#faf6ec;border:1px solid #e2d8bc;border-radius:8px;padding:16px 22px;margin:16px 0}
+.toc h3{margin:0 0 10px;font-family:KaiTi,serif;color:#8b3a2f;letter-spacing:2px}
+.toc ol{margin:0;padding-left:20px;columns:2;column-gap:30px}
+.toc li{padding:3px 0;font-size:14px}
+.toc a{color:#4a6481;text-decoration:none;border-bottom:1px dotted #b0c4d8}
+.toc a:hover{color:#8b3a2f;border-color:#8b3a2f}
+.mod-section{background:#fff;border:1px solid #e2d8bc;border-radius:10px;padding:20px 24px;margin:20px 0}
+.mod-section h2{margin:0 0 4px;font-size:24px;font-family:KaiTi,serif;letter-spacing:3px;padding-left:14px;border-left:5px solid var(--mc,#8b3a2f);color:#2d4258}
+.mod-section .mod-sub{color:#8a7a5c;font-size:13px;margin:4px 0 14px 19px}
+.mod-section h3{margin:20px 0 8px;font-family:KaiTi,serif;color:var(--mc,#8b3a2f);letter-spacing:1px;font-size:18px}
+.class-table,.prop-table{width:100%;border-collapse:collapse;margin:8px 0 14px;font-size:13px}
+.class-table th,.prop-table th{background:var(--mc,#8b3a2f);color:#fff;padding:8px 10px;text-align:left;font-weight:500;font-family:KaiTi,serif;letter-spacing:1px}
+.class-table td,.prop-table td{border-bottom:1px solid #efe5cf;padding:8px 10px;vertical-align:top;line-height:1.6}
+.class-table tr:hover td,.prop-table tr:hover td{background:#faf6ec}
+.class-table code,.prop-table code{background:#f0e8cf;padding:1px 6px;border-radius:3px;font-size:12px;color:#6a4a1a}
+.td-id{font-family:monospace;color:#4a6481;font-size:12px;white-space:nowrap}
+.td-parent{color:#8a7a5c;font-family:monospace;font-size:12px}
+.td-def{color:#3a3a3a}
+.td-align{font-size:11px;color:#8b3a2f}
+.td-note{color:#8a7a5c;font-size:12px;font-style:italic}
+.rule-block{background:#faf6ec;border-left:4px solid var(--mc,#8b3a2f);padding:10px 14px;margin:8px 0;border-radius:0 6px 6px 0;font-size:13px;line-height:1.7}
+.rule-block b{color:#8b3a2f}
+.rule-block .if{color:#4a6481;font-family:monospace;font-size:12px;margin-top:4px}
+.rule-block .then{color:#2d7d46;font-family:monospace;font-size:12px}
+.enum-block{background:#faf6ec;border-radius:8px;padding:14px;margin:8px 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px}
+.enum-item{background:#fff;border:1px solid #e2d8bc;border-radius:6px;padding:8px 12px}
+.enum-item b{color:#8b3a2f;font-family:KaiTi,serif}
+.enum-item span{display:block;font-size:12px;color:#6a5a3c;line-height:1.5;margin-top:2px}
+.align-box{background:#faf6ec;border-radius:8px;padding:14px 18px;margin:8px 0}
+.align-box h4{margin:0 0 6px;color:#4a6481;font-family:KaiTi,serif}
+.align-box code{background:#fff;border:1px solid #e2d8bc;padding:2px 8px;border-radius:4px;margin:2px 3px;font-size:12px;display:inline-block}
+.design-box{background:#fdf4e3;border-left:4px solid #c9892d;padding:12px 16px;border-radius:0 6px 6px 0;margin:10px 0;font-size:13.5px;line-height:1.7;color:#6a4a1a}
+@media(max-width:768px){
+  .toc ol{columns:1}
+  .spec-hero h1{font-size:24px}
+}
 </style>
 </head>
-<body>
-<div id="siteNav"></div>
-<div class="page-wrap">
-  <div class="sp-wrap">
-    <div class="sp-title">本體規範總綱</div>
-    <div class="sp-sub">子藏本體論（ZCore v2.0）之 TBox 層完整規範：24 個類、42 個物件屬性、28 個資料屬性，並說明「1+N」模組化架構與七層抽象。</div>
-
-    <div class="meta-card">
-      <div class="lede" id="lede"></div>
-      <div class="meta-grid" id="metaGrid"></div>
-      <div class="imp-chips" id="impChips"></div>
-    </div>
-
-    <div class="kpi-grid" id="kpi"></div>
-
-    <div class="sec-title">一、類（Classes）</div>
-    <div class="sec-note">TBox 層之核心概念分類，含 FRBR 式「作品—表現—載體」三層與校勘學異文對象。</div>
-    <div class="filter-bar"><input class="sp-search" id="qCls" placeholder="搜索類名、定義…"></div>
-    <table><thead><tr><th style="width:170px">識別符</th><th style="width:90px">中文</th><th style="width:120px">英文</th><th style="width:130px">父類</th><th>定義</th><th style="width:80px">實例數</th></tr></thead><tbody id="tbCls"></tbody></table>
-
-    <div class="sec-title">二、物件屬性（Object Properties）</div>
-    <div class="sec-note">連結兩個類實例之語義關係，如「作者」「駁斥」「含步驟」。</div>
-    <div class="filter-bar"><input class="sp-search" id="qObj" placeholder="搜索屬性名…"></div>
-    <table><thead><tr><th style="width:230px">識別符</th><th style="width:110px">中文</th><th style="width:180px">定義域</th><th style="width:190px">值域</th></tr></thead><tbody id="tbObj"></tbody></table>
-
-    <div class="sec-title">三、資料屬性（Data Properties）</div>
-    <div class="sec-note">類實例所帶之字面值屬性，如「字數」「生年」「校記」。</div>
-    <div class="filter-bar"><input class="sp-search" id="qDat" placeholder="搜索屬性名…"></div>
-    <table><thead><tr><th style="width:230px">識別符</th><th style="width:110px">中文</th><th style="width:210px">適用類</th><th style="width:150px">值類型</th></tr></thead><tbody id="tbDat"></tbody></table>
-
-    <div class="sec-title">四、「1+N」模組化架構</div>
-    <div class="sec-note">各子類知識形態本質不同，故以 ZCore 為核心，各領域擴展本體透過 owl:imports 橋接。</div>
-    <div class="arch">
-      <div class="layer"><span class="n">1</span><span class="t"><b>ZCore 核心本體</b>：定義作品、篇章、人物、學派、概念五大基本類與通用屬性，為所有擴展之共同基底。</span></div>
-      <div class="layer"><span class="n">N</span><span class="t"><b>領域擴展本體（11）</b>：道家、儒家、墨家、法家、名家、兵家、農家、醫家、術數、雜家、（諸子）百科，各自定義專有類與屬性。</span></div>
-      <div class="layer"><span class="n">↗</span><span class="t"><b>橋接規則</b>：醫家 import 諸子（氣、陰陽）；術數 import 醫家（五行）；雜家 import 多本體；兵家 import 法家（刑賞）。</span></div>
-      <div class="layer"><span class="n">⇄</span><span class="t"><b>對外映射</b>：與 CIDOC CRM、BIBFRAME、FOAF、SKOS、Dublin Core 建立 owl:equivalentClass / equivalentProperty 映射。</span></div>
-    </div>
-
-    <div class="sec-title">五、七層抽象</div>
-    <div class="sec-note">由字面到思想的七級抽象，決定知識在圖譜中的粒度。</div>
-    <div class="arch" id="layerBox"></div>
-
-    <div class="sec-title">六、TBox / ABox 分層</div>
-    <div class="arch">
-      <div class="layer"><span class="t"><b>TBox（本頁）</b>：類與屬性之定義層，即 schema，說明「有哪些類、有哪些關係」。</span></div>
-      <div class="layer"><span class="t"><b>ABox（RDF 圖譜頁）</b>：實例斷言層，即具體事實，如「《韓非子》作者是韓非」「性善論 對立於 性惡論」。</span></div>
-      <div class="layer"><span class="t"><b>序列化</b>：以 RDF/Turtle 為主，頁面內以 JSON-LD 內嵌供機器讀取。</span></div>
-    </div>
+<body class="ink-theme">
+<header class="topbar">
+  <div class="bar-inner">
+    <a class="brand" href="index.html"><span class="brand-zi">子</span><span class="brand-cang">藏</span><span class="brand-sub">Zi-Cang Ontology</span></a>
+    <nav class="mainnav" id="mainnav"></nav>
+    <button class="theme-toggle" id="themeToggle" title="切换主题">🎨</button>
   </div>
-</div>
-<div id="siteFooter"></div>
+</header>
+<main class="container" style="max-width:1100px">
 
-<script src="data/people_ext.js?v=18"></script>
-<script src="js/linkify.js?v=18"></script>
-<script src="js/common.js?v=18"></script>
-<script src="data/ontology-schema.js?v=18"></script>
+<div class="spec-hero">
+  <h1>子藏本體規範總綱 v2.0</h1>
+  <div class="sub">Zi-Cang Ontology Specification · 模組化 1+6 本體棧</div>
+  <div class="intro">
+    子藏本體論以中國諸子學為對象，採用模組化「1+6」本體棧：<b>zcore</b>（核心頂層）+<b>zbib</b>（文獻目錄）+<b>zcon</b>（概念論證）+<b>zsch</b>（學派師承）+<b>zhev</b>（歷史事件）+<b>zexe</b>（注疏訓詁）。
+    領域本體之間透過 <code style="background:rgba(245,239,224,.15);padding:1px 6px;border-radius:3px">owl:imports</code> 橋接，
+    並對齊 CIDOC CRM、BIBFRAME、FRBR、FOAF、SKOS、DCMI、PROV-O、Open Annotation 等國際本體標準。
+    本頁為 TBox（terminology box，術語層）正式規範。
+  </div>
+  <div class="spec-kpis" id="specKpis"></div>
+</div>
+
+<div class="toc" id="tocBox"></div>
+
+<div id="specContent"></div>
+
+<footer class="footer">
+  <p>子藏本体规范总纲 v2.0 · 数据 CC BY-SA 4.0 · 本体文件以 Turtle / JSON-LD / N-Triples 三格式开放下载</p>
+</footer>
+</main>
+
+<script src="js/common.js?v=20"></script>
+<script src="data/ontology-schema.js?v=20"></script>
 <script>
 (function(){
-  var S = window.ONTOLOGY_SCHEMA; if(!S) return;
-  function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-  var M = S.meta;
-
-  document.getElementById('lede').textContent = M.desc;
-  document.getElementById('metaGrid').innerHTML =
-    '<div class="meta-item"><div class="k">名稱</div><div class="v">'+esc(M.name)+'</div></div>'+
-    '<div class="meta-item"><div class="k">英文名</div><div class="v">'+esc(M.en)+'</div></div>'+
-    '<div class="meta-item"><div class="k">版本</div><div class="v">v'+esc(M.version)+'</div></div>'+
-    '<div class="meta-item"><div class="k">授權</div><div class="v">'+esc(M.license)+'</div></div>'+
-    '<div class="meta-item" style="grid-column:1/-1"><div class="k">命名空間</div><div class="ns">'+esc(M.namespace)+'</div> <span class="ns">前綴 '+esc(M.prefix)+'</span></div>';
-  document.getElementById('impChips').innerHTML = '<div class="meta-item"><div class="k">引入之標準本體</div></div>'+
-    M.imports.map(function(i){return '<span>'+esc(i)+'</span>';}).join('');
-
-  document.getElementById('kpi').innerHTML =
-    '<div class="kpi"><div class="kpi-num">'+S.classes.length+'</div><div class="kpi-label">類</div></div>'+
-    '<div class="kpi"><div class="kpi-num">'+S.objectProps.length+'</div><div class="kpi-label">物件屬性</div></div>'+
-    '<div class="kpi"><div class="kpi-num">'+S.dataProps.length+'</div><div class="kpi-label">資料屬性</div></div>'+
-    '<div class="kpi"><div class="kpi-num">'+S.classes.reduce(function(a,c){return a+(c.count||0);},0).toLocaleString()+'</div><div class="kpi-label">實例總數</div></div>';
-
-  function renderCls(q){
-    document.getElementById('tbCls').innerHTML = S.classes.filter(function(c){
-      if(!q) return true;
-      return (c.id+c.cn+c.en+c.def).toLowerCase().indexOf(q.toLowerCase())>=0;
-    }).map(function(c){
-      return '<tr><td class="cls-id">'+esc(c.id)+'</td><td class="cls-cn">'+esc(c.cn)+'</td>'+
-        '<td>'+esc(c.en)+'</td><td class="parent">'+esc(c.parent||'—')+'</td>'+
-        '<td>'+esc(c.def)+(c.note?' <span style="color:var(--ink-soft);font-size:12px">（'+esc(c.note)+'）</span>':'')+'</td>'+
-        '<td class="num">'+(c.count?c.count.toLocaleString():'—')+'</td></tr>';
-    }).join('');
-  }
-  function renderObj(q){
-    document.getElementById('tbObj').innerHTML = S.objectProps.filter(function(p){
-      return !q || (p.id+p.cn).toLowerCase().indexOf(q.toLowerCase())>=0;
-    }).map(function(p){
-      return '<tr><td class="cls-id">'+esc(p.id)+'</td><td class="cls-cn">'+esc(p.cn)+'</td>'+
-        '<td class="parent">'+esc(p.domain)+'</td><td class="parent">'+esc(p.range)+'</td></tr>';
-    }).join('');
-  }
-  function renderDat(q){
-    document.getElementById('tbDat').innerHTML = S.dataProps.filter(function(p){
-      return !q || (p.id+p.cn).toLowerCase().indexOf(q.toLowerCase())>=0;
-    }).map(function(p){
-      return '<tr><td class="cls-id">'+esc(p.id)+'</td><td class="cls-cn">'+esc(p.cn)+'</td>'+
-        '<td class="parent">'+esc(p.domain)+'</td><td class="parent">'+esc(p.range)+'</td></tr>';
-    }).join('');
-  }
-  document.getElementById('qCls').addEventListener('input', function(e){ renderCls(e.target.value.trim()); });
-  document.getElementById('qObj').addEventListener('input', function(e){ renderObj(e.target.value.trim()); });
-  document.getElementById('qDat').addEventListener('input', function(e){ renderDat(e.target.value.trim()); });
-  renderCls(''); renderObj(''); renderDat('');
-
-  var LAYERS = [
-    ['1','字形層','甲骨、金文、篆隸、楷書之字形演變與異體。'],
-    ['2','詞義層','單字與詞之訓釋、本義與引申義。'],
-    ['3','術語層','學派專有範疇，如道、德、氣、法、術、勢。'],
-    ['4','命題層','由術語構成之判斷，如「性相近也，習相遠也」。'],
-    ['5','學說層','命題之體系化，如性善論、兼愛說、法治論。'],
-    ['6','學派層','學說之歸屬與師承，如稷下黃老、思孟學派。'],
-    ['7','思潮層','跨學派之時代精神，如百家爭鳴、魏晉玄學、宋明理學。']
+  const S = window.ONTOLOGY_SCHEMA;
+  if(!S){ document.getElementById('specContent').innerHTML='<p style="color:red">本体数据加载失败</p>'; return; }
+  const modColor={zcore:"#2d4258",zbib:"#8b5a2f",zcon:"#8b3a2f",zsch:"#4a6481",zhev:"#2d7d46",zexe:"#6a3fa0"};
+  const modNames={zcore:"核心頂層本體 zcore",zbib:"文獻目錄本體 zbib",zcon:"概念論證本體 zcon",zsch:"學派師承本體 zsch",zhev:"歷史事件本體 zhev",zexe:"注疏訓詁本體 zexe"};
+  const modIntroductions={
+    zcore:"zcore 為本體棧頂層，定義所有子模組共用的抽象頂層類（zc:Thing、zc:Entity、zc:AbstractResource、zc:Event、zc:Person、zc:Place、zc:TimeSpan 等），以及跨模組通用對象屬性與數據屬性。其餘五個領域模組皆透過 owl:imports 引入 zcore。",
+    zbib:"zbib 模組處理文獻結構，嚴格對齊 <b>FRBR WEMI 四層模型</b>（Work/Expression/Manifestation/Item）與 <b>BIBFRAME</b>。包含完整的文獻層級結構（作品→篇→卷→段→句）、引文錨點、異文、平行文本、典故、目錄著錄與存佚狀態。zexe 注疏本體以 zbib 為基礎。",
+    zcon:"zcon 模組是諸子學最具特色的部分——處理<b>概念、命題、論證、對話、寓言、譬喻</b>等思想單元，對齊 SKOS（概念體系）與 AIF（Argument Interchange Format，論證互換格式）。論證圖式（ArgumentScheme）枚舉莊子三言、譬喻、歸謬、兩難、對話問答等中國哲學特有方法。",
+    zsch:"zsch 模組處理<b>學派、師承、思想影響</b>，對齊 PROV-O（Provenance Ontology，來源溯源本體）。細化了師承關係的五種亞型：親炙（directDiscipleOf）、私淑遙承（spiritualHeirOf）、文本私淑（textualHeirOf）、批判式繼承（criticalSuccessorOf）、轉出師門（rejectedLineageOf），並建模學派的分立、合流、辯難事件。",
+    zhev:"zhev 模組處理與知識生產相關的<b>歷史事件</b>，對齊 <b>CIDOC CRM</b>（E5_Event、E21_Person、E53_Place、E52_Time-Span）。包含著述、贊助、禁毀、升格入經、傳播、編纂校勘等事件類型，並納入任職（對接 CBDB 職官表）、著述情境（囚、厄、退而著書）。",
+    zexe:"zexe 模組處理<b>注疏與訓詁</b>，對齊 <b>Open Annotation（oa:Annotation）</b>與 <b>OntoLex-Lemon（ontolex:LexicalEntry）</b>。細分注疏類型為傳/注/箋/疏/章句/集解/口義/校注/札記/考異/音義 12 類，訓詁方法為聲訓/形訓/義訓/通假四類，並建模注疏立場（宗鄭/攻鄭/宗朱/攻朱）。"
+  };
+  // KPI
+  const kpiBox=document.getElementById('specKpis');
+  const kpis=[
+    {n:S.modules.length,l:"本體模組"},
+    {n:S.classes.length,l:"本體類 (Class)"},
+    {n:S.objectProps.length,l:"屬性 (Property)"},
+    {n:S.rules.length,l:"推理規則 (Rule)"},
+    {n:Object.keys(S.meta.alignments).length,l:"對齊本體"}
   ];
-  document.getElementById('layerBox').innerHTML = LAYERS.map(function(l){
-    return '<div class="layer"><span class="n">'+l[0]+'</span><span class="t"><b>'+l[1]+'</b>：'+l[2]+'</span></div>';
-  }).join('');
+  kpis.forEach(k=>{
+    const d=document.createElement('div');d.className='k';
+    d.innerHTML='<div class="kn">'+k.n+'</div><div class="kl">'+k.l+'</div>';
+    kpiBox.appendChild(d);
+  });
+
+  // TOC
+  const toc=document.getElementById('tocBox');
+  const tocOl=document.createElement('ol');
+  S.modules.forEach((m,i)=>{
+    const li=document.createElement('li');
+    li.innerHTML='<a href="#mod-'+m.id+'">'+modNames[m.id]+'</a>';
+    tocOl.appendChild(li);
+  });
+  const extras=[
+    {id:'rules',t:'推理規則（SWRL 式）'},
+    {id:'enums',t:'枚舉值（論證圖式 / 注疏類型 / 訓詁方法 / 存佚狀態）'},
+    {id:'alignments',t:'外部本體對照表'},
+    {id:'namespaces',t:'命名空間聲明'},
+    {id:'license',t:'授權與使用'}
+  ];
+  extras.forEach(e=>{
+    const li=document.createElement('li');li.innerHTML='<a href="#'+e.id+'">'+e.t+'</a>';tocOl.appendChild(li);
+  });
+  toc.appendChild(tocOl);
+
+  // Build content
+  const box=document.getElementById('specContent');
+
+  // 总体设计
+  const intro=document.createElement('div');intro.className='mod-section';intro.style.setProperty('--mc','#2d4258');
+  intro.innerHTML='<h2 style="border-color:#2d4258">總體設計原則</h2>'+
+    '<div class="mod-sub">Design Principles</div>'+
+    '<div class="design-box"><b>1. 模組化（Modularity）</b>：核心與領域分離，領域本體之間透過 owl:imports 寬鬆耦合，未來可獨立擴展醫家、術數、佛家等領域本體。</div>'+
+    '<div class="design-box"><b>2. 國際對齊（Alignment）</b>：所有核心類/屬性皆映射至 CIDOC CRM/BIBFRAME/SKOS/FOAF/DCMI 等國際標準，便於跨項目知識連通與 LOD 雲對接。</div>'+
+    '<div class="design-box"><b>3. 中國學術特色（Sinological Specificity）</b>：針對諸子學特有對象設類——寓言、重言、卮言、三言、傳注箋疏章句、聲訓形訓義訓、朝徹見獨坐忘等，不強行套用西方框架。</div>'+
+    '<div class="design-box"><b>4. TBox/ABox 分離（TBox/ABox Separation）</b>：本頁為 TBox 類與屬性定義；實例（具體典籍、人物、命題、引文）在 full-ontology.html / zhuangzi.html 與各數據頁以 ABox 斷言形式存儲。</div>'+
+    '<div class="design-box"><b>5. 開放協作（Openness）</b>：本體與數據以 CC BY-SA 4.0 開放授權，TBox 以 Turtle/JSON-LD/N-Triples 三格式在 RDF 圖譜頁可下載。</div>';
+  box.appendChild(intro);
+
+  // Modules
+  S.modules.forEach(m=>{
+    const sec=document.createElement('div');sec.className='mod-section';sec.id='mod-'+m.id;sec.style.setProperty('--mc',modColor[m.id]);
+    const classes = S.classes.filter(c=>c.mod===m.id);
+    const props = S.objectProps.filter(p=>(p.mod||'zcore')===m.id);
+    sec.innerHTML='<h2>'+modNames[m.id]+'</h2>'+
+      '<div class="mod-sub">'+m.desc+'</div>'+
+      '<div class="design-box">'+(modIntroductions[m.id]||m.desc)+'</div>'+
+      '<h3>⒈ 本體類（'+classes.length+' 類）</h3>'+
+      '<table class="class-table"><thead><tr><th>ID</th><th>名稱</th><th>父類</th><th>定義</th>'+
+      '<th>外部對齊</th></tr></thead><tbody>'+
+      classes.map(c=>'<tr><td class="td-id">'+c.id+'</td><td><b>'+c.cn+'</b> <span style="color:#8a7a5c;font-size:12px">'+c.en+'</span></td>'+
+        '<td class="td-parent">'+(c.parent||'—')+'</td><td class="td-def">'+c.def+(c.note?'<div class="td-note">'+c.note+'</div>':'')+'</td>'+
+        '<td class="td-align">'+(c.align||'—')+'</td></tr>').join('')+
+      '</tbody></table>'+
+      '<h3>⒉ 屬性（'+props.length+' 項）</h3>'+
+      '<table class="prop-table"><thead><tr><th>ID</th><th>名稱</th><th>域 (domain)</th><th>值域 (range)</th><th>說明</th></tr></thead><tbody>'+
+      props.map(p=>'<tr><td class="td-id">'+p.id+'</td><td><b>'+p.cn+'</b>'+(p.type==='data'?' <span style="font-size:11px;color:#8b5a2f">[數據]</span>':' <span style="font-size:11px;color:#4a6481">[對象]</span>')+'</td>'+
+        '<td class="td-parent">'+(p.dom||'—')+'</td><td class="td-parent">'+(p.ran||'—')+'</td>'+
+        '<td class="td-def">'+(p.note||(p.sub?'（'+p.sub+' 子屬性）':'')||'—')+'</td></tr>').join('')+
+      '</tbody></table>';
+    box.appendChild(sec);
+  });
+
+  // Rules
+  const ruleSec=document.createElement('div');ruleSec.className='mod-section';ruleSec.id='rules';ruleSec.style.setProperty('--mc','#6a3fa0');
+  ruleSec.innerHTML='<h2 style="border-color:#6a3fa0">推理規則（'+S.rules.length+' 條）</h2>'+
+    '<div class="mod-sub">SWRL 式規則，可在 reasoning 引擎中執行；規則間不互相矛盾、無循環。</div>';
+  S.rules.forEach(r=>{
+    const d=document.createElement('div');d.className='rule-block';
+    d.innerHTML='<b>'+r.id+' · '+r.cn+'</b>'+(r.note?'<div class="td-note">'+r.note+'</div>':'')+
+      '<div class="if">IF：'+r.if+'</div>'+
+      '<div class="then">THEN：'+r.then+'</div>';
+    ruleSec.appendChild(d);
+  });
+  box.appendChild(ruleSec);
+
+  // Enums
+  const enumSec=document.createElement('div');enumSec.className='mod-section';enumSec.id='enums';enumSec.style.setProperty('--mc','#b8860b');
+  enumSec.innerHTML='<h2 style="border-color:#b8860b">枚舉值（Controlled Vocabularies）</h2>'+
+    '<div class="mod-sub">論證圖式、注疏類型、訓詁方法、存佚狀態為四個受控詞表，在數據標引中作為枚舉值使用。</div>';
+  const enums=[
+    {title:'zcon:ArgumentScheme · 論證圖式',items:S.argumentSchemes,k:'id',name:'cn',desc:'desc'},
+    {title:'zexe:CommentaryType · 注疏類型',items:S.commentaryTypes,k:'id',name:'cn',desc:'desc'},
+    {title:'zexe:GlossMethod · 訓詁方法',items:S.glossMethods,k:'id',name:'cn',desc:'desc'},
+    {title:'zbib:TextualStatus · 存佚狀態',items:S.textualStatuses,k:'id',name:'cn',desc:''}
+  ];
+  enums.forEach(e=>{
+    const h=document.createElement('h3');h.textContent=e.title;enumSec.appendChild(h);
+    const gr=document.createElement('div');gr.className='enum-block';
+    e.items.forEach(it=>{
+      const d=document.createElement('div');d.className='enum-item';
+      d.innerHTML='<b>'+it[e.name]+'</b> <code>'+it[e.k]+'</code>'+(e.desc&&it[e.desc]?'<span>'+it[e.desc]+'</span>':'');
+      gr.appendChild(d);
+    });
+    enumSec.appendChild(gr);
+  });
+  box.appendChild(enumSec);
+
+  // Alignments
+  const aliSec=document.createElement('div');aliSec.className='mod-section';aliSec.id='alignments';aliSec.style.setProperty('--mc','#4a6481');
+  aliSec.innerHTML='<h2 style="border-color:#4a6481">外部本體對照表</h2>'+
+    '<div class="mod-sub">列出子藏本體類與國際本體對應項，以 owl:equivalentClass / rdfs:subClassOf / skos:exactMatch 關聯。</div>';
+  Object.entries(S.meta.alignments).forEach(([ext,m])=>{
+    const d=document.createElement('div');d.className='align-box';
+    d.innerHTML='<h4>'+ext+'</h4>'+Object.entries(m).map(([z,e])=>'<code>'+z+' ≡ '+e+'</code>').join('');
+    aliSec.appendChild(d);
+  });
+  box.appendChild(aliSec);
+
+  // Namespaces
+  const nsSec=document.createElement('div');nsSec.className='mod-section';nsSec.id='namespaces';nsSec.style.setProperty('--mc','#2d7d46');
+  nsSec.innerHTML='<h2 style="border-color:#2d7d46">命名空間聲明</h2>'+
+    '<div class="mod-sub">供 RDF/OWL 導出使用</div>'+
+    '<table class="prop-table"><thead><tr><th>前綴</th><th>命名空間 URI</th></tr></thead><tbody>'+
+    Object.entries(S.meta.namespaces).map(([p,u])=>'<tr><td class="td-id"><b>'+p+':</b></td><td><code>'+u+'</code></td></tr>').join('')+
+    '</tbody></table>';
+  box.appendChild(nsSec);
+
+  // License
+  const lic=document.createElement('div');lic.className='mod-section';lic.id='license';lic.style.setProperty('--mc','#8b3a2f');
+  lic.innerHTML='<h2 style="border-color:#8b3a2f">授權與使用</h2>'+
+    '<div class="design-box"><b>本體（TBox）</b>：以 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank">CC BY-SA 4.0</a> 開放授權。<br>'+
+    '<b>數據（ABox）</b>：典籍文本來自公共領域之古籍整理本；標引數據（概念/命題/論證/引文錨點等結構化標注）以 CC BY-SA 4.0 開放。<br>'+
+    '<b>網站程式碼</b>：與 yejinlei.github.io 其他專案一致，以 MIT License 開源。<br>'+
+    '<b>引用格式</b>：Ye, Jinlei (2026). <i>Zi-Cang Ontology v2.0: A Modular Ontology for Classical Chinese Philosophical Texts.</i> https://yejinlei.github.io/Zi-Cang/</div>';
+  box.appendChild(lic);
 })();
 </script>
 </body>

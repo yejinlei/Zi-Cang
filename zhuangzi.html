@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>《庄子》内七篇深度研究 · 子藏本体论</title>
+<link rel="stylesheet" href="css/common.css?v=20">
+<style>
+.zhuang-hero{background:linear-gradient(135deg,#1a2a3f 0%,#2d4258 60%,#4a6481 100%);color:#f5efe0;padding:32px 28px;border-radius:10px;margin-bottom:22px;position:relative;overflow:hidden}
+.zhuang-hero::before{content:"莊";position:absolute;right:-20px;top:-40px;font-size:260px;color:rgba(245,239,224,.06);font-family:"KaiTi","STKaiti",serif;font-weight:900;line-height:1}
+.zhuang-hero h1{margin:0 0 8px 0;font-size:32px;letter-spacing:4px;font-family:"KaiTi","STKaiti",serif}
+.zhuang-hero .sub{color:#c9b98f;font-size:15px;margin-bottom:14px;letter-spacing:2px}
+.zhuang-hero .meta-row{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px}
+.zhuang-hero .chip{background:rgba(245,239,224,.12);border:1px solid rgba(201,185,143,.35);padding:6px 14px;border-radius:20px;font-size:13px;color:#e8dec4}
+.zhuang-hero .chip b{color:#f2d98a;margin-right:4px}
+.zhuang-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:20px 0}
+.zhuang-kpi{background:#faf6ec;border:1px solid #e2d8bc;padding:14px 16px;border-radius:8px;text-align:center}
+.zhuang-kpi .num{font-size:28px;color:#8b3a2f;font-weight:700;font-family:"KaiTi",serif}
+.zhuang-kpi .lbl{color:#6a5a3c;font-size:12px;margin-top:4px;letter-spacing:1px}
+.tabs{display:flex;gap:6px;border-bottom:2px solid #c9b98f;margin:20px 0 16px;flex-wrap:wrap}
+.tab-btn{padding:10px 18px;background:#faf6ec;border:1px solid #e2d8bc;border-bottom:none;border-radius:8px 8px 0 0;cursor:pointer;font-size:14px;color:#6a5a3c;font-family:"KaiTi",serif;letter-spacing:1px;transition:all .2s}
+.tab-btn:hover{background:#f0e8cf}
+.tab-btn.active{background:#8b3a2f;color:#f5efe0;border-color:#8b3a2f;transform:translateY(2px)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.pian-card{background:#fff;border:1px solid #e2d8bc;border-radius:10px;padding:18px 22px;margin-bottom:18px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.pian-card h3{margin:0 0 6px 0;font-size:22px;color:#2d4258;font-family:"KaiTi",serif;letter-spacing:3px;border-left:4px solid #8b3a2f;padding-left:12px}
+.pian-card .pian-sub{color:#8a7a5c;font-size:13px;margin-bottom:10px}
+.pian-card .pian-stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.pian-card .pian-stats span{background:#f0e8cf;padding:3px 10px;border-radius:12px;font-size:12px;color:#6a5a3c}
+.pian-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-top:10px}
+.pian-grid.col-1{grid-template-columns:1fr}
+.unit-block{background:#faf6ec;border-radius:8px;padding:12px 14px;border-left:3px solid #8b3a2f;cursor:pointer;transition:all .2s}
+.unit-block:hover{background:#f0e8cf;transform:translateX(3px);box-shadow:0 2px 6px rgba(139,58,47,.15)}
+.unit-block.fable{border-left-color:#2d7d46}
+.unit-block.claim{border-left-color:#8b3a2f}
+.unit-block.dialogue{border-left-color:#4a6481}
+.unit-block.metaphor{border-left-color:#b8860b}
+.unit-block.argument{border-left-color:#6a3fa0;background:linear-gradient(135deg,#faf6ec,#f5ecf8)}
+.unit-block .u-title{font-size:15px;font-weight:600;color:#2d4258;font-family:"KaiTi",serif;margin-bottom:4px}
+.unit-block .u-meta{font-size:11px;color:#8a7a5c;margin-bottom:6px;letter-spacing:.5px}
+.unit-block .u-desc{font-size:13px;color:#4a4a4a;line-height:1.6}
+.unit-block .u-scheme{display:inline-block;background:#efe5cf;color:#6a5a3c;padding:2px 8px;border-radius:10px;font-size:11px;margin:2px 4px 2px 0}
+.unit-block .u-concept{display:inline-block;background:#e7dcc0;color:#8b3a2f;padding:2px 8px;border-radius:10px;font-size:11px;margin:2px 4px 2px 0}
+.unit-block.jump{border-left-style:dashed}
+.arg-chain{background:#fff;border:1px dashed #b3a6cf;border-radius:8px;padding:14px;margin-top:8px}
+.arg-chain .arrow{text-align:center;color:#6a3fa0;font-size:18px;margin:4px 0}
+.arg-chain .premise,.arg-chain .conclusion{padding:8px 12px;border-radius:6px;margin:4px 0;font-size:13px;line-height:1.6}
+.arg-chain .premise{background:#f5ecf8;border-left:3px solid #b3a6cf;color:#4a3a60}
+.arg-chain .conclusion{background:#fdf4e3;border-left:3px solid #c9892d;color:#6a4a1a;font-weight:600;font-family:"KaiTi",serif}
+.concept-cloud{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0;justify-content:center}
+.concept-cloud .tag{padding:6px 14px;border-radius:20px;background:#faf6ec;border:1px solid #c9b98f;color:#8b3a2f;font-family:"KaiTi",serif;font-size:14px;cursor:pointer;transition:all .2s}
+.concept-cloud .tag:hover{background:#8b3a2f;color:#f5efe0;transform:scale(1.08)}
+.concept-cloud .tag.core{background:#8b3a2f;color:#f5efe0;font-size:18px;padding:10px 20px}
+.read-link{display:inline-block;margin-top:6px;color:#4a6481;font-size:12px;text-decoration:none;border-bottom:1px dotted #4a6481}
+.read-link:hover{color:#8b3a2f;border-color:#8b3a2f}
+.intro-paragraph{font-size:14px;line-height:1.9;color:#4a4a4a;margin:14px 0;text-indent:2em}
+.section-note{background:#faf6ec;border-left:4px solid #c9b98f;padding:12px 16px;border-radius:0 6px 6px 0;font-size:13px;color:#6a5a3c;line-height:1.7;margin:12px 0}
+.ontology-ref{display:inline-block;background:#eef3f7;color:#4a6481;padding:2px 8px;border-radius:4px;font-size:11px;font-family:monospace;margin-left:6px}
+#pian-timeline{position:relative;padding:20px 0;margin:20px 0}
+#pian-timeline::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:3px;background:linear-gradient(to bottom,#8b3a2f,#c9b98f,#2d7d46);transform:translateX(-50%)}
+.pian-node{position:relative;width:46%;padding:14px 18px;background:#fff;border:1px solid #e2d8bc;border-radius:8px;margin:14px 0;box-shadow:0 2px 6px rgba(0,0,0,.05)}
+.pian-node:nth-child(odd){margin-right:auto;text-align:right}
+.pian-node:nth-child(even){margin-left:auto}
+.pian-node::before{content:"";position:absolute;top:20px;width:14px;height:14px;background:#8b3a2f;border:3px solid #f5efe0;border-radius:50%}
+.pian-node:nth-child(odd)::before{right:-31px}
+.pian-node:nth-child(even)::before{left:-31px}
+.pian-node h4{margin:0 0 4px 0;font-size:18px;color:#2d4258;font-family:"KaiTi",serif}
+.pian-node .psub{font-size:12px;color:#8a7a5c;margin-bottom:6px}
+.pian-node .psummary{font-size:13px;color:#4a4a4a;line-height:1.6;text-align:left}
+.pian-node .ptheme{display:inline-block;background:#8b3a2f;color:#f5efe0;padding:2px 8px;border-radius:10px;font-size:11px;margin:3px}
+@media(max-width:768px){
+  #pian-timeline::before{left:20px}
+  .pian-node{width:calc(100% - 44px);margin-left:44px !important;text-align:left !important}
+  .pian-node::before{left:-27px !important;right:auto !important}
+  .pian-grid{grid-template-columns:1fr}
+  .zhuang-hero h1{font-size:24px}
+}
+</style>
+</head>
+<body class="ink-theme">
+<header class="topbar">
+  <div class="bar-inner">
+    <a class="brand" href="index.html"><span class="brand-zi">子</span><span class="brand-cang">藏</span><span class="brand-sub">Zi-Cang Ontology</span></a>
+    <nav class="mainnav" id="mainnav"></nav>
+    <button class="theme-toggle" id="themeToggle" title="切换主题">🎨</button>
+  </div>
+</header>
+<main class="container" style="max-width:1200px">
+
+<div class="zhuang-hero">
+  <h1>《莊子》內七篇 · 深度標引</h1>
+  <div class="sub">逍遙遊 · 齊物論 · 養生主 · 人間世 · 德充符 · 大宗師 · 應帝王</div>
+  <p style="margin:8px 0 0 0;font-size:13.5px;color:#d9cda8;line-height:1.7;max-width:780px">
+    本頁以<b style="color:#f2d98a">郭慶藩《莊子集釋》</b>（中華書局點校本）內篇為底本，依 zcon（概念論證本體）做五級語義單元標引：
+    <b>命題 / 論證 / 對話 / 寓言 / 譬喻</b>，全部 137 個單元均定位到句級字符偏移，可直接跳轉原文閱讀。
+  </p>
+  <div class="meta-row">
+    <span class="chip"><b>文獻本體</b>zbib:Work → zbib:Expression（郭象注本）→ 7 zbib:Chapter</span>
+    <span class="chip"><b>概念論證</b>zcon:Claim ×36 · zcon:Argument ×11 · zcon:Dialogue ×25</span>
+    <span class="chip"><b>修辭單元</b>zcon:Fable ×43 · zcon:Metaphor ×22</span>
+    <span class="chip"><b>文本長度</b>16,436 字（內七篇）</span>
+    <span class="chip"><b>標引版本</b>zicang-v20</span>
+  </div>
+</div>
+
+<div class="zhuang-kpis">
+  <div class="zhuang-kpi"><div class="num">7</div><div class="lbl">內篇（章）</div></div>
+  <div class="zhuang-kpi"><div class="num">36</div><div class="lbl">哲學命題</div></div>
+  <div class="zhuang-kpi"><div class="num">11</div><div class="lbl">論證結構</div></div>
+  <div class="zhuang-kpi"><div class="num">43</div><div class="lbl">寓言故事</div></div>
+  <div class="zhuang-kpi"><div class="num">25</div><div class="lbl">對話單元</div></div>
+  <div class="zhuang-kpi"><div class="num">22</div><div class="lbl">譬喻</div></div>
+  <div class="zhuang-kpi"><div class="num">37</div><div class="lbl">義理概念</div></div>
+  <div class="zhuang-kpi"><div class="num">137</div><div class="lbl">句級錨點</div></div>
+</div>
+
+<div class="tabs" id="tabs">
+  <button class="tab-btn active" data-tab="overview">◇ 義理總覽</button>
+  <button class="tab-btn" data-tab="map">❖ 篇章地圖</button>
+  <button class="tab-btn" data-tab="claims">✦ 命題疏解</button>
+  <button class="tab-btn" data-tab="arguments">⚖ 論證結構</button>
+  <button class="tab-btn" data-tab="fables">☯ 寓言解讀</button>
+  <button class="tab-btn" data-tab="dialogues">⌸ 對話問答</button>
+  <button class="tab-btn" data-tab="metaphors">✧ 譬喻舉隅</button>
+  <button class="tab-btn" data-tab="text">☰ 原文閱讀</button>
+</div>
+
+<!-- 概览 -->
+<div class="tab-panel active" id="tab-overview">
+  <h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px;margin-top:4px">內七篇義理系統</h2>
+  <p class="intro-paragraph">
+    《莊子》內七篇自成一個完整的思想體系，向來被視為莊學核心。<b>逍遙遊</b>立「無待」之境界，<b>齊物論</b>破「是非」之執見，
+    二者構成莊子哲學的體用雙翼；<b>養生主</b>轉入人生修養，以「緣督」「薪盡火傳」明安身立命之道；<b>人間世</b>論處世之難，
+    揭「心齋」「乘物遊心」之法；<b>德充符</b>以德遺形，樹「才全德不形」的人格理想；<b>大宗師</b>終論真人與道體，
+    標舉「坐忘」「攖寧」之修行階次；<b>應帝王</b>落於政治，明「無為而治」「用心若鏡」之治道，終以「渾沌鑿竅」警示有為之害。
+  </p>
+  <p class="intro-paragraph">
+    從論證方法看，莊子獨創「三言」之法——<b>寓言</b>十九、藉外論之，<b>重言</b>十七、所以已言，<b>卮言</b>日出、和以天倪。
+    內七篇以層遞、對比、兩難、歸謬、問答層進、連珠譬喻為主要論證圖式，迥異於《墨子》《公孫龍子》的形式邏輯，
+    也不同於《孟子》的雄辯氣勢，是一種「藉象明道」的詩性哲學。
+  </p>
+  <div class="section-note">
+    <b>本體建模說明</b>：本頁標引依子藏 v2.0 本體——文獻結構對應 zbib（zbib:Work/Chapter/Sentence），
+    義理單元對應 zcon（zcon:Claim/Argument/Dialogue/Fable/Metaphor/ArgumentScheme），
+    人物對話參與者對應 zc:Person，未來可接入 zexe（注疏訓詁）以匯總郭象注、成玄英疏、王夫之解等歷代注釋。
+  </div>
+  <h3 style="font-family:KaiTi,serif;color:#8b3a2f;margin-top:20px;letter-spacing:2px">核心概念雲</h3>
+  <div class="concept-cloud" id="conceptCloud"></div>
+  <h3 style="font-family:KaiTi,serif;color:#8b3a2f;margin-top:24px;letter-spacing:2px">義理線索</h3>
+  <div class="pian-grid">
+    <div class="unit-block argument">
+      <div class="u-title">境界論：有待 → 無待</div>
+      <div class="u-desc">大鵬培風、列子御風皆「有所待」，至「乘天地之正而御六氣之辯以遊無窮」方為逍遙，點出「至人無己、神人無功、聖人無名」。</div>
+    </div>
+    <div class="unit-block argument">
+      <div class="u-title">認識論：成心 → 道樞 → 以明</div>
+      <div class="u-desc">破儒墨是非，由「彼是方生」入「道樞環中」，和之以天鈞而休乎兩行，終以「天府葆光」為齊物之境。</div>
+    </div>
+    <div class="unit-block argument">
+      <div class="u-title">修養論：心齋 → 坐忘 → 攖寧</div>
+      <div class="u-desc">人間世「心齋」虛室生白，大宗師「坐忘」離形去知同於大通，女偊聞道七階至「攖寧」——外天下→外物→外生→朝徹→見獨→無古今→不死不生。</div>
+    </div>
+    <div class="unit-block argument">
+      <div class="u-title">政治論：無為 → 若鏡 → 渾沌</div>
+      <div class="u-desc">應帝王明王之治「功蓋天下而似不自己」，至人用心若鏡不將不迎應而不藏，終以渾沌鑿竅警示「有為傷性」。</div>
+    </div>
+  </div>
+</div>
+
+<!-- 篇章地图 -->
+<div class="tab-panel" id="tab-map">
+  <h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">內七篇思想地圖</h2>
+  <div class="section-note">點擊篇章卡片可跳轉至原文；內七篇由「破」而「立」、由「己」而「世」、由「生」而「治」，構成完整的莊子哲學架構。</div>
+  <div id="pianTimeline"></div>
+</div>
+
+<!-- 命题 -->
+<div class="tab-panel" id="tab-claims">
+  <h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">三十六核心命題</h2>
+  <div class="section-note">依篇排序，命題即 zcon:Claim——可以判斷義理立場的最小判斷單元；點擊可跳至原文對應句段。</div>
+  <div id="claimsContainer"></div>
+</div>
+
+<!-- 论证 -->
+<div class="tab-panel" id="tab-arguments">
+  <h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">十一核心論證</h2>
+  <div class="section-note">每個論證含前提（zcon:Premise）、論證圖式（zcon:ArgumentScheme）與結論（zcon:Conclusion），完整再現莊子的義理推進。</div>
+  <div id="argumentsContainer"></div>
+</div>
+
+<!-- 寓言 -->
+<div class="tab-panel" id="tab-fables">
+  <h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">四十三寓言</h2>
+  <div class="section-note">寓言即 zcon:Fable——「寓言十九，藉外論之」，以虛構故事寄寓哲學義理；為《莊》文最鮮明的文體特色。</div>
+  <div id="fablesContainer"></div>
+</div>
+
+<!-- 对话 -->
+<div class="tab-panel" id="tab-dialogues">
+  <h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">二十五對話單元</h2>
+  <div class="section-note">對話即 zcon:Dialogue + zcon:DialogueTurn；《莊》書以問答往復推進義理，兼具戲劇性與思辨性。</div>
+  <div id="dialoguesContainer"></div>
+</div>
+
+<!-- 譬喻 -->
+<div class="tab-panel" id="tab-metaphors">
+  <h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">二十二譬喻</h2>
+  <div class="section-note">譬喻即 zcon:Metaphor——以彼物明此理，莊文之瑰奇多賴此；與寓言的分別在於：寓言是完整故事，譬喻是局部取象。</div>
+  <div id="metaphorsContainer"></div>
+</div>
+
+<!-- 原文 -->
+<div class="tab-panel" id="tab-text">
+  <h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">原文（內七篇）</h2>
+  <div class="section-note">點擊「閱讀原文」可打開閱讀器並直接定位至對應篇章句段。</div>
+  <div class="pian-grid col-1" id="chaptersContainer"></div>
+</div>
+
+<footer class="footer">
+  <p>《庄子》内七篇深度标引 · 子藏本体论 v2.0 · 数据 CC BY-SA 4.0 · 本体对齐 CIDOC CRM / BIBFRAME / SKOS / FOAF / FRBR</p>
+</footer>
+</main>
+
+<script src="js/common.js?v=20"></script>
+<script src="data/zhuangzi-data.js?v=20"></script>
+<script>
+(function(){
+  const D = window.ZHUANGZI_DATA;
+  const BOOK_PATH = '诸子/庄子.txt';
+  function readerUrl(ch, offset, kw){
+    let url = 'reader.html?b=' + encodeURIComponent(BOOK_PATH) + '&ch=' + ch;
+    if(offset) url += '&s=' + offset;
+    if(kw) url += '&kw=' + encodeURIComponent(kw);
+    return url;
+  }
+  function jump(ch, offset, kw){
+    window.open(readerUrl(ch, offset, kw), '_blank');
+  }
+  // Tabs
+  document.querySelectorAll('.tab-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // ---- Concept cloud ----
+  const cloud = document.getElementById('conceptCloud');
+  const coreConcepts = ['逍遙','齊物','道','無待','自然','坐忘','心齋','物化','真人','無為'];
+  coreConcepts.forEach(c=>{
+    const t=document.createElement('span');t.className='tag core';t.textContent=c;
+    t.onclick=()=>{document.querySelector('[data-tab=claims]').click();};
+    cloud.appendChild(t);
+  });
+  D.concepts.filter(c=>!coreConcepts.includes(c)).forEach(c=>{
+    const t=document.createElement('span');t.className='tag';t.textContent=c;
+    cloud.appendChild(t);
+  });
+
+  // ---- Timeline (7 pian) ----
+  const pianThemes = [
+    {theme:'境界論', color:'#8b3a2f', summary:'立「逍遙無待」之最高境界，借鯤鵬、蜩鳩、許由、藐姑射神人、大樗層層翻上，結穴於「至人無己」。'},
+    {theme:'認識論', color:'#a0522d', summary:'破「成心」與「是非」，借三籟、朝三暮四、辯無勝、夢蝶闡「道通為一」「彼是莫得其偶」之齊物大旨。'},
+    {theme:'養生論', color:'#2d7d46', summary:'由「有涯隨無涯」之警戒入，以庖丁解牛喻「依乎天理、遊刃有餘」，薪盡火傳點出形盡神不絕之養生至境。'},
+    {theme:'處世論', color:'#4a6481', summary:'借顏回將之衛、葉公使齊、顏闔傅太子三事明人間之難，揭「心齋」「乘物遊心」「無用之用」的處世心法。'},
+    {theme:'德性論', color:'#b8860b', summary:'以兀者王駘、申徒嘉、叔山無趾、惡人哀駘它連珠起譬，證「德有所長而形有所忘」「才全而德不形」。'},
+    {theme:'道體論', color:'#6a3fa0', summary:'描摹「古之真人」與「夫道自本自根」，開「聞道七階」（外天下→外物→外生→朝徹→見獨→無古今→不死不生），以「坐忘」為修養極詣。'},
+    {theme:'政治論', color:'#2d4258', summary:'明王之治「功蓋天下而似不自己」，至人用心若鏡；終以「渾沌鑿竅」之悲劇警示有為之害，回應逍遙齊物之旨。'}
+  ];
+  const tl = document.getElementById('pianTimeline');
+  D.chapters.forEach((c,i)=>{
+    const node = document.createElement('div');
+    node.className='pian-node';
+    node.innerHTML = '<h4>'+c.fullTitle+'</h4>'+
+      '<div class="psub">'+c.charCount+' 字 · '+pianThemes[i].theme+'</div>'+
+      '<div class="psummary">'+pianThemes[i].summary+'</div>'+
+      '<div style="margin-top:8px"><span class="ptheme" style="background:'+pianThemes[i].color+'">'+pianThemes[i].theme+'</span>'+
+      '<a class="read-link" href="'+readerUrl(i+1,c.start)+'" target="_blank">→ 閱讀原文</a></div>';
+    tl.appendChild(node);
+  });
+
+  // ---- Claims ----
+  const cc = document.getElementById('claimsContainer');
+  // 按 ch 分组
+  D.chapters.forEach((ch,ci)=>{
+    const chClaims = D.claims.filter(c=>c.ch===ci+1);
+    if(!chClaims.length) return;
+    const box = document.createElement('div');box.className='pian-card';
+    box.innerHTML='<h3>'+ch.fullTitle+'</h3><div class="pian-sub">'+ch.charCount+'字 · '+chClaims.length+'個核心命題</div>';
+    const grid = document.createElement('div');grid.className='pian-grid';
+    chClaims.forEach(c=>{
+      const b = document.createElement('div');
+      b.className='unit-block claim jump';
+      b.innerHTML='<div class="u-title">'+c.summary+'</div>'+
+        '<div class="u-meta">'+c.type+' · <b style="color:#8b3a2f">'+c.position+'</b></div>'+
+        '<div class="u-desc">「'+c.text+'」</div>'+
+        '<div>'+(c.concept||[]).map(x=>'<span class="u-concept">'+x+'</span>').join('')+
+        '<a class="read-link" href="'+readerUrl(c.ch,c.charOffset,c.text.slice(0,10))+'" target="_blank">→ 原文定位</a></div>';
+      b.onclick=()=>jump(c.ch,c.charOffset,c.text.slice(0,10));
+      grid.appendChild(b);
+    });
+    box.appendChild(grid);
+    cc.appendChild(box);
+  });
+
+  // ---- Arguments ----
+  const ac = document.getElementById('argumentsContainer');
+  D.arguments.forEach(a=>{
+    const ch = D.chapters[a.ch-1];
+    const box = document.createElement('div');box.className='pian-card';
+    let schemes = (a.scheme||[]).map(s=>'<span class="u-scheme">'+s+'</span>').join('');
+    box.innerHTML='<h3>'+a.title+'</h3>'+
+      '<div class="pian-sub">出自《'+ch.title+'》 · 論證圖式：'+schemes+'</div>'+
+      '<div class="pian-grid col-1"><div class="arg-chain">'+
+        '<div class="conclusion" style="background:#fff;border:1px dashed #c9892d;margin-bottom:10px"><b>結論：</b>'+a.conclusion+'</div>'+
+        (a.premises||[]).map((p,i)=>'<div class="premise"><b>前提'+(i+1)+'：</b>'+p+'</div><div class="arrow">↓</div>').join('')+
+        '<div class="arrow" style="font-weight:bold;color:#8b3a2f">∴</div>'+
+        '<div class="conclusion">'+a.summary+'</div>'+
+      '</div></div>'+
+      '<div style="margin-top:8px"><a class="read-link" href="'+readerUrl(a.ch,a.charOffset,a.conclusion.slice(0,10))+'" target="_blank">→ 定位至原文結論句</a></div>';
+    ac.appendChild(box);
+  });
+
+  // ---- Fables ----
+  const fc = document.getElementById('fablesContainer');
+  D.chapters.forEach((ch,ci)=>{
+    const items = D.fables.filter(f=>f.ch===ci+1);
+    if(!items.length) return;
+    const box = document.createElement('div');box.className='pian-card';
+    box.innerHTML='<h3>'+ch.fullTitle+'</h3><div class="pian-sub">'+items.length+' 則寓言</div>';
+    const grid = document.createElement('div');grid.className='pian-grid';
+    items.forEach(f=>{
+      const b=document.createElement('div');b.className='unit-block fable jump';
+      b.innerHTML='<div class="u-title">'+f.title+'</div>'+
+        '<div class="u-meta">寓言 · '+f.desc.length+' 字概述</div>'+
+        '<div class="u-desc"><b>故事：</b>'+f.desc+'</div>'+
+        '<div class="u-desc" style="margin-top:6px;color:#2d7d46"><b>義理：</b>'+f.moral+'</div>'+
+        '<div><a class="read-link" href="'+readerUrl(f.ch,f.charOffset)+'" target="_blank">→ 閱讀此段</a></div>';
+      b.onclick=()=>jump(f.ch,f.charOffset);
+      grid.appendChild(b);
+    });
+    box.appendChild(grid);fc.appendChild(box);
+  });
+
+  // ---- Dialogues ----
+  const dc = document.getElementById('dialoguesContainer');
+  D.chapters.forEach((ch,ci)=>{
+    const items = D.dialogues.filter(d=>d.ch===ci+1);
+    if(!items.length) return;
+    const box = document.createElement('div');box.className='pian-card';
+    box.innerHTML='<h3>'+ch.fullTitle+'</h3><div class="pian-sub">'+items.length+' 段對話</div>';
+    const grid = document.createElement('div');grid.className='pian-grid';
+    items.forEach(d=>{
+      const b=document.createElement('div');b.className='unit-block dialogue jump';
+      b.innerHTML='<div class="u-title">'+d.title+'</div>'+
+        '<div class="u-meta">'+d.turns+' 個話輪 · 參與者：'+(d.participants||[]).join('、')+'</div>'+
+        '<div class="u-desc">點擊跳至對話開端，可在閱讀器中查看完整問答往復。</div>'+
+        '<div><a class="read-link" href="'+readerUrl(d.ch,d.charOffset)+'" target="_blank">→ 對話開端</a></div>';
+      b.onclick=()=>jump(d.ch,d.charOffset);
+      grid.appendChild(b);
+    });
+    box.appendChild(grid);dc.appendChild(box);
+  });
+
+  // ---- Metaphors ----
+  const mc = document.getElementById('metaphorsContainer');
+  D.chapters.forEach((ch,ci)=>{
+    const items = D.metaphors.filter(m=>m.ch===ci+1);
+    if(!items.length) return;
+    const box = document.createElement('div');box.className='pian-card';
+    box.innerHTML='<h3>'+ch.fullTitle+'</h3><div class="pian-sub">'+items.length+' 個譬喻</div>';
+    const grid = document.createElement('div');grid.className='pian-grid';
+    items.forEach(m=>{
+      const b=document.createElement('div');b.className='unit-block metaphor jump';
+      b.innerHTML='<div class="u-title">'+m.title+'：「'+m.vehicle+'」喻「'+m.target+'」</div>'+
+        '<div class="u-meta">譬喻 · zcon:Metaphor</div>'+
+        '<div class="u-desc">'+m.desc+'</div>'+
+        '<div><a class="read-link" href="'+readerUrl(m.ch,m.charOffset)+'" target="_blank">→ 原文位置</a></div>';
+      b.onclick=()=>jump(m.ch,m.charOffset);
+      grid.appendChild(b);
+    });
+    box.appendChild(grid);mc.appendChild(box);
+  });
+
+  // ---- Chapters (text tab) ----
+  const chaptersBox = document.getElementById('chaptersContainer');
+  D.chapters.forEach((ch,ci)=>{
+    const items = {
+      claims: D.claims.filter(c=>c.ch===ci+1).length,
+      fables: D.fables.filter(f=>f.ch===ci+1).length,
+      dialogues: D.dialogues.filter(d=>d.ch===ci+1).length,
+      arguments: D.arguments.filter(a=>a.ch===ci+1).length,
+      metaphors: D.metaphors.filter(m=>m.ch===ci+1).length
+    };
+    const box=document.createElement('div');box.className='pian-card';
+    box.innerHTML='<h3>'+ch.fullTitle+'</h3>'+
+      '<div class="pian-sub">'+ch.charCount+' 字 · 主題：'+pianThemes[ci].theme+'</div>'+
+      '<div class="pian-stats">'+
+        '<span>命題 '+items.claims+'</span>'+
+        '<span>寓言 '+items.fables+'</span>'+
+        '<span>對話 '+items.dialogues+'</span>'+
+        '<span>論證 '+items.arguments+'</span>'+
+        '<span>譬喻 '+items.metaphors+'</span>'+
+      '</div>'+
+      '<p style="font-size:13.5px;line-height:1.8;color:#4a4a4a;margin:10px 0">'+pianThemes[ci].summary+'</p>'+
+      '<a class="read-link" style="font-size:14px" href="'+readerUrl(ci+1,ch.start)+'" target="_blank">→ 閱讀《'+ch.title+'》全文</a>';
+    chaptersBox.appendChild(box);
+  });
+})();
+</script>
+</body>
+</html>
