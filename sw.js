@@ -1,4 +1,6 @@
-const CACHE = 'zicang-v24';
+const CACHE = 'zicang-v25';
+// 预缓存列表：仅含首屏核心 shell；超大索引文件（几 MB）不预缓存，运行时按需缓存
+// addAll 是原子操作，任一文件 404/超限会导致整个 install 失败，所以只列确定存在且体积小的文件
 const APP_SHELL = [
   './',
   './index.html',
@@ -57,12 +59,8 @@ const APP_SHELL = [
   './data/people-pairs.js',
   './data/people-links.js',
   './data/rdf-export.js',
-  './data/chapters_full.js',
-  './data/sentence_index.js',
-  './data/concept_full.js',
-  './data/mention_full.js',
-  './data/anchors_precise.js',
   './data/ontobuild_summary.js',
+  './data/anchors_precise.js',
   './data/zhuangzi-data.js',
   './data/laozi-data.js',
   './data/liezi-data.js',
@@ -73,54 +71,95 @@ const APP_SHELL = [
   './data/mozi-data.js',
   './manifest.json'
 ];
+// 超大索引文件：不在 install 时预缓存，首次用到再缓存
+const LAZY_CACHE = [
+  './data/chapters_full.js',
+  './data/sentence_index.js',
+  './data/concept_full.js',
+  './data/mention_full.js'
+];
+
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(APP_SHELL)).then(() => self.skipWaiting()));
+  // 逐个缓存 + 容错：单个文件失败不阻塞整体 install
+  e.waitUntil(
+    caches.open(CACHE).then(cache => {
+      return Promise.all(APP_SHELL.map(url => {
+        return cache.add(url).catch(err => {
+          // 静默跳过失败项（可能是 404 或配额不足），不阻断 SW 激活
+          console.warn('[SW] skip cache:', url, err && err.message);
+        });
+      }));
+    }).then(() => self.skipWaiting())
+  );
 });
+
 self.addEventListener('activate', e => {
-  // 强制删除所有旧版本缓存（v21/v22/v23），让用户立刻拿到新版本
+  // 强制删除所有旧版本缓存，让用户立刻拿到新版本
   e.waitUntil(
     caches.keys().then(keys => Promise.all(
-      keys.map(k => caches.delete(k))
+      keys.map(k => k !== CACHE ? caches.delete(k) : null)
     )).then(() => self.clients.claim())
   );
 });
+
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
   if (url.origin !== location.origin) return;
   const path = url.pathname;
+
   // 文本文件：network-first，避免缓存旧版本文本
-  if (path.startsWith('/texts/') || path.startsWith('/Zi-Cang/texts/')) {
+  if (path.startsWith('/texts/') || path.endsWith('.txt')) {
     e.respondWith(
       fetch(e.request).then(res => {
         if (res && res.status === 200) {
           const copy = res.clone();
-          caches.open(CACHE).then(c => c.put(e.request, copy));
+          caches.open(CACHE).then(c => c.put(e.request, copy)).catch(()=>{});
         }
         return res;
       }).catch(() => caches.match(e.request))
     );
     return;
   }
-  // 带版本号的资源（?v=23/24）：stale-while-revalidate，但优先新请求
+
+  // 超大索引文件：cache-first（首次 network 拉取并缓存，后续走缓存）
+  const isLazy = LAZY_CACHE.some(p => path.endsWith(p.replace('./','/'))) || LAZY_CACHE.some(p => path.endsWith(p.replace('./','/Zi-Cang/')));
+  if (isLazy) {
+    e.respondWith(
+      caches.match(e.request).then(cached => {
+        if (cached) return cached;
+        return fetch(e.request).then(res => {
+          if (res && res.status === 200) {
+            const copy = res.clone();
+            caches.open(CACHE).then(c => c.put(e.request, copy)).catch(()=>{});
+          }
+          return res;
+        }).catch(() => cached);
+      })
+    );
+    return;
+  }
+
+  // 带版本号的资源（?v=xx）：network-first，新版本立即生效
   if (url.search.includes('v=')) {
     e.respondWith(
       fetch(e.request).then(res => {
         if (res && res.status === 200) {
           const copy = res.clone();
-          caches.open(CACHE).then(c => c.put(e.request, copy));
+          caches.open(CACHE).then(c => c.put(e.request, copy)).catch(()=>{});
         }
         return res;
       }).catch(() => caches.match(e.request))
     );
     return;
   }
-  // 其他静态资源：cache-first，但后台更新
+
+  // 其他静态资源：stale-while-revalidate
   e.respondWith(
     caches.match(e.request).then(cached => {
       const fetchPromise = fetch(e.request).then(res => {
         if (res && res.status === 200 && (res.type === 'basic' || res.type === 'cors')) {
           const copy = res.clone();
-          caches.open(CACHE).then(c => c.put(e.request, copy));
+          caches.open(CACHE).then(c => c.put(e.request, copy)).catch(()=>{});
         }
         return res;
       }).catch(() => cached);

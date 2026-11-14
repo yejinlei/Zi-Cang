@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>子藏本體規範總綱 v2.0 · Zi-Cang Ontology Specification</title>
-<link rel="stylesheet" href="css/common.css?v=23">
+<link rel="stylesheet" href="css/common.css?v=25">
 <style>
 .spec-hero{background:linear-gradient(135deg,#1a2a3f,#2d4258 60%,#8b3a2f);color:#f5efe0;padding:32px 28px;border-radius:10px;margin-bottom:24px}
 .spec-hero h1{margin:0 0 8px;font-size:32px;letter-spacing:4px;font-family:"KaiTi",serif}
@@ -83,8 +83,8 @@
 </footer>
 </main>
 
-<script src="js/common.js?v=23"></script>
-<script src="data/ontology-schema.js?v=21"></script>
+<script src="js/common.js?v=25"></script>
+<script src="data/ontology-schema.js?v=25"></script>
 <script>
 (function(){
   const S = window.ONTOLOGY_SCHEMA;
@@ -102,7 +102,7 @@
   // KPI
   const kpiBox=document.getElementById('specKpis');
   const kpis=[
-    {n:S.modules.length,l:"本體模組"},
+    {n:S.meta.modules.length,l:"本體模組"},
     {n:S.classes.length,l:"本體類 (Class)"},
     {n:S.objectProps.length,l:"屬性 (Property)"},
     {n:S.rules.length,l:"推理規則 (Rule)"},
@@ -117,7 +117,7 @@
   // TOC
   const toc=document.getElementById('tocBox');
   const tocOl=document.createElement('ol');
-  S.modules.forEach((m,i)=>{
+  S.meta.modules.forEach((m,i)=>{
     const li=document.createElement('li');
     li.innerHTML='<a href="#mod-'+m.id+'">'+modNames[m.id]+'</a>';
     tocOl.appendChild(li);
@@ -149,7 +149,7 @@
   box.appendChild(intro);
 
   // Modules
-  S.modules.forEach(m=>{
+  S.meta.modules.forEach(m=>{
     const sec=document.createElement('div');sec.className='mod-section';sec.id='mod-'+m.id;sec.style.setProperty('--mc',modColor[m.id]);
     const classes = S.classes.filter(c=>c.mod===m.id);
     const props = S.objectProps.filter(p=>(p.mod||'zcore')===m.id);
