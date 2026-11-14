@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>典籍閱讀 · 子藏本體論</title>
-<link rel="stylesheet" href="css/common.css?v=20">
+<link rel="stylesheet" href="css/common.css?v=21">
 <style>
   body{background:var(--paper);color:var(--ink);margin:0;font-family:'Noto Serif SC','Source Han Serif SC','SimSun',serif;line-height:1.8;overflow-x:hidden}
   .reader-wrap{max-width:860px;margin:0 auto;padding:24px 28px 120px}
@@ -85,7 +85,7 @@
 </div>
 <div class="toast" id="toast"></div>
 
-<script src="js/common.js?v=20"></script>
+<script src="js/common.js?v=21"></script>
 <script>
 // ========== 核心状态 ==========
 const params = new URLSearchParams(location.search);
@@ -137,8 +137,8 @@ function parseUrlParams(){
 async function loadPreciseData(){
   try{
     const [r1,r2] = await Promise.all([
-      fetch('data/chapters_full.js?v=20',{cache:'force-cache'}).then(r=>r.text()).catch(()=>null),
-      fetch('data/sentence_index.js?v=20',{cache:'force-cache'}).then(r=>r.text()).catch(()=>null),
+      fetch('data/chapters_full.js?v=21',{cache:'force-cache'}).then(r=>r.text()).catch(()=>null),
+      fetch('data/sentence_index.js?v=21',{cache:'force-cache'}).then(r=>r.text()).catch(()=>null),
     ]);
     if(r1){ const w={}; new Function('window',r1)(w); CHAPTERS_FULL=w.CHAPTERS_FULL; }
     if(r2){ const w={}; new Function('window',r2)(w); SENT_INDEX=w.SENT_INDEX; }
@@ -147,7 +147,7 @@ async function loadPreciseData(){
 function getPreciseChapters(partPath){
   if(!CHAPTERS_FULL) return null;
   // books.js path 是相对 texts/ 的路径，partPath 是完整URL
-  const rel = partPath.replace(/.*texts//,'').replace(/^texts//,'');
+  const rel = partPath.replace(/.*texts\//,'').replace(/^texts\//,'');
   for(const b of CHAPTERS_FULL){
     for(const pt of b.parts){
       if(pt.path === rel || partPath.endsWith(pt.path)){
@@ -212,7 +212,7 @@ function scrollToOffset(){
 let BOOKS = [];
 async function loadBooksInfo(){
   try{
-    const r = await fetch('data/books.json?v=20',{cache:'force-cache'});
+    const r = await fetch('data/books.json?v=21',{cache:'force-cache'});
     if(!r.ok) return null;
     BOOKS = await r.json();
     return BOOKS;

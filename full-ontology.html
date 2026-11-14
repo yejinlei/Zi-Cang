@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>全文本體化 · 子藏</title>
-<link rel="stylesheet" href="css/common.css?v=20">
+<link rel="stylesheet" href="css/common.css?v=21">
 <style>
 .kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:20px 0}
 .kpi{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center}
@@ -360,23 +360,23 @@ function calcV19Stats(){
   return {totalBooks, totalCh, coreBooks, coreSents, conceptHits, personHits, anchors,
     totalAnchors: window.ANCHORS_PRECISE?window.ANCHORS_PRECISE.length:0};
 }
-<script src="data/chapters_full.js?v=20"></script>
-<script src="data/concept_full.js?v=20"></script>
-<script src="data/mention_full.js?v=20"></script>
-<script src="data/anchors_precise.js?v=20"></script>
-<script src="data/sentence_index.js?v=20"></script>
-<script src="data/ontobuild_summary.js?v=20"></script>
-<script src="data/people_ext.js?v=20"></script>
-<script src="data/books.js?v=20"></script>
-<script src="data/classics.js?v=20"></script>
-<script src="data/schools.js?v=20"></script>
-<script src="data/terms.js?v=20"></script>
-<script src="data/daoti.js?v=20"></script>
-<script src="data/idioms.js?v=20"></script>
-<script src="data/cross.js?v=20"></script>
-<script src="data/rdf-export.js?v=20"></script>
-<script src="js/linkify.js?v=20"></script>
-<script src="js/common.js?v=20"></script>
+<script src="data/chapters_full.js?v=21"></script>
+<script src="data/concept_full.js?v=21"></script>
+<script src="data/mention_full.js?v=21"></script>
+<script src="data/anchors_precise.js?v=21"></script>
+<script src="data/sentence_index.js?v=21"></script>
+<script src="data/ontobuild_summary.js?v=21"></script>
+<script src="data/people_ext.js?v=21"></script>
+<script src="data/books.js?v=21"></script>
+<script src="data/classics.js?v=21"></script>
+<script src="data/schools.js?v=21"></script>
+<script src="data/terms.js?v=21"></script>
+<script src="data/daoti.js?v=21"></script>
+<script src="data/idioms.js?v=21"></script>
+<script src="data/cross.js?v=21"></script>
+<script src="data/rdf-export.js?v=21"></script>
+<script src="js/linkify.js?v=21"></script>
+<script src="js/common.js?v=21"></script>
 <script>
 // ======== 初始化 KPI ========
 (function(){
@@ -566,7 +566,7 @@ function buildAnchors(){
       arr.map(a=>{
         const bn = a.bookPath?bookNameByPath(a.bookPath):'(未在子藏文本庫)';
         const chT = a.chapterTitle?` · ${a.chapterTitle}`:'';
-        const link = a.precise?`<a href="${bookReaderLink(a.precise.part, a.precise.chapterIdx, a.precise.keyword)}" target="_blank" style="color:var(--gold)">定位原文 →</a>` : (a.bookPath?`<a href="${bookReaderLink(a.bookPath)}" target="_blank" style="color:var(--gold)">打開原典 →</a>`:'<span style="color:var(--muted)">—</span>';
+        const link = a.precise?`<a href="${bookReaderLink(a.precise.part, a.precise.chapterIdx, a.precise.keyword)}" target="_blank" style="color:var(--gold)">定位原文 →</a>` : (a.bookPath?`<a href="${bookReaderLink(a.bookPath)}" target="_blank" style="color:var(--gold)">打開原典 →</a>`:'<span style="color:var(--muted)">—</span>');
         return `<tr>
           <td><span class="type-tag ${a.type}" style="color:${typeColor[a.type]}">${typeLabel[a.type]||a.type}</span></td>
           <td><b>${a.key}</b></td>
