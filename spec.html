@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
+<script id="fouc-theme">!function(){try{var t=localStorage.getItem("zicang-theme")||"xingxiang",v=localStorage.getItem("zicang-theme-ver");if(v!=="v29-deepsky")t="xingxiang";document.documentElement.setAttribute("data-theme",t)}catch(e){document.documentElement.setAttribute("data-theme","xingxiang")}}();</script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>子藏本體規範總綱 v2.0 · Zi-Cang Ontology Specification</title>
-<link rel="stylesheet" href="css/common.css?v=28">
+<link rel="stylesheet" href="css/common.css?v=30">
 <style>
-.spec-hero{background:linear-gradient(135deg,#1a2a3f,#2d4258 60%,#8b3a2f);color:#f5efe0;padding:32px 28px;border-radius:10px;margin-bottom:24px}
+.spec-hero{background:linear-gradient(135deg,#1a2a3f,#2d4258 60%,var(--zhu));color:#f5efe0;padding:32px 28px;border-radius:10px;margin-bottom:24px}
 .spec-hero h1{margin:0 0 8px;font-size:32px;letter-spacing:4px;font-family:"KaiTi",serif}
 .spec-hero .sub{color:#c9b98f;font-size:14px;letter-spacing:2px;margin-bottom:14px}
 .spec-hero .intro{font-size:14px;line-height:1.8;max-width:860px;color:#e8dec4}
@@ -14,38 +16,38 @@
 .spec-kpis .k{background:rgba(245,239,224,.1);border:1px solid rgba(201,185,143,.3);padding:10px;border-radius:8px;text-align:center}
 .spec-kpis .kn{font-size:24px;color:#f2d98a;font-weight:700;font-family:KaiTi,serif}
 .spec-kpis .kl{font-size:11px;color:#c9b98f;margin-top:3px;letter-spacing:1px}
-.toc{background:#faf6ec;border:1px solid #e2d8bc;border-radius:8px;padding:16px 22px;margin:16px 0}
-.toc h3{margin:0 0 10px;font-family:KaiTi,serif;color:#8b3a2f;letter-spacing:2px}
+.toc{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px 22px;margin:16px 0}
+.toc h3{margin:0 0 10px;font-family:KaiTi,serif;color:var(--zhu);letter-spacing:2px}
 .toc ol{margin:0;padding-left:20px;columns:2;column-gap:30px}
 .toc li{padding:3px 0;font-size:14px}
 .toc a{color:#4a6481;text-decoration:none;border-bottom:1px dotted #b0c4d8}
-.toc a:hover{color:#8b3a2f;border-color:#8b3a2f}
-.mod-section{background:#fff;border:1px solid #e2d8bc;border-radius:10px;padding:20px 24px;margin:20px 0}
-.mod-section h2{margin:0 0 4px;font-size:24px;font-family:KaiTi,serif;letter-spacing:3px;padding-left:14px;border-left:5px solid var(--mc,#8b3a2f);color:#2d4258}
+.toc a:hover{color:var(--zhu);border-color:var(--zhu)}
+.mod-section{background:#fff;border:1px solid var(--border);border-radius:10px;padding:20px 24px;margin:20px 0}
+.mod-section h2{margin:0 0 4px;font-size:24px;font-family:KaiTi,serif;letter-spacing:3px;padding-left:14px;border-left:5px solid var(--mc,var(--zhu));color:#2d4258}
 .mod-section .mod-sub{color:#8a7a5c;font-size:13px;margin:4px 0 14px 19px}
-.mod-section h3{margin:20px 0 8px;font-family:KaiTi,serif;color:var(--mc,#8b3a2f);letter-spacing:1px;font-size:18px}
+.mod-section h3{margin:20px 0 8px;font-family:KaiTi,serif;color:var(--mc,var(--zhu));letter-spacing:1px;font-size:18px}
 .class-table,.prop-table{width:100%;border-collapse:collapse;margin:8px 0 14px;font-size:13px}
-.class-table th,.prop-table th{background:var(--mc,#8b3a2f);color:#fff;padding:8px 10px;text-align:left;font-weight:500;font-family:KaiTi,serif;letter-spacing:1px}
-.class-table td,.prop-table td{border-bottom:1px solid #efe5cf;padding:8px 10px;vertical-align:top;line-height:1.6}
-.class-table tr:hover td,.prop-table tr:hover td{background:#faf6ec}
-.class-table code,.prop-table code{background:#f0e8cf;padding:1px 6px;border-radius:3px;font-size:12px;color:#6a4a1a}
+.class-table th,.prop-table th{background:var(--mc,var(--zhu));color:#fff;padding:8px 10px;text-align:left;font-weight:500;font-family:KaiTi,serif;letter-spacing:1px}
+.class-table td,.prop-table td{border-bottom:1px solid var(--bg-soft);padding:8px 10px;vertical-align:top;line-height:1.6}
+.class-table tr:hover td,.prop-table tr:hover td{background:var(--bg-soft)}
+.class-table code,.prop-table code{background:var(--bg-soft);padding:1px 6px;border-radius:3px;font-size:12px;color:var(--gold-deep)}
 .td-id{font-family:monospace;color:#4a6481;font-size:12px;white-space:nowrap}
 .td-parent{color:#8a7a5c;font-family:monospace;font-size:12px}
 .td-def{color:#3a3a3a}
-.td-align{font-size:11px;color:#8b3a2f}
+.td-align{font-size:11px;color:var(--zhu)}
 .td-note{color:#8a7a5c;font-size:12px;font-style:italic}
-.rule-block{background:#faf6ec;border-left:4px solid var(--mc,#8b3a2f);padding:10px 14px;margin:8px 0;border-radius:0 6px 6px 0;font-size:13px;line-height:1.7}
-.rule-block b{color:#8b3a2f}
+.rule-block{background:var(--bg-soft);border-left:4px solid var(--mc,var(--zhu));padding:10px 14px;margin:8px 0;border-radius:0 6px 6px 0;font-size:13px;line-height:1.7}
+.rule-block b{color:var(--zhu)}
 .rule-block .if{color:#4a6481;font-family:monospace;font-size:12px;margin-top:4px}
 .rule-block .then{color:#2d7d46;font-family:monospace;font-size:12px}
-.enum-block{background:#faf6ec;border-radius:8px;padding:14px;margin:8px 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px}
-.enum-item{background:#fff;border:1px solid #e2d8bc;border-radius:6px;padding:8px 12px}
-.enum-item b{color:#8b3a2f;font-family:KaiTi,serif}
+.enum-block{background:var(--bg-soft);border-radius:8px;padding:14px;margin:8px 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px}
+.enum-item{background:#fff;border:1px solid var(--border);border-radius:6px;padding:8px 12px}
+.enum-item b{color:var(--zhu);font-family:KaiTi,serif}
 .enum-item span{display:block;font-size:12px;color:#6a5a3c;line-height:1.5;margin-top:2px}
-.align-box{background:#faf6ec;border-radius:8px;padding:14px 18px;margin:8px 0}
+.align-box{background:var(--bg-soft);border-radius:8px;padding:14px 18px;margin:8px 0}
 .align-box h4{margin:0 0 6px;color:#4a6481;font-family:KaiTi,serif}
-.align-box code{background:#fff;border:1px solid #e2d8bc;padding:2px 8px;border-radius:4px;margin:2px 3px;font-size:12px;display:inline-block}
-.design-box{background:#fdf4e3;border-left:4px solid #c9892d;padding:12px 16px;border-radius:0 6px 6px 0;margin:10px 0;font-size:13.5px;line-height:1.7;color:#6a4a1a}
+.align-box code{background:#fff;border:1px solid var(--border);padding:2px 8px;border-radius:4px;margin:2px 3px;font-size:12px;display:inline-block}
+.design-box{background:#fdf4e3;border-left:4px solid #c9892d;padding:12px 16px;border-radius:0 6px 6px 0;margin:10px 0;font-size:13.5px;line-height:1.7;color:var(--gold-deep)}
 @media(max-width:768px){
   .toc ol{columns:1}
   .spec-hero h1{font-size:24px}
@@ -83,7 +85,7 @@
 </footer>
 </main>
 
-<script src="js/common.js?v=28"></script>
+<script src="js/common.js?v=30"></script>
 <script src="data/ontology-schema.js?v=27"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function(){
@@ -107,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function(){
   if(!box){ return; }
 
   if(S.meta.modules.length === 0){
-    box.innerHTML='<div style="color:#b33;padding:3em;text-align:center;font-size:16px;background:#fff;border:1px solid #e2d8bc;border-radius:10px">⚠️ 本體數據未能加載（可能是舊版緩存），請按 <b style="background:#fff3cd;padding:2px 8px;border-radius:4px">Ctrl+Shift+R</b>（Mac: Cmd+Shift+R）<b>強制刷新頁面兩次</b></div>';
+    box.innerHTML='<div style="color:#b33;padding:3em;text-align:center;font-size:16px;background:#fff;border:1px solid var(--border);border-radius:10px">⚠️ 本體數據未能加載（可能是舊版緩存），請按 <b style="background:#fff3cd;padding:2px 8px;border-radius:4px">Ctrl+Shift+R</b>（Mac: Cmd+Shift+R）<b>強制刷新頁面兩次</b></div>';
     return;
   }
 
@@ -249,7 +251,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
   // License
   const lic=document.createElement('div');lic.className='mod-section';lic.id='license';lic.style.setProperty('--mc','#8b3a2f');
-  lic.innerHTML='<h2 style="border-color:#8b3a2f">授權與使用</h2>'+
+  lic.innerHTML='<h2 style="border-color:var(--zhu)">授權與使用</h2>'+
     '<div class="design-box"><b>本體（TBox）</b>：以 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank">CC BY-SA 4.0</a> 開放授權。<br>'+
     '<b>數據（ABox）</b>：典籍文本來自公共領域之古籍整理本；標引數據（概念/命題、論證、引文錨點等結構化標注）以 CC BY-SA 4.0 開放。<br>'+
     '<b>網站程式碼</b>：與 yejinlei.github.io 其他專案一致，以 MIT License 開源。<br>'+

@@ -12,7 +12,15 @@ const THEMES = {
   qingtong:{ name:'青銅吉金', ink:'#e8dfc5', sub:'#8a805e', paper:'#13120e', card:'rgba(28,26,18,.82)', border:'rgba(180,150,80,.18)', gold:'#c9a15a', accent:'#b87333' }
 };
 function initTheme(){
-  const saved = localStorage.getItem('zicang-theme') || 'xingxiang';
+  // 检测旧版本主题，强制升级到新版深空星象（v29+ 视觉重设）
+  const THEME_VER = 'v30-staralign';
+  let saved = localStorage.getItem('zicang-theme') || 'xingxiang';
+  const savedVer = localStorage.getItem('zicang-theme-ver');
+  if (savedVer !== THEME_VER) {
+    saved = 'xingxiang';
+    localStorage.setItem('zicang-theme', saved);
+    localStorage.setItem('zicang-theme-ver', THEME_VER);
+  }
   applyTheme(saved);
   document.documentElement.setAttribute('data-theme', saved);
 }

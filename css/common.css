@@ -3,56 +3,16 @@
    参考《易经本体论》深空蓝底 + 银白/星金文字 + 朱砂红点缀 + 星轨罗盘背景
    ======================================================== */
 
-/* ---- 5 套主题 CSS 变量（默认=星象羅盤·深空金纹） ---- */
-:root {
+/* ---- 5 套主题 CSS 变量（默认=星象羅盤·深空金纹，变量统一定义在文件末尾的主题块） ---- */
+:root{
   --gutter: 40px;
-
-  /* 深空主色 */
-  --bg: #0a1628;
-  --paper: #0a1628;
-  --card: rgba(18,34,64,.78);
-  --card-solid: #132544;
-  --bg-soft: rgba(212,176,121,.08);
-  --bg-deep: #060f1f;
-  --space-3: #0f1f3a;
-
-  /* 文字 */
-  --ink: #e8edf5;
-  --ink-soft: #c8d3e5;
-  --ink-2: #c8d3e5;
-  --ink-3: #8a97ae;
-  --sub: #8a97ae;
-
-  /* 边框与阴影 */
-  --border: rgba(180,200,230,.18);
-  --border-strong: rgba(200,215,240,.35);
-  --border-soft: rgba(150,175,210,.1);
-  --shadow: 0 4px 24px rgba(0,0,0,.45);
-  --shadow-lg: 0 12px 48px rgba(0,0,0,.6);
-  --glow: 0 0 24px rgba(200,170,100,.18);
-
-  /* 强调色 */
-  --zhu: #d94a4a;          /* 朱砂红（主强调） */
-  --zhu-deep: #b53232;
-  --gold: #d4b079;         /* 星象金（主辅） */
-  --gold-bright: #efd5a4;
-  --gold-deep: #a88648;
-  --accent: #d4b079;       /* 链接/强调用金 */
-  --silver: #c8d0dd;
-  --jade: #7bbfa6;
-  --ice: #7aa8d4;
-  --violet: #a888c8;
-  --amber: #e0a060;
-
   /* 圆角 */
   --radius: 6px;
   --radius-lg: 10px;
-
   /* 字体 */
   --font-serif: 'Songti SC','STSong','SimSun','Noto Serif CJK SC','Source Han Serif SC','Noto Serif SC',serif;
   --font-sans: 'PingFang SC','Microsoft YaHei','Hiragino Sans GB','Noto Sans CJK SC',sans-serif;
   --font-kai: 'STKaiti','KaiTi','Kaiti SC',serif;
-
   color-scheme: dark;
 }
 
@@ -131,9 +91,9 @@ h3 { font-size: 20px; letter-spacing: 2px; margin: 18px 0 10px; color: var(--sil
 .site-nav {
   position: sticky; top: 0; z-index: 500;
   height: 64px;
-  background: linear-gradient(180deg, rgba(10,22,40,.95) 0%, rgba(10,22,40,.82) 100%);
+  background: var(--card-solid);
   border-bottom: 1px solid var(--border);
-  box-shadow: 0 2px 20px rgba(0,0,0,.5);
+  box-shadow: 0 2px 20px var(--shadow);
   backdrop-filter: blur(12px);
 }
 .nav-inner {
@@ -439,7 +399,7 @@ h3 { font-size: 20px; letter-spacing: 2px; margin: 18px 0 10px; color: var(--sil
 /* ---- KPI 统计数字卡片 ---- */
 .kpi-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px,1fr));
+  grid-template-columns: repeat(7,1fr);
   gap: 10px;
   margin: 18px 0 32px;
 }
@@ -513,6 +473,74 @@ tr:hover td{background:rgba(212,176,121,.04);}
 .grid-2{grid-template-columns:repeat(2,1fr);}
 .grid-3{grid-template-columns:repeat(3,1fr);}
 .grid-4{grid-template-columns:repeat(4,1fr);}
+
+/* ---- 典籍网格（首页/各类目典籍列表统一平铺） ---- */
+.book-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+  gap:10px;
+  margin:14px 0 28px;
+}
+.book-card{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 16px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  text-decoration:none;color:var(--ink);
+  backdrop-filter:blur(6px);
+  transition:all .25s;
+  position:relative;overflow:hidden;
+}
+.book-card::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--zhu);
+}
+.book-card:nth-child(7n+2)::before{background:var(--gold);}
+.book-card:nth-child(7n+3)::before{background:var(--jade);}
+.book-card:nth-child(7n+4)::before{background:var(--ice);}
+.book-card:nth-child(7n+5)::before{background:var(--violet);}
+.book-card:nth-child(7n+6)::before{background:var(--amber);}
+.book-card:nth-child(7n+7)::before{background:var(--silver);}
+.book-card:hover{
+  transform:translateY(-2px);
+  border-color:rgba(212,176,121,.35);
+  box-shadow:var(--shadow),var(--glow);
+}
+.book-icon{
+  width:38px;height:38px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--bg-deep),var(--space-3));
+  border:1px solid var(--border);
+  border-radius:8px;color:var(--gold-bright);
+  font-size:18px;font-weight:700;font-family:var(--font-kai);
+}
+.book-info{flex:1;min-width:0;}
+.book-name{
+  font-size:15px;font-weight:600;color:var(--gold-bright);
+  font-family:var(--font-kai);letter-spacing:1px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.book-meta{
+  font-size:11px;color:var(--ink-3);letter-spacing:1px;
+  margin-top:2px;
+}
+.book-link{
+  color:var(--gold);font-size:12px;letter-spacing:2px;
+  text-decoration:none;white-space:nowrap;
+  padding:4px 10px;border:1px solid var(--border);border-radius:4px;
+  transition:all .2s;
+}
+.book-link:hover{
+  background:var(--gold);color:var(--bg);
+  text-decoration:none;border-color:var(--gold);
+}
+@media (max-width:768px){
+  .book-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;}
+  .book-card{padding:10px 12px;gap:8px;}
+  .book-icon{width:32px;height:32px;font-size:15px;}
+  .book-link{display:none;}
+}
 
 /* ---- 加载动画 ---- */
 .loader {
@@ -860,5 +888,100 @@ code{padding:2px 6px;font-size:13px;color:var(--jade);}
              radial-gradient(circle at 50% 50%, #13120e 0%, #0a0a08 100%);
 }
 
-/* ---------- 星象羅盤（默认主题，由 :root 已提供，此处仅覆盖细节以确保一致） ---------- */
-[data-theme="xingxiang"]{ /* 与 :root 默认一致，留作切换显式标记 */ }
+/* ---------- 星象羅盤（默认主题，深空星象金纹） ---------- */
+:root[data-theme="xingxiang"],
+[data-theme="xingxiang"]{
+  --bg:#0a1628;--paper:#0a1628;--card:rgba(18,34,64,.78);--card-solid:#132544;
+  --bg-soft:rgba(212,176,121,.08);--bg-deep:#060f1f;--space-3:#0f1f3a;
+  --ink:#e8edf5;--ink-soft:#c8d3e5;--ink-2:#c8d3e5;--ink-3:#8a97ae;--sub:#8a97ae;
+  --border:rgba(180,200,230,.18);--border-strong:rgba(200,215,240,.35);--border-soft:rgba(150,175,210,.1);
+  --shadow:0 4px 24px rgba(0,0,0,.45);--shadow-lg:0 12px 48px rgba(0,0,0,.6);--glow:0 0 24px rgba(200,170,100,.18);
+  --zhu:#d94a4a;--zhu-deep:#b53232;--gold:#d4b079;--gold-bright:#efd5a4;--gold-deep:#a88648;
+  --accent:#d4b079;--silver:#c8d0dd;--jade:#7bbfa6;--ice:#7aa8d4;--violet:#a888c8;--amber:#e0a060;
+  color-scheme:dark;
+}
+:root:not([data-theme]){ /* 无 data-theme 时也用星象深空色，避免 FOUC */
+  --bg:#0a1628;--paper:#0a1628;--card:rgba(18,34,64,.78);--card-solid:#132544;
+  --bg-soft:rgba(212,176,121,.08);--bg-deep:#060f1f;--space-3:#0f1f3a;
+  --ink:#e8edf5;--ink-soft:#c8d3e5;--ink-2:#c8d3e5;--ink-3:#8a97ae;--sub:#8a97ae;
+  --border:rgba(180,200,230,.18);--border-strong:rgba(200,215,240,.35);--border-soft:rgba(150,175,210,.1);
+  --shadow:0 4px 24px rgba(0,0,0,.45);--shadow-lg:0 12px 48px rgba(0,0,0,.6);--glow:0 0 24px rgba(200,170,100,.18);
+  --zhu:#d94a4a;--zhu-deep:#b53232;--gold:#d4b079;--gold-bright:#efd5a4;--gold-deep:#a88648;
+  --accent:#d4b079;--silver:#c8d0dd;--jade:#7bbfa6;--ice:#7aa8d4;--violet:#a888c8;--amber:#e0a060;
+  color-scheme:dark;
+}
+
+/* KPI 默认 7 列横排（PC 屏），不竖排 */
+.kpi-grid{grid-template-columns:repeat(7,1fr);}
+@media (min-width:1101px){ .kpi-grid{grid-template-columns:repeat(7,1fr);} }
+@media (max-width:1100px) and (min-width:681px){ .kpi-grid{grid-template-columns:repeat(4,1fr);} }
+@media (max-width:680px){ .kpi-grid{grid-template-columns:repeat(2,1fr);gap:8px;} }
+
+/* ========== Reader 竖排模式修复：占满全屏，居中不偏右 ========== */
+body.reader-vert {
+  background: var(--bg) !important;
+}
+body.reader-vert .reader-wrap {
+  max-width: none !important;
+  width: 100vw !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box;
+  position: relative;
+}
+body.reader-vert .reader-toolbar {
+  position: sticky; top: 64px; z-index: 30;
+  background: var(--card-solid);
+  backdrop-filter: blur(12px);
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex; flex-wrap: wrap; gap: 6px;
+  justify-content: center;
+  margin: 0 !important;
+}
+body.reader-vert .reader-title,
+body.reader-vert .reader-meta {
+  display: none;
+}
+body.reader-vert .reader-content {
+  height: calc(100vh - 128px);
+  max-height: calc(100vh - 128px);
+  padding: 30px 60px;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: auto;
+  overflow-y: hidden;
+  text-align: center;
+  writing-mode: vertical-rl;
+  -webkit-writing-mode: vertical-rl;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 18px;
+  line-height: 2;
+  letter-spacing: 2px;
+}
+body.reader-vert .reader-content p {
+  display: inline-block;
+  vertical-align: top;
+  margin: 0 12px;
+  padding: 0;
+  height: auto;
+  min-height: 100%;
+  text-indent: 2em;
+  white-space: normal;
+}
+body.reader-vert .reader-content p:hover {
+  background: rgba(212,176,121,.06);
+}
+body.reader-vert #loader {
+  padding-top: 120px;
+  color: var(--ink-3);
+}
+body.reader-vert .reader-sidebar {
+  display: none; /* 竖排模式隐藏侧边目录，全屏阅读 */
+}
+body.reader-vert .reader-main {
+  margin: 0 !important;
+  width: 100% !important;
+}

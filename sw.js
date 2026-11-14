@@ -1,4 +1,4 @@
-const CACHE = 'zicang-v28';
+const CACHE = 'zicang-v30';
 // 预缓存列表：仅含首屏核心 shell；超大索引文件（几 MB）不预缓存，运行时按需缓存
 // addAll 是原子操作，任一文件 404/超限会导致整个 install 失败，所以只列确定存在且体积小的文件
 const APP_SHELL = [
