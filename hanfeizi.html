@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>《韩非子》深度研究 · 子藏本体论</title>
+<link rel="stylesheet" href="css/common.css?v=22">
+<style>
+.depth-hero{background:linear-gradient(135deg,var(--hero-from,#1a2a3f) 0%,var(--hero-mid,#2d4258) 60%,var(--hero-to,#4a6481) 100%);color:#f5efe0;padding:32px 28px;border-radius:10px;margin-bottom:22px;position:relative;overflow:hidden}
+.depth-hero::before{content:attr(data-char);position:absolute;right:-20px;top:-40px;font-size:260px;color:rgba(245,239,224,.06);font-family:"KaiTi","STKaiti",serif;font-weight:900;line-height:1}
+.depth-hero h1{margin:0 0 8px 0;font-size:32px;letter-spacing:4px;font-family:"KaiTi","STKaiti",serif}
+.depth-hero .sub{color:#c9b98f;font-size:15px;margin-bottom:14px;letter-spacing:2px}
+.depth-hero .meta-row{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px}
+.depth-hero .chip{background:rgba(245,239,224,.12);border:1px solid rgba(201,185,143,.35);padding:6px 14px;border-radius:20px;font-size:13px;color:#e8dec4}
+.depth-hero .chip b{color:#f2d98a;margin-right:4px}
+.depth-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin:20px 0}
+.depth-kpi{background:#faf6ec;border:1px solid #e2d8bc;padding:14px 12px;border-radius:8px;text-align:center}
+.depth-kpi .num{font-size:28px;color:var(--accent,#8b3a2f);font-weight:700;font-family:"KaiTi",serif}
+.depth-kpi .lbl{color:#6a5a3c;font-size:12px;margin-top:4px;letter-spacing:1px}
+.tabs{display:flex;gap:6px;border-bottom:2px solid #c9b98f;margin:20px 0 16px;flex-wrap:wrap}
+.tab-btn{padding:10px 18px;background:#faf6ec;border:1px solid #e2d8bc;border-bottom:none;border-radius:8px 8px 0 0;cursor:pointer;font-size:14px;color:#6a5a3c;font-family:"KaiTi",serif;letter-spacing:1px;transition:all .2s}
+.tab-btn:hover{background:#f0e8cf}
+.tab-btn.active{background:var(--accent,#8b3a2f);color:#f5efe0;border-color:var(--accent,#8b3a2f);transform:translateY(2px)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.pian-card{background:#fff;border:1px solid #e2d8bc;border-radius:10px;padding:18px 22px;margin-bottom:18px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.pian-card h3{margin:0 0 6px 0;font-size:22px;color:#2d4258;font-family:"KaiTi",serif;letter-spacing:3px;border-left:4px solid var(--accent,#8b3a2f);padding-left:12px}
+.pian-card .pian-sub{color:#8a7a5c;font-size:13px;margin-bottom:10px}
+.pian-card .pian-stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.pian-card .pian-stats span{background:#f0e8cf;padding:3px 10px;border-radius:12px;font-size:12px;color:#6a5a3c}
+.pian-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:10px}
+.unit-block{background:#faf6ec;border-radius:8px;padding:12px 14px;border-left:3px solid var(--accent,#8b3a2f);cursor:pointer;transition:all .2s}
+.unit-block:hover{background:#f0e8cf;transform:translateX(3px);box-shadow:0 2px 6px rgba(0,0,0,.12)}
+.unit-block.fable{border-left-color:#2d7d46}
+.unit-block.claim{border-left-color:var(--accent,#8b3a2f)}
+.unit-block.dialogue{border-left-color:#4a6481}
+.unit-block.metaphor{border-left-color:#b8860b}
+.unit-block.argument{border-left-color:#6a3fa0;background:linear-gradient(135deg,#faf6ec,#f5ecf8)}
+.unit-block .u-title{font-size:15px;font-weight:600;color:#2d4258;font-family:"KaiTi",serif;margin-bottom:4px}
+.unit-block .u-meta{font-size:11px;color:#8a7a5c;margin-bottom:6px;letter-spacing:.5px}
+.unit-block .u-desc{font-size:13px;color:#4a4a4a;line-height:1.6}
+.unit-block .u-scheme{display:inline-block;background:#efe5cf;color:#6a5a3c;padding:2px 8px;border-radius:10px;font-size:11px;margin:2px 4px 2px 0}
+.concept-cloud{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0;justify-content:center}
+.concept-cloud .tag{padding:6px 14px;border-radius:20px;background:#faf6ec;border:1px solid #c9b98f;color:var(--accent,#8b3a2f);font-family:"KaiTi",serif;font-size:14px;cursor:pointer;transition:all .2s}
+.concept-cloud .tag:hover{background:var(--accent,#8b3a2f);color:#f5efe0;transform:scale(1.08)}
+.concept-cloud .tag.core{background:var(--accent,#8b3a2f);color:#f5efe0;font-size:18px;padding:10px 20px}
+.read-link{display:inline-block;margin-top:6px;color:#4a6481;font-size:12px;text-decoration:none;border-bottom:1px dotted #4a6481}
+.read-link:hover{color:var(--accent,#8b3a2f);border-color:var(--accent,#8b3a2f)}
+.intro-paragraph{font-size:14px;line-height:1.9;color:#4a4a4a;margin:14px 0;text-indent:2em}
+.section-note{background:#faf6ec;border-left:4px solid #c9b98f;padding:12px 16px;border-radius:0 6px 6px 0;font-size:13px;color:#6a5a3c;line-height:1.7;margin:12px 0}
+.people-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:14px}
+.pcard{background:#fff;border:1px solid #e2d8bc;border-radius:8px;padding:10px 12px;border-top:3px solid var(--accent,#8b3a2f)}
+.pcard .pname{font-size:16px;font-weight:600;color:#2d4258;font-family:"KaiTi",serif;margin-bottom:2px}
+.pcard .prole{font-size:11px;color:#8a7a5c;margin-bottom:6px}
+.pcard .pbio{font-size:12px;color:#4a4a4a;line-height:1.6}
+.pcard .alias{display:inline-block;background:#e7dcc0;color:var(--accent,#8b3a2f);padding:1px 6px;border-radius:8px;font-size:10px;margin:1px 2px}
+#pian-timeline{position:relative;padding:20px 0;margin:20px 0}
+#pian-timeline::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:3px;background:linear-gradient(to bottom,var(--accent,#8b3a2f),#c9b98f,#2d7d46);transform:translateX(-50%)}
+.pian-node{position:relative;width:46%;padding:14px 18px;background:#fff;border:1px solid #e2d8bc;border-radius:8px;margin:14px 0;box-shadow:0 2px 6px rgba(0,0,0,.05)}
+.pian-node:nth-child(odd){margin-right:auto;text-align:right}
+.pian-node:nth-child(even){margin-left:auto}
+.pian-node::before{content:"";position:absolute;top:20px;width:14px;height:14px;background:var(--accent,#8b3a2f);border:3px solid #f5efe0;border-radius:50%}
+.pian-node:nth-child(odd)::before{right:-31px}
+.pian-node:nth-child(even)::before{left:-31px}
+.pian-node h4{margin:0 0 4px 0;font-size:18px;color:#2d4258;font-family:"KaiTi",serif}
+.pian-node .psub{font-size:12px;color:#8a7a5c;margin-bottom:6px}
+.pian-node .psummary{font-size:13px;color:#4a4a4a;line-height:1.6;text-align:left}
+@media(max-width:768px){
+  #pian-timeline::before{left:20px}
+  .pian-node{width:calc(100% - 44px);margin-left:44px !important;text-align:left !important}
+  .pian-node::before{left:-27px !important;right:auto !important}
+  .pian-grid{grid-template-columns:1fr}
+  .depth-hero h1{font-size:24px}
+  .people-grid{grid-template-columns:1fr}
+}
+</style>
+:root{--accent:#5a3520;--hero-from:#1a1008;--hero-mid:#3a2210;--hero-to:#804020}
+</head>
+<body class="ink-theme">
+<header class="topbar">
+  <div class="bar-inner">
+    <a class="brand" href="index.html"><span class="brand-zi">子</span><span class="brand-cang">藏</span><span class="brand-sub">Zi-Cang Ontology</span></a>
+    <nav class="mainnav" id="mainnav"></nav>
+    <button class="theme-toggle" id="themeToggle" title="切换主题">🎨</button>
+  </div>
+</header>
+<main class="container" style="max-width:1200px">
+
+<div class="depth-hero" data-char="子">
+  <h1>《韩非子》 · 深度标引</h1>
+  <div class="sub">韩非·先秦法家集大成·核心三章精标</div>
+  <p style="margin:8px 0 0 0;font-size:13.5px;color:#d9cda8;line-height:1.7;max-width:820px">
+    《韩非子》是&lt;b style=&quot;color:#f2d98a&quot;&gt;先秦法家集大成之作&lt;/b&gt;，集商鞅「法」、申不害「术」、慎到「势」之大成。本页精标&lt;b&gt;孤愤/说难/五蠹&lt;/b&gt;三篇——&lt;b&gt;法不阿贵、五蠹耕战、世异则事异、守株待兔、逆鳞之喻、弥子瑕余桃&lt;/b&gt;：12命题、5寓言、5譬喻。
+  </p>
+  <div class="meta-row">
+    <span class="chip"><b>作者</b>韩非（周（战国韩））</span>
+    <span class="chip"><b>文本长度</b>132,362 字</span>
+    <span class="chip"><b>标引单元</b>24 个句级锚点</span>
+    <span class="chip"><b>标引版本</b>zicang-v22</span>
+  </div>
+</div>
+
+<div class="depth-kpis"><div class="depth-kpi"><div class="num">3</div><div class="lbl">篇/章</div></div><div class="depth-kpi"><div class="num">12</div><div class="lbl">命题</div></div><div class="depth-kpi"><div class="num">5</div><div class="lbl">寓言</div></div><div class="depth-kpi"><div class="num">2</div><div class="lbl">对话</div></div><div class="depth-kpi"><div class="num">5</div><div class="lbl">譬喻</div></div><div class="depth-kpi"><div class="num">0</div><div class="lbl">论证</div></div><div class="depth-kpi"><div class="num">10</div><div class="lbl">概念</div></div><div class="depth-kpi"><div class="num">6</div><div class="lbl">人物</div></div><div class="depth-kpi"><div class="num">24</div><div class="lbl">句级锚点</div></div></div>
+
+<div class="tabs" id="tabs"><button class="tab-btn active" data-tab="overview">◇ 义理总览</button><button class="tab-btn " data-tab="map">❖ 篇章地图</button><button class="tab-btn " data-tab="claims">✦ 命题疏解</button><button class="tab-btn " data-tab="fables">☯ 寓言解读</button><button class="tab-btn " data-tab="dialogues">⌸ 对话问答</button><button class="tab-btn " data-tab="metaphors">✧ 譬喻举隅</button><button class="tab-btn " data-tab="people">☺ 出场人物</button><button class="tab-btn " data-tab="text">☰ 原文阅读</button></div>
+<div class="tab-panel active" id="tab-overview">
+    <h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px;margin-top:4px">《韩非子》义理系统</h2>
+    <p class="intro-paragraph">《韩非子》五十五篇，战国末韩非撰。孤愤论法术之士与当途重臣不可两存；说难论进言揣摩之术、龙有逆鳞；五蠹主历史进化、世异事异、五蠹耕战。</p><p class="intro-paragraph">韩非集成法家三派：<b>商鞅之法、申不害之术、慎到之势</b>；主张「法、术、势」三位一体，君主以法为教以吏为师抱法处势用术驭臣。</p><p class="intro-paragraph">历史观：<b>不期修古不法常可、世异则事异事异则备变</b>——时代进化，反对以先王之政治当世之民（守株待兔）。</p><p class="intro-paragraph">政治主张：<b>法不阿贵、刑过不避大臣赏善不遗匹夫</b>；重<b>耕战</b>，斥<b>五蠹</b>（儒者/纵横家/游侠/近侍/商工）。</p>
+    <div class="section-note">
+      <b>本体建模说明</b>：本页标引依子藏 v2.2 本体——文献结构对应 zbib（zbib:Work/Chapter/Sentence），
+      义理单元对应 zcon（zcon:Claim/Argument/Dialogue/Fable/Metaphor/ArgumentScheme），
+      人物对应 zc:Person，可与《庄子》《列子》等子藏深度页进行义理互见。
+    </div><h3 style="font-family:KaiTi,serif;color:var(--accent,#8b3a2f);margin-top:20px;letter-spacing:2px">核心概念云</h3><div class="concept-cloud"><span class="tag core" title="法（成文法）+术（驭臣术）+势（权势）韩非核心体系。">法术</span><span class="tag core" title="法面前贵贱平等的法家精神。">法不阿贵</span><span class="tag core" title="因时变法反对复古。">不法常可</span><span class="tag " title="历史进化论时代变治道变。">世异事异</span><span class="tag " title="学者/言谈者/带剑者/患御者/商工五种蛀虫。">五蠹</span><span class="tag " title="重农重战为本抑制末业。">耕战</span><span class="tag " title="人主禁忌底线不可触犯。">逆鳞</span><span class="tag " title="揣摩人主心理的进言术。">说难</span><span class="tag " title="法术之士孤立无援的悲愤处境。">孤愤</span><span class="tag " title="刑无等级赏不遗匹夫的二柄论。">刑赏</span></div><h3 style="font-family:KaiTi,serif;color:var(--accent,#8b3a2f);margin-top:24px;letter-spacing:2px">义理线索</h3><div class="pian-grid"><div class="unit-block argument"><div class="u-title">法术势合一：法家思想体系</div><div class="u-desc">法（成文法度）+术（驭臣心术）+势（君主权位）三位一体。</div></div><div class="unit-block argument"><div class="u-title">法不阿贵：法律面前平等</div><div class="u-desc">刑过不辟大臣赏善不遗匹夫，绳不挠曲。</div></div><div class="unit-block argument"><div class="u-title">世异事异：历史进化变法论</div><div class="u-desc">不法常可因世备变，批判复古守旧。</div></div><div class="unit-block argument"><div class="u-title">五蠹：斥儒侠商工游食</div><div class="u-desc">学者/言谈者/带剑者/患御者/商工为邦之蠹，唯耕战为本。</div></div><div class="unit-block argument"><div class="u-title">说难：揣摩人主的进言术</div><div class="u-desc">凡说之难在知所说之心，人主有逆鳞不可婴。</div></div><div class="unit-block argument"><div class="u-title">性恶论：人情趋利避害</div><div class="u-desc">继承荀子性恶，以利害赏罚二柄驭下，反仁义。</div></div><div class="unit-block argument"><div class="u-title">寓言：守株待兔余桃逆鳞</div><div class="u-desc">中国寓言文学重要来源，借事说理犀利峭刻。</div></div></div></div><div class="tab-panel " id="tab-map"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">韩非子篇章思想地图</h2>
+    <div class="section-note">点击篇章卡片可跳转至原文。</div><div id="pianTimeline"><div class="pian-node"><h4>孤愤</h4>
+      <div class="psub">第1篇 · 1697字</div>
+      <div class="psummary">法术之士与当途重臣不可两存；智术能法之士与重臣五不胜之势。 <a class="read-link" href="reader.html?b=%E8%AF%B8%E5%AD%90%2F%E9%9F%A9%E9%9D%9E%E5%AD%90.txt&ch=1&s=17784" target="_blank">读原文 →</a></div></div><div class="pian-node"><h4>说难</h4>
+      <div class="psub">第2篇 · 100976字</div>
+      <div class="psummary">凡说之难在知所说之心；龙喉下有逆鳞不可婴；弥子瑕余桃。 <a class="read-link" href="reader.html?b=%E8%AF%B8%E5%AD%90%2F%E9%9F%A9%E9%9D%9E%E5%AD%90.txt&ch=2&s=19494" target="_blank">读原文 →</a></div></div><div class="pian-node"><h4>五蠹</h4>
+      <div class="psub">第3篇 · 4819字</div>
+      <div class="psummary">学者/言谈者/带剑者/患御者/商工之民为五蠹；世异则事异事异则备变；守株待兔。 <a class="read-link" href="reader.html?b=%E8%AF%B8%E5%AD%90%2F%E9%9F%A9%E9%9D%9E%E5%AD%90.txt&ch=3&s=120484" target="_blank">读原文 →</a></div></div></div></div><div class="tab-panel " id="tab-claims"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">12核心命题</h2>
+      <div class="section-note">命题即 zcon:Claim——可以判断义理立场的最小判断单元；点击可跳至原文对应句段。</div><div class="pian-card"><h3>孤愤</h3>
+        <div class="pian-sub">法术之士与当途重臣不可两存；智术能法之士与重臣五不胜之势。 · 本章 4 命题</div><div class="pian-grid"><div class="unit-block claim" onclick="jumpTo('诸子/韩非子.txt',1,17780)">
+          <div class="u-title">智术之士与当途之人不可两存</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">法术之士</span><span class="u-scheme">当途</span></div>
+          <div class="u-desc">智术之士远见明察强毅劲直；当途之臣擅事要外内用；两不相容。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「智术之士…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/韩非子.txt',1,18219)">
+          <div class="u-title">法术之士五不胜之势</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">五不胜</span><span class="u-scheme">孤愤</span></div>
+          <div class="u-desc">法术之士以疏远vs近爱信、新旅vs习故、反主意vs同好、轻贱vs贵重、一口vs一国——五不胜。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「以疏远与近爱信争…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/韩非子.txt',1,7667)">
+          <div class="u-title">法不阿贵绳不挠曲</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">法不阿贵</span><span class="u-scheme">法治</span></div>
+          <div class="u-desc">法不阿贵绳不挠曲；刑过不辟大臣赏善不遗匹夫——法家平等精神。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「法不阿贵…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/韩非子.txt',1,7657)">
+          <div class="u-title">以法治国举措而已</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">以法治国</span><span class="u-scheme">法术</span></div>
+          <div class="u-desc">以法治国则举措而已；绳直枉木斫准夷高科削。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「以法治国…」</div>
+        </div></div></div><div class="pian-card"><h3>说难</h3>
+        <div class="pian-sub">凡说之难在知所说之心；龙喉下有逆鳞不可婴；弥子瑕余桃。 · 本章 3 命题</div><div class="pian-grid"><div class="unit-block claim" onclick="jumpTo('诸子/韩非子.txt',2,19490)">
+          <div class="u-title">凡说之难在知所说之心</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">说难</span><span class="u-scheme">揣摩</span></div>
+          <div class="u-desc">说服之难不在辩才而在洞察人主之心——为名高、为厚利、阴为厚利阳为名高。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「凡说之难…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/韩非子.txt',2,20890)">
+          <div class="u-title">喉下有逆鳞</div>
+          <div class="u-meta"><span class="u-scheme">寓言</span><span class="u-scheme">逆龙鳞</span><span class="u-scheme">说术</span></div>
+          <div class="u-desc">龙柔顺可骑，但喉下逆鳞径尺触之必杀；人主亦有逆鳞，说者能无婴人主逆鳞则几矣。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「夫龙之为虫也…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/韩非子.txt',2,20661)">
+          <div class="u-title">弥子瑕有宠于卫君</div>
+          <div class="u-meta"><span class="u-scheme">寓言</span><span class="u-scheme">弥子瑕</span><span class="u-scheme">爱憎</span></div>
+          <div class="u-desc">爱憎之变：弥子瑕窃驾君车食桃余君前，昔贤孝后罪；爱时智当加亲憎时罪当加疏。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「昔者弥子瑕…」</div>
+        </div></div></div><div class="pian-card"><h3>五蠹</h3>
+        <div class="pian-sub">学者/言谈者/带剑者/患御者/商工之民为五蠹；世异则事异事异则备变；守株待兔。 · 本章 5 命题</div><div class="pian-grid"><div class="unit-block claim" onclick="jumpTo('诸子/韩非子.txt',3,120697)">
+          <div class="u-title">圣人不期修古不法常可</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">不法常可</span><span class="u-scheme">因时变法</span></div>
+          <div class="u-desc">时代变了不必法古；论世之事因为之备。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「圣人不期修古…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/韩非子.txt',3,120718)">
+          <div class="u-title">守株待兔</div>
+          <div class="u-meta"><span class="u-scheme">寓言</span><span class="u-scheme">守株待兔</span><span class="u-scheme">复古</span></div>
+          <div class="u-desc">宋人守株待兔身为宋国笑；以先王之政治当世之民皆守株之类。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「宋人有耕田者…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/韩非子.txt',3,121376)">
+          <div class="u-title">世异则事异事异则备变</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">世异事异</span><span class="u-scheme">变法</span></div>
+          <div class="u-desc">文王行仁义王徐偃王行仁义亡——仁义用于古不用于今；当今争于气力。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「世异则事异…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/韩非子.txt',3,111076)">
+          <div class="u-title">此五者邦之蠹也</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">五蠹</span><span class="u-scheme">耕战</span></div>
+          <div class="u-desc">学者（儒）/言谈者（纵横）/带剑者（侠）/患御者（近习）/商工之民五蠹，不除则国破。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「此五者…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/韩非子.txt',3,123125)">
+          <div class="u-title">富国以农距敌恃卒</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">耕战</span><span class="u-scheme">本业</span></div>
+          <div class="u-desc">耕战为本：动作者归之于功为勇者尽之于军；儒侠商工游食须抑。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「富国以农…」</div>
+        </div></div></div></div><div class="tab-panel " id="tab-fables"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">5寓言</h2>
+      <div class="section-note">寓言即 zcon:Fable——"寓言十九，藉外论之"，以虚构故事寄寓哲学义理。</div><div class="pian-grid"><div class="unit-block fable" onclick="jumpTo('诸子/韩非子.txt',2,20890)">
+        <div class="u-title">龙有逆鳞</div>
+        <div class="u-meta"><span class="u-scheme">龙</span></div>
+        <div class="u-desc">说人主不可婴其逆鳞。</div>
+      </div><div class="unit-block fable" onclick="jumpTo('诸子/韩非子.txt',2,20661)">
+        <div class="u-title">弥子瑕余桃</div>
+        <div class="u-meta"><span class="u-scheme">弥子瑕</span><span class="u-scheme">卫君</span></div>
+        <div class="u-desc">爱憎变则罪赏易，进言不可不知人主之心。</div>
+      </div><div class="unit-block fable" onclick="jumpTo('诸子/韩非子.txt',3,120718)">
+        <div class="u-title">守株待兔</div>
+        <div class="u-meta"><span class="u-scheme">宋人</span></div>
+        <div class="u-desc">因循先王之政犹守株待兔。</div>
+      </div><div class="unit-block fable" onclick="jumpTo('诸子/韩非子.txt',3,121294)">
+        <div class="u-title">徐偃王行仁义</div>
+        <div class="u-meta"><span class="u-scheme">徐偃王</span></div>
+        <div class="u-desc">仁义用于古不用于今。</div>
+      </div><div class="unit-block fable" onclick="jumpTo('诸子/韩非子.txt',3,120510)">
+        <div class="u-title">有巢燧人</div>
+        <div class="u-meta"><span class="u-scheme">有巢氏</span><span class="u-scheme">燧人氏</span></div>
+        <div class="u-desc">上古圣人因民之利而王；时代变则法变。</div>
+      </div></div></div><div class="tab-panel " id="tab-dialogues"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">2对话单元</h2>
+      <div class="section-note">对话即 zcon:Dialogue，按"曰/问/对曰"切分，记录问答轮次与主题。</div><div class="pian-grid"><div class="unit-block dialogue" onclick="jumpTo('诸子/韩非子.txt',1,17940)">
+        <div class="u-title">法术之士与当途重臣</div>
+        <div class="u-meta"><span class="u-scheme">韩非</span><span class="u-scheme">1 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/韩非子.txt',2,20003)">
+        <div class="u-title">说难进言术</div>
+        <div class="u-meta"><span class="u-scheme">（说者）→（人主）</span><span class="u-scheme">1 轮</span></div>
+        <div class="u-desc"></div>
+      </div></div></div><div class="tab-panel " id="tab-metaphors"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">5譬喻</h2>
+      <div class="section-note">譬喻即 zcon:Metaphor，以近喻远、以具象喻抽象。</div><div class="pian-grid"><div class="unit-block metaphor" onclick="jumpTo('诸子/韩非子.txt',1,7487)">
+        <div class="u-title">司南端朝夕/巧匠规矩/上智法比 <span style="color:#b8860b">→</span> 以法治国</div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block metaphor" onclick="jumpTo('诸子/韩非子.txt',2,20890)">
+        <div class="u-title">龙之喉下逆鳞 <span style="color:#b8860b">→</span> 人主逆鳞不可婴</div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block metaphor" onclick="jumpTo('诸子/韩非子.txt',3,120718)">
+        <div class="u-title">守株待兔 <span style="color:#b8860b">→</span> 法古之愚</div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block metaphor" onclick="jumpTo('诸子/韩非子.txt',3,121294)">
+        <div class="u-title">文王王偃王亡 <span style="color:#b8860b">→</span> 世异事异</div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block metaphor" onclick="jumpTo('诸子/韩非子.txt',3,121433)">
+        <div class="u-title">干戚/铁铦铠甲 <span style="color:#b8860b">→</span> 事异备变</div>
+        <div class="u-desc"></div>
+      </div></div></div><div class="tab-panel " id="tab-people"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">6出场人物</h2><div class="people-grid"><div class="pcard">
+        <div class="pname">韩非</div>
+        <div class="prole">核心/作者</div>
+        <div><span class="alias">韩非子</span></div>
+        <div class="pbio">战国韩公子荀卿弟子；先秦法家集大成主法术势合、性恶、耕战、五蠹；使秦被李斯害死于狱。</div>
+      </div><div class="pcard">
+        <div class="pname">李斯</div>
+        <div class="prole">同门/秦相</div>
+        
+        <div class="pbio">与韩非同师荀子法家政治家后害韩非。</div>
+      </div><div class="pcard">
+        <div class="pname">荀卿</div>
+        <div class="prole">师承</div>
+        <div><span class="alias">荀子</span></div>
+        <div class="pbio">韩非之师性恶隆礼重法。</div>
+      </div><div class="pcard">
+        <div class="pname">弥子瑕</div>
+        <div class="prole">寓言人物</div>
+        
+        <div class="pbio">卫灵公宠臣余桃啖君故事主角。</div>
+      </div><div class="pcard">
+        <div class="pname">守株宋人</div>
+        <div class="prole">寓言人物</div>
+        
+        <div class="pbio">守株待兔的宋人。</div>
+      </div><div class="pcard">
+        <div class="pname">徐偃王</div>
+        <div class="prole">反面例证</div>
+        
+        <div class="pbio">行仁义而亡国的徐君。</div>
+      </div></div></div><div class="tab-panel " id="tab-text"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">原文阅读</h2>
+    <div class="section-note">点击下方章节进入 reader 逐句阅读。</div>
+    <div class="pian-grid">
+      <div class="unit-block" onclick="jumpTo('诸子/韩非子.txt',1,17784)">
+        <div class="u-title">孤愤</div>
+        <div class="u-meta">1697字</div>
+        <div class="u-desc">法术之士与当途重臣不可两存；智术能法之士与重臣五不胜之势。</div>
+      </div>
+      <div class="unit-block" onclick="jumpTo('诸子/韩非子.txt',2,19494)">
+        <div class="u-title">说难</div>
+        <div class="u-meta">100976字</div>
+        <div class="u-desc">凡说之难在知所说之心；龙喉下有逆鳞不可婴；弥子瑕余桃。</div>
+      </div>
+      <div class="unit-block" onclick="jumpTo('诸子/韩非子.txt',3,120484)">
+        <div class="u-title">五蠹</div>
+        <div class="u-meta">4819字</div>
+        <div class="u-desc">学者/言谈者/带剑者/患御者/商工之民为五蠹；世异则事异事异则备变；守株待兔。</div>
+      </div>
+    </div></div>
+
+</main>
+<footer class="site-footer">
+  <p>子藏 Zi-Cang Ontology · 诸子百家深度研究 · CC BY-SA 4.0</p>
+</footer>
+<script src="js/common.js?v=22"></script>
+<script src="data/hanfeizi-data.js?v=22"></script>
+<script>
+function jumpTo(b,ch,s){window.open('reader.html?b='+encodeURIComponent(b)+'&ch='+ch+'&s='+s,'_blank');}
+const tabBtns=document.querySelectorAll('.tab-btn');
+const tabPans=document.querySelectorAll('.tab-panel');
+tabBtns.forEach(b=>b.addEventListener('click',()=>{
+  tabBtns.forEach(x=>x.classList.remove('active'));
+  tabPans.forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  document.getElementById('tab-'+b.dataset.tab).classList.add('active');
+  window.scrollTo({top:b.offsetTop-80,behavior:'smooth'});
+}));
+</script>
+</body>
+</html>

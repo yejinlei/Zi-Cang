@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>《论语》深度研究 · 子藏本体论</title>
+<link rel="stylesheet" href="css/common.css?v=22">
+<style>
+.depth-hero{background:linear-gradient(135deg,var(--hero-from,#1a2a3f) 0%,var(--hero-mid,#2d4258) 60%,var(--hero-to,#4a6481) 100%);color:#f5efe0;padding:32px 28px;border-radius:10px;margin-bottom:22px;position:relative;overflow:hidden}
+.depth-hero::before{content:attr(data-char);position:absolute;right:-20px;top:-40px;font-size:260px;color:rgba(245,239,224,.06);font-family:"KaiTi","STKaiti",serif;font-weight:900;line-height:1}
+.depth-hero h1{margin:0 0 8px 0;font-size:32px;letter-spacing:4px;font-family:"KaiTi","STKaiti",serif}
+.depth-hero .sub{color:#c9b98f;font-size:15px;margin-bottom:14px;letter-spacing:2px}
+.depth-hero .meta-row{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px}
+.depth-hero .chip{background:rgba(245,239,224,.12);border:1px solid rgba(201,185,143,.35);padding:6px 14px;border-radius:20px;font-size:13px;color:#e8dec4}
+.depth-hero .chip b{color:#f2d98a;margin-right:4px}
+.depth-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin:20px 0}
+.depth-kpi{background:#faf6ec;border:1px solid #e2d8bc;padding:14px 12px;border-radius:8px;text-align:center}
+.depth-kpi .num{font-size:28px;color:var(--accent,#8b3a2f);font-weight:700;font-family:"KaiTi",serif}
+.depth-kpi .lbl{color:#6a5a3c;font-size:12px;margin-top:4px;letter-spacing:1px}
+.tabs{display:flex;gap:6px;border-bottom:2px solid #c9b98f;margin:20px 0 16px;flex-wrap:wrap}
+.tab-btn{padding:10px 18px;background:#faf6ec;border:1px solid #e2d8bc;border-bottom:none;border-radius:8px 8px 0 0;cursor:pointer;font-size:14px;color:#6a5a3c;font-family:"KaiTi",serif;letter-spacing:1px;transition:all .2s}
+.tab-btn:hover{background:#f0e8cf}
+.tab-btn.active{background:var(--accent,#8b3a2f);color:#f5efe0;border-color:var(--accent,#8b3a2f);transform:translateY(2px)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.pian-card{background:#fff;border:1px solid #e2d8bc;border-radius:10px;padding:18px 22px;margin-bottom:18px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.pian-card h3{margin:0 0 6px 0;font-size:22px;color:#2d4258;font-family:"KaiTi",serif;letter-spacing:3px;border-left:4px solid var(--accent,#8b3a2f);padding-left:12px}
+.pian-card .pian-sub{color:#8a7a5c;font-size:13px;margin-bottom:10px}
+.pian-card .pian-stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.pian-card .pian-stats span{background:#f0e8cf;padding:3px 10px;border-radius:12px;font-size:12px;color:#6a5a3c}
+.pian-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:10px}
+.unit-block{background:#faf6ec;border-radius:8px;padding:12px 14px;border-left:3px solid var(--accent,#8b3a2f);cursor:pointer;transition:all .2s}
+.unit-block:hover{background:#f0e8cf;transform:translateX(3px);box-shadow:0 2px 6px rgba(0,0,0,.12)}
+.unit-block.fable{border-left-color:#2d7d46}
+.unit-block.claim{border-left-color:var(--accent,#8b3a2f)}
+.unit-block.dialogue{border-left-color:#4a6481}
+.unit-block.metaphor{border-left-color:#b8860b}
+.unit-block.argument{border-left-color:#6a3fa0;background:linear-gradient(135deg,#faf6ec,#f5ecf8)}
+.unit-block .u-title{font-size:15px;font-weight:600;color:#2d4258;font-family:"KaiTi",serif;margin-bottom:4px}
+.unit-block .u-meta{font-size:11px;color:#8a7a5c;margin-bottom:6px;letter-spacing:.5px}
+.unit-block .u-desc{font-size:13px;color:#4a4a4a;line-height:1.6}
+.unit-block .u-scheme{display:inline-block;background:#efe5cf;color:#6a5a3c;padding:2px 8px;border-radius:10px;font-size:11px;margin:2px 4px 2px 0}
+.concept-cloud{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0;justify-content:center}
+.concept-cloud .tag{padding:6px 14px;border-radius:20px;background:#faf6ec;border:1px solid #c9b98f;color:var(--accent,#8b3a2f);font-family:"KaiTi",serif;font-size:14px;cursor:pointer;transition:all .2s}
+.concept-cloud .tag:hover{background:var(--accent,#8b3a2f);color:#f5efe0;transform:scale(1.08)}
+.concept-cloud .tag.core{background:var(--accent,#8b3a2f);color:#f5efe0;font-size:18px;padding:10px 20px}
+.read-link{display:inline-block;margin-top:6px;color:#4a6481;font-size:12px;text-decoration:none;border-bottom:1px dotted #4a6481}
+.read-link:hover{color:var(--accent,#8b3a2f);border-color:var(--accent,#8b3a2f)}
+.intro-paragraph{font-size:14px;line-height:1.9;color:#4a4a4a;margin:14px 0;text-indent:2em}
+.section-note{background:#faf6ec;border-left:4px solid #c9b98f;padding:12px 16px;border-radius:0 6px 6px 0;font-size:13px;color:#6a5a3c;line-height:1.7;margin:12px 0}
+.people-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:14px}
+.pcard{background:#fff;border:1px solid #e2d8bc;border-radius:8px;padding:10px 12px;border-top:3px solid var(--accent,#8b3a2f)}
+.pcard .pname{font-size:16px;font-weight:600;color:#2d4258;font-family:"KaiTi",serif;margin-bottom:2px}
+.pcard .prole{font-size:11px;color:#8a7a5c;margin-bottom:6px}
+.pcard .pbio{font-size:12px;color:#4a4a4a;line-height:1.6}
+.pcard .alias{display:inline-block;background:#e7dcc0;color:var(--accent,#8b3a2f);padding:1px 6px;border-radius:8px;font-size:10px;margin:1px 2px}
+#pian-timeline{position:relative;padding:20px 0;margin:20px 0}
+#pian-timeline::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:3px;background:linear-gradient(to bottom,var(--accent,#8b3a2f),#c9b98f,#2d7d46);transform:translateX(-50%)}
+.pian-node{position:relative;width:46%;padding:14px 18px;background:#fff;border:1px solid #e2d8bc;border-radius:8px;margin:14px 0;box-shadow:0 2px 6px rgba(0,0,0,.05)}
+.pian-node:nth-child(odd){margin-right:auto;text-align:right}
+.pian-node:nth-child(even){margin-left:auto}
+.pian-node::before{content:"";position:absolute;top:20px;width:14px;height:14px;background:var(--accent,#8b3a2f);border:3px solid #f5efe0;border-radius:50%}
+.pian-node:nth-child(odd)::before{right:-31px}
+.pian-node:nth-child(even)::before{left:-31px}
+.pian-node h4{margin:0 0 4px 0;font-size:18px;color:#2d4258;font-family:"KaiTi",serif}
+.pian-node .psub{font-size:12px;color:#8a7a5c;margin-bottom:6px}
+.pian-node .psummary{font-size:13px;color:#4a4a4a;line-height:1.6;text-align:left}
+@media(max-width:768px){
+  #pian-timeline::before{left:20px}
+  .pian-node{width:calc(100% - 44px);margin-left:44px !important;text-align:left !important}
+  .pian-node::before{left:-27px !important;right:auto !important}
+  .pian-grid{grid-template-columns:1fr}
+  .depth-hero h1{font-size:24px}
+  .people-grid{grid-template-columns:1fr}
+}
+</style>
+:root{--accent:#8b3a2f;--hero-from:#3a1f1a;--hero-mid:#6a3428;--hero-to:#9c5e4b}
+</head>
+<body class="ink-theme">
+<header class="topbar">
+  <div class="bar-inner">
+    <a class="brand" href="index.html"><span class="brand-zi">子</span><span class="brand-cang">藏</span><span class="brand-sub">Zi-Cang Ontology</span></a>
+    <nav class="mainnav" id="mainnav"></nav>
+    <button class="theme-toggle" id="themeToggle" title="切换主题">🎨</button>
+  </div>
+</header>
+<main class="container" style="max-width:1200px">
+
+<div class="depth-hero" data-char="语">
+  <h1>《论语》 · 深度标引</h1>
+  <div class="sub">孔子与弟子语录</div>
+  <p style="margin:8px 0 0 0;font-size:13.5px;color:#d9cda8;line-height:1.7;max-width:820px">
+    《论语》是孔子及其弟子的语录汇编，共二十篇，为&lt;b style=&quot;color:#f2d98a&quot;&gt;儒家&quot;四书&quot;之首&lt;/b&gt;。本页收录学而、为政、八佾、里仁、述而、颜渊、子路、卫灵公、季氏&lt;b&gt;九篇核心章句&lt;/b&gt;，标引约 70 命题、近 30 对话，集中呈现&quot;仁、礼、君子、学、忠恕、为政&quot;等核心思想。
+  </p>
+  <div class="meta-row">
+    <span class="chip"><b>作者</b>孔丘弟子辑（周（春秋鲁））</span>
+    <span class="chip"><b>文本长度</b>9,045 字</span>
+    <span class="chip"><b>标引单元</b>99 个句级锚点</span>
+    <span class="chip"><b>标引版本</b>zicang-v22</span>
+  </div>
+</div>
+
+<div class="depth-kpis"><div class="depth-kpi"><div class="num">9</div><div class="lbl">篇/章</div></div><div class="depth-kpi"><div class="num">65</div><div class="lbl">命题</div></div><div class="depth-kpi"><div class="num">0</div><div class="lbl">寓言</div></div><div class="depth-kpi"><div class="num">29</div><div class="lbl">对话</div></div><div class="depth-kpi"><div class="num">5</div><div class="lbl">譬喻</div></div><div class="depth-kpi"><div class="num">0</div><div class="lbl">论证</div></div><div class="depth-kpi"><div class="num">15</div><div class="lbl">概念</div></div><div class="depth-kpi"><div class="num">23</div><div class="lbl">人物</div></div><div class="depth-kpi"><div class="num">99</div><div class="lbl">句级锚点</div></div></div>
+
+<div class="tabs" id="tabs"><button class="tab-btn active" data-tab="overview">◇ 义理总览</button><button class="tab-btn " data-tab="map">❖ 篇章地图</button><button class="tab-btn " data-tab="claims">✦ 命题疏解</button><button class="tab-btn " data-tab="dialogues">⌸ 对话问答</button><button class="tab-btn " data-tab="metaphors">✧ 譬喻举隅</button><button class="tab-btn " data-tab="people">☺ 出场人物</button><button class="tab-btn " data-tab="text">☰ 原文阅读</button></div>
+<div class="tab-panel active" id="tab-overview">
+    <h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px;margin-top:4px">《论语》义理系统</h2>
+    <p class="intro-paragraph">《论语》是孔子弟子及再传弟子编纂的语录体著作，成书于战国初年，共二十篇，记录孔子及其弟子言行，涵盖仁、礼、义、孝、忠恕、学、政、君子等思想。汉代列为&quot;七经&quot;之一，南宋朱熹编入《四书》，成为中国古代士人必读经典，影响中国文化两千余年，亦为东亚文化圈共同经典。</p><p class="intro-paragraph">《论语》的核心是"<b>仁</b>"——仁是"爱人"、是"克己复礼"、是"己所不欲勿施于人"、是"杀身成仁"。围绕"仁"展开的是<b>礼</b>（制度规范）、<b>义</b>（正当原则）、<b>忠恕</b>（一贯之道）、<b>君子</b>（理想人格）、<b>为政以德</b>（政治理想）、<b>学</b>（修养路径）。</p><p class="intro-paragraph">文体上《论语》以对话问答为主，精炼隽永，章与章之间无逻辑必然联系，但整体形成一个圆融的思想世界。孔子罕言性与天道，多就人伦日用指点："夫子之文章可得而闻也，夫子之言性与天道不可得而闻也。"这种"下学而上达"的教学风格，使《论语》成为中国人最亲切的生活经典。</p><p class="intro-paragraph">本页收录九篇代表章句：<b>学而</b>开篇三乐、<b>为政</b>三十而立与温故知新、<b>八佾</b>论礼乐、<b>里仁</b>忠恕一贯义利之辨、<b>述而</b>孔子自述学行、<b>颜渊</b>问仁问政（克己复礼、民信、君君臣臣、德风德草）、<b>子路</b>正名论与和而不同、<b>卫灵公</b>杀身成仁恕道与有教无类、<b>季氏</b>不患寡患不均与三友三乐三戒三畏九思。</p>
+    <div class="section-note">
+      <b>本体建模说明</b>：本页标引依子藏 v2.2 本体——文献结构对应 zbib（zbib:Work/Chapter/Sentence），
+      义理单元对应 zcon（zcon:Claim/Argument/Dialogue/Fable/Metaphor/ArgumentScheme），
+      人物对应 zc:Person，可与《庄子》《列子》等子藏深度页进行义理互见。
+    </div><h3 style="font-family:KaiTi,serif;color:var(--accent,#8b3a2f);margin-top:20px;letter-spacing:2px">核心概念云</h3><div class="concept-cloud"><span class="tag core" title="儒家最高德性；爱人、克己复礼、己所不欲勿施于人、杀身成仁。">仁</span><span class="tag core" title="典章制度行为规范；以仁为本、以和为贵、宁俭宁戚。">礼</span><span class="tag core" title="理想人格；喻于义、周而不比、和而不同、泰而不骄、求诸己。">君子</span><span class="tag " title="与君子对照：喻于利、比而不周、同而不和、骄而不泰、求诸人。">小人</span><span class="tag " title="孝父母；生事之以礼、死葬之以礼、色难、父母在不远游。">孝</span><span class="tag " title="敬兄长；与孝合称&quot;孝弟&quot;为仁之本。">弟（悌）</span><span class="tag " title="尽心竭力；己欲立而立人；与人忠。">忠</span><span class="tag " title="推己及人；己所不欲勿施于人——可终身行之。">恕</span><span class="tag " title="宜也，正当性；君子义之与比、喻于义、见得思义。">义</span><span class="tag " title="诚信；人而无信不知其可、民无信不立、与朋友交言而有信。">信</span><span class="tag " title="学习；学思结合、温故知新、学而不厌、不耻下问。">学</span><span class="tag " title="正也；为政以德、正己正人、举直错枉、庶富教。">政</span><span class="tag " title="道德；为政以德、德风德草、德不孤。">德</span><span class="tag " title="智与知；知人为智、自知为明、知命知人。">知（智）</span><span class="tag " title="反对暴虎冯河之勇，主张义以为上、临事惧好谋成。">勇</span></div><h3 style="font-family:KaiTi,serif;color:var(--accent,#8b3a2f);margin-top:24px;letter-spacing:2px">义理线索</h3><div class="pian-grid"><div class="unit-block argument"><div class="u-title">仁学：克己复礼·爱人·恕道</div><div class="u-desc">仁为全德之本；孝弟为仁之本；克己复礼为仁；己所不欲勿施于人；杀身成仁。</div></div><div class="unit-block argument"><div class="u-title">礼论：宁俭宁戚·和为贵</div><div class="u-desc">礼与其奢宁俭丧与其易宁戚；礼之用和为贵；人而不仁如礼何。</div></div><div class="unit-block argument"><div class="u-title">君子小人之辨：喻义喻利·和而不同</div><div class="u-desc">君子周而不比、和而不同、泰而不骄、求诸己；小人反是。</div></div><div class="unit-block argument"><div class="u-title">教育：有教无类·因材施教·启发式</div><div class="u-desc">有教无类；不愤不启不悱不发；温故知新；学而不厌诲人不倦；三人行必有我师。</div></div><div class="unit-block argument"><div class="u-title">政治：为政以德·正己正人·庶富教</div><div class="u-desc">为政以德譬如北辰；政者正也；其身正不令而行；先富后教；举直错枉；无为而治（舜）。</div></div><div class="unit-block argument"><div class="u-title">修养：学思结合·内省改过</div><div class="u-desc">学而不思则罔思而不学则殆；吾日三省；见贤思齐；过而不改是谓过；讷言敏行。</div></div><div class="unit-block argument"><div class="u-title">中庸：过犹不及·无可无不可</div><div class="u-desc">允执其中；不得中行而与之必也狂狷；和而不同；义之与比。</div></div></div></div><div class="tab-panel " id="tab-map"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">论语篇章思想地图</h2>
+    <div class="section-note">点击篇章卡片可跳转至原文。</div><div id="pianTimeline"><div class="pian-node"><h4>学而第一</h4>
+      <div class="psub">第1篇 · 674字</div>
+      <div class="psummary">论学、孝弟、仁本、忠信；&quot;学而时习之&quot;&quot;吾日三省&quot;&quot;和为贵&quot;。 <a class="read-link" href="reader.html?b=%E8%AF%B8%E5%AD%90%2F%E8%AE%BA%E8%AF%AD.txt&ch=1&s=21" target="_blank">读原文 →</a></div></div><div class="pian-node"><h4>为政第二</h4>
+      <div class="psub">第2篇 · 827字</div>
+      <div class="psummary">论为政以德；三十而立；温故知新；君子不器；因材施教；民信为本。 <a class="read-link" href="reader.html?b=%E8%AF%B8%E5%AD%90%2F%E8%AE%BA%E8%AF%AD.txt&ch=2&s=702" target="_blank">读原文 →</a></div></div><div class="pian-node"><h4>八佾第三</h4>
+      <div class="psub">第3篇 · 991字</div>
+      <div class="psummary">论礼、乐；&quot;是可忍孰不可忍&quot;&quot;人而不仁如礼何&quot;&quot;尽美尽善&quot;。 <a class="read-link" href="reader.html?b=%E8%AF%B8%E5%AD%90%2F%E8%AE%BA%E8%AF%AD.txt&ch=3&s=1536" target="_blank">读原文 →</a></div></div><div class="pian-node"><h4>里仁第四</h4>
+      <div class="psub">第4篇 · 709字</div>
+      <div class="psummary">论仁与君子；&quot;朝闻道夕死可矣&quot;&quot;君子喻于义&quot;&quot;忠恕一贯&quot;&quot;见贤思齐&quot;。 <a class="read-link" href="reader.html?b=%E8%AF%B8%E5%AD%90%2F%E8%AE%BA%E8%AF%AD.txt&ch=4&s=2534" target="_blank">读原文 →</a></div></div><div class="pian-node"><h4>述而第七</h4>
+      <div class="psub">第7篇 · 926字</div>
+      <div class="psummary">孔子自述：述而不作、学而不厌诲人不倦、不愤不启、三人行必有我师。 <a class="read-link" href="reader.html?b=%E8%AF%B8%E5%AD%90%2F%E8%AE%BA%E8%AF%AD.txt&ch=7&s=3250" target="_blank">读原文 →</a></div></div><div class="pian-node"><h4>颜渊第十二</h4>
+      <div class="psub">第12篇 · 1362字</div>
+      <div class="psummary">颜渊问仁（克己复礼）、仲弓问仁（己所不欲勿施于人）、子贡问政（民信）、君君臣臣。 <a class="read-link" href="reader.html?b=%E8%AF%B8%E5%AD%90%2F%E8%AE%BA%E8%AF%AD.txt&ch=12&s=4184" target="_blank">读原文 →</a></div></div><div class="pian-node"><h4>子路第十三</h4>
+      <div class="psub">第13篇 · 1200字</div>
+      <div class="psummary">子路问政、正名论、&quot;欲速则不达&quot;&quot;父为子隐&quot;&quot;和而不同&quot;。 <a class="read-link" href="reader.html?b=%E8%AF%B8%E5%AD%90%2F%E8%AE%BA%E8%AF%AD.txt&ch=13&s=5554" target="_blank">读原文 →</a></div></div><div class="pian-node"><h4>卫灵公第十五</h4>
+      <div class="psub">第15篇 · 1277字</div>
+      <div class="psummary">在陈绝粮、杀身成仁、恕道（己所不欲勿施于人）、人能弘道、有教无类。 <a class="read-link" href="reader.html?b=%E8%AF%B8%E5%AD%90%2F%E8%AE%BA%E8%AF%AD.txt&ch=15&s=6763" target="_blank">读原文 →</a></div></div><div class="pian-node"><h4>季氏第十六</h4>
+      <div class="psub">第16篇 · 996字</div>
+      <div class="psummary">季氏伐颛臾；不患寡患不均；三友三乐三戒三畏九思；过庭之训。 <a class="read-link" href="reader.html?b=%E8%AF%B8%E5%AD%90%2F%E8%AE%BA%E8%AF%AD.txt&ch=16&s=8048" target="_blank">读原文 →</a></div></div></div></div><div class="tab-panel " id="tab-claims"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">65核心命题</h2>
+      <div class="section-note">命题即 zcon:Claim——可以判断义理立场的最小判断单元；点击可跳至原文对应句段。</div><div class="pian-card"><h3>学而第一</h3>
+        <div class="pian-sub">论学、孝弟、仁本、忠信；&quot;学而时习之&quot;&quot;吾日三省&quot;&quot;和为贵&quot;。 · 本章 9 命题</div><div class="pian-grid"><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',1,23)">
+          <div class="u-title">学而时习之不亦乐乎</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">学</span><span class="u-scheme">乐</span><span class="u-scheme">君子</span></div>
+          <div class="u-desc">学然后时时温习实践是悦；有同道从远方来是乐；人不了解自己也不愠怒才是君子。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「学而时习之，不亦说乎？有朋自远方来，不亦乐乎…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',1,96)">
+          <div class="u-title">孝弟为仁之本</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">孝弟</span><span class="u-scheme">仁本</span><span class="u-scheme">务本</span></div>
+          <div class="u-desc">君子致力于根本，本立道自然生；孝父母、敬兄长是&quot;仁&quot;的根本。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「君子务本，本立而道生。孝弟也者，其为仁之本与…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',1,121)">
+          <div class="u-title">巧言令色鲜矣仁</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">巧言</span><span class="u-scheme">仁</span></div>
+          <div class="u-desc">花言巧语、伪装和善的人很少有仁德。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「巧言令色，鲜矣仁…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',1,135)">
+          <div class="u-title">吾日三省吾身</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">反省</span><span class="u-scheme">忠</span><span class="u-scheme">信</span></div>
+          <div class="u-desc">每日三次自我反省：为人办事是否尽忠？与朋友交往是否守信？老师所传是否温习？</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「吾日三省吾身：为人谋而不忠乎？与朋友交而不信乎？传不习乎…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',1,167)">
+          <div class="u-title">敬事信节用爱人使民以时</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">治国</span><span class="u-scheme">节用</span><span class="u-scheme">使民以时</span></div>
+          <div class="u-desc">治理大国：敬慎其事、取信于民、节俭用度、爱护人民、役使百姓不违农时。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「道千乘之国，敬事而信，节用而爱人，使民以时…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',1,424)">
+          <div class="u-title">礼之用和为贵以礼节之</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">礼</span><span class="u-scheme">和</span><span class="u-scheme">节制</span></div>
+          <div class="u-desc">礼的作用以和谐为贵，但为和而和、不用礼来节制就行不通；和须以礼为本。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「礼之用，和为贵…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',1,473)">
+          <div class="u-title">信近于义恭近于礼</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">信</span><span class="u-scheme">义</span><span class="u-scheme">礼</span></div>
+          <div class="u-desc">守信合于义则诺言可兑现；恭敬合于礼则远离耻辱。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「信近于义，言可复也；恭近于礼，远耻辱也…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',1,508)">
+          <div class="u-title">君子食无求饱敏事慎言就道</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">好学</span><span class="u-scheme">安贫</span></div>
+          <div class="u-desc">君子不追求饱食安居，做事敏捷说话谨慎，亲近有道之人以匡正自己，才算好学。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「君子食无求饱，居无求安，敏于事而慎于言，就有道而正焉，可…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',1,564)">
+          <div class="u-title">贫而乐富而好礼</div>
+          <div class="u-meta"><span class="u-scheme">对话问答</span><span class="u-scheme">乐道</span><span class="u-scheme">好礼</span></div>
+          <div class="u-desc">子贡问&quot;贫而无谄富而无骄&quot;何如？孔子说可，但不如&quot;贫而乐道、富而好礼&quot;——境界更高。如切如磋如琢如磨。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「未若贫而乐，富而好礼者也…」</div>
+        </div></div></div><div class="pian-card"><h3>为政第二</h3>
+        <div class="pian-sub">论为政以德；三十而立；温故知新；君子不器；因材施教；民信为本。 · 本章 10 命题</div><div class="pian-grid"><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',2,704)">
+          <div class="u-title">为政以德譬如北辰</div>
+          <div class="u-meta"><span class="u-scheme">譬喻</span><span class="u-scheme">德治</span><span class="u-scheme">无为</span><span class="u-scheme">北辰</span></div>
+          <div class="u-desc">用道德来治理国政，就像北极星安居其位、众星环绕——无为而治。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「为政以德，譬如北辰，居其所而众星共之…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',2,764)">
+          <div class="u-title">道德齐礼有耻且格</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">德治</span><span class="u-scheme">礼治</span><span class="u-scheme">羞耻</span></div>
+          <div class="u-desc">用政令刑罚导民，民免罪却无耻；用道德礼义导民，民有羞耻心且归服。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「道之以德，齐之以礼，有耻且格…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',2,781)">
+          <div class="u-title">三十而立七十从心</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">为学次第</span><span class="u-scheme">而立</span><span class="u-scheme">不惑</span><span class="u-scheme">知天命</span><span class="u-scheme">耳顺</span><span class="u-scheme">从心所欲</span></div>
+          <div class="u-desc">孔子自述修学阶段：十五志学、三十立身处世、四十不迷惑、五十知天命、六十听逆耳之言而不逆、七十随心所欲不越规矩。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「吾十有五而志于学，三十而立，四十而不惑，五十而知天命，六…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',2,1043)">
+          <div class="u-title">温故知新可以为师</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">温故知新</span></div>
+          <div class="u-desc">温习旧知能悟新知，可以为人师。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「温故而知新，可以为师矣…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',2,1059)">
+          <div class="u-title">君子不器</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">器</span><span class="u-scheme">通才</span></div>
+          <div class="u-desc">君子不应像器皿一样只有单一用途；要成为通才，具备多方面素养。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「君子不器…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',2,1086)">
+          <div class="u-title">君子周而不比</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">周</span><span class="u-scheme">比</span><span class="u-scheme">团结</span></div>
+          <div class="u-desc">君子团结众人而不结党营私；小人结党营私而不能团结。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「君子周而不比，小人比而不周…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',2,1104)">
+          <div class="u-title">学而不思则罔思而不学则殆</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">学思结合</span></div>
+          <div class="u-desc">只学习不思考会迷惘无所得；只思考不学习会危殆不安。学思结合。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「学而不思则罔，思而不学则殆…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',2,1142)">
+          <div class="u-title">知之为知之不知为不知</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">诚实</span><span class="u-scheme">知</span></div>
+          <div class="u-desc">知道就是知道、不知道就是不知道，这才是真正的&quot;知&quot;。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「知之为知之，不知为不知，是知也…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',2,1227)">
+          <div class="u-title">举直错诸枉民服</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">举贤</span><span class="u-scheme">直</span></div>
+          <div class="u-desc">提拔正直之人放在邪曲之人之上，百姓服从；反之不服。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「举直错诸枉，则民服；举枉错诸直，则民不服…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',2,1337)">
+          <div class="u-title">人而无信不知其可</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">信</span></div>
+          <div class="u-desc">人无诚信就像车无辕销无法行走；信是人立身处世的关键。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「人而无信，不知其可也。大车无輗，小车无軏，其何以行之哉…」</div>
+        </div></div></div><div class="pian-card"><h3>八佾第三</h3>
+        <div class="pian-sub">论礼、乐；&quot;是可忍孰不可忍&quot;&quot;人而不仁如礼何&quot;&quot;尽美尽善&quot;。 · 本章 4 命题</div><div class="pian-grid"><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',3,1592)">
+          <div class="u-title">人而不仁如礼何如乐何</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">仁</span><span class="u-scheme">礼乐</span></div>
+          <div class="u-desc">人若没有仁德，礼与乐对他有什么用？仁是礼之本。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「人而不仁，如礼何？人而不仁，如乐何…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',3,1625)">
+          <div class="u-title">礼宁俭丧宁戚</div>
+          <div class="u-meta"><span class="u-scheme">对话问答</span><span class="u-scheme">礼本</span><span class="u-scheme">俭</span><span class="u-scheme">戚</span></div>
+          <div class="u-desc">礼与其奢华宁可俭朴；丧礼与其仪节周到宁可内心哀戚。重本质轻形式。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「礼，与其奢也，宁俭；丧，与其易也，宁戚…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',3,1707)">
+          <div class="u-title">君子无所争其争也君子</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">不争</span><span class="u-scheme">射礼</span></div>
+          <div class="u-desc">君子没有什么可争的；若必争则是射箭比赛，揖让而升、下而饮酒，争也合乎君子风度。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「君子无所争…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',3,2369)">
+          <div class="u-title">《韶》尽美尽善《武》未尽善</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">美善</span><span class="u-scheme">韶</span><span class="u-scheme">武</span></div>
+          <div class="u-desc">舜乐《韶》美善兼备；武王乐《武》形式美但因武王以征伐取天下，未达于至善。美是艺术、善是道德。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「《韶》，尽美矣，又尽善也；《武》，尽美矣，未尽善也…」</div>
+        </div></div></div><div class="pian-card"><h3>里仁第四</h3>
+        <div class="pian-sub">论仁与君子；&quot;朝闻道夕死可矣&quot;&quot;君子喻于义&quot;&quot;忠恕一贯&quot;&quot;见贤思齐&quot;。 · 本章 9 命题</div><div class="pian-grid"><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',4,2611)">
+          <div class="u-title">不以其道得之不处</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">富贵</span><span class="u-scheme">仁</span><span class="u-scheme">道</span></div>
+          <div class="u-desc">富贵是人人向往，但不以正道得来不接受；君子无终食之间违仁。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「富与贵是人之所欲也，不以其道得之不处也…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',4,2787)">
+          <div class="u-title">朝闻道夕死可矣</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">道</span><span class="u-scheme">闻道</span></div>
+          <div class="u-desc">早晨听闻真理，当晚死去也无憾——求道的热切。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「朝闻道，夕死可矣…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',4,2824)">
+          <div class="u-title">君子义之与比</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">义</span><span class="u-scheme">权</span></div>
+          <div class="u-desc">君子对天下事没有一定厚薄亲疏，只以&quot;义&quot;为准则。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「君子之于天下也，无适也，无莫也，义之与比…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',4,2934)">
+          <div class="u-title">忠恕一贯</div>
+          <div class="u-meta"><span class="u-scheme">对话问答</span><span class="u-scheme">忠恕</span><span class="u-scheme">一贯</span></div>
+          <div class="u-desc">孔子对曾子说&quot;吾道一以贯之&quot;；曾子对门人解释为&quot;忠恕&quot;——尽己之谓忠、推己之谓恕。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「参乎！吾道一以贯之……夫子之道，忠恕而已矣…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',4,2980)">
+          <div class="u-title">君子喻于义小人喻于利</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">义利之辨</span></div>
+          <div class="u-desc">君子懂得并追求义，小人只懂得利；这是君子小人的根本分野。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「君子喻于义，小人喻于利…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',4,2996)">
+          <div class="u-title">见贤思齐见不贤自省</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">自省</span><span class="u-scheme">贤</span></div>
+          <div class="u-desc">见贤人想向他看齐，见不贤的人内心反省自己是否有同样缺点。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「见贤思齐焉，见不贤而内自省也…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',4,3038)">
+          <div class="u-title">父母在不远游</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">孝</span><span class="u-scheme">远游</span></div>
+          <div class="u-desc">父母在世时不出远门；若必须远游也要有确定方向和归期，免父母牵挂。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「父母在不远游，游必有方…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',4,3125)">
+          <div class="u-title">讷于言敏于行</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">言行</span></div>
+          <div class="u-desc">君子说话谨慎迟钝，做事勤敏捷厉。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「君子欲讷于言而敏于行…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',4,3141)">
+          <div class="u-title">德不孤必有邻</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">德</span><span class="u-scheme">邻</span></div>
+          <div class="u-desc">有德之人不会孤单，必有志同道合者为邻。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「德不孤，必有邻…」</div>
+        </div></div></div><div class="pian-card"><h3>述而第七</h3>
+        <div class="pian-sub">孔子自述：述而不作、学而不厌诲人不倦、不愤不启、三人行必有我师。 · 本章 8 命题</div><div class="pian-grid"><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',7,3252)">
+          <div class="u-title">述而不作信而好古</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">述</span><span class="u-scheme">好古</span></div>
+          <div class="u-desc">传述旧说而不创作新说，信仰并喜爱古代文化——孔子对自己的定位。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「述而不作，信而好古…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',7,3272)">
+          <div class="u-title">学而不厌诲人不倦</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">学</span><span class="u-scheme">教</span></div>
+          <div class="u-desc">默记所学、学习永不满足、教导别人永不倦怠。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「默而识之，学而不厌，诲人不倦…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',7,3399)">
+          <div class="u-title">不愤不启不悱不发举一反三</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">启发式教学</span><span class="u-scheme">举一反三</span></div>
+          <div class="u-desc">学生不到苦思不解时不去开导、不到想说却说不出时不去启发；举一个角不能推其他三个角就不再教——启发式教学。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「不愤不启，不悱不发。举一隅不以三隅反，则不复也…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',7,3454)">
+          <div class="u-title">用行舍藏</div>
+          <div class="u-meta"><span class="u-scheme">对话问答</span><span class="u-scheme">用行舍藏</span><span class="u-scheme">好谋</span></div>
+          <div class="u-desc">孔子对颜渊说：用我就行其道、不用就隐居起来，只有我和你能这样。子路问&quot;统帅三军谁与&quot;，孔子答&quot;暴虎冯河死而无悔者不与，必临事而惧好谋而成&quot;——反对蛮勇。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「用之则行，舍之则藏，惟我与尔有是夫…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',7,3652)">
+          <div class="u-title">不义富贵如浮云</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">安贫乐道</span><span class="u-scheme">浮云</span></div>
+          <div class="u-desc">吃粗粮喝清水弯臂为枕乐在其中；不义得来的富贵对我像浮云一样轻。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「饭疏食饮水，曲肱而枕之，乐亦在其中矣。不义而富且贵，于我…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',7,3751)">
+          <div class="u-title">发愤忘食乐以忘忧</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">好学</span><span class="u-scheme">乐</span></div>
+          <div class="u-desc">叶公问子路孔子为人，孔子自述：发愤用功忘了吃饭，快乐得忘了忧愁，连衰老到来都不知道。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「发愤忘食，乐以忘忧，不知老之将至…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',7,3806)">
+          <div class="u-title">三人行必有我师</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">师</span><span class="u-scheme">从善</span></div>
+          <div class="u-desc">三人同行必有可师法者：择善而从，不善则改。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「三人行，必有我师焉：择其善者而从之，其不善者而改之…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',7,4069)">
+          <div class="u-title">我欲仁斯仁至矣</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">仁</span><span class="u-scheme">自觉</span></div>
+          <div class="u-desc">仁离人远吗？只要我想行仁，仁就来了——仁在己不在人。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「仁远乎哉？我欲仁，斯仁至矣…」</div>
+        </div></div></div><div class="pian-card"><h3>颜渊第十二</h3>
+        <div class="pian-sub">颜渊问仁（克己复礼）、仲弓问仁（己所不欲勿施于人）、子贡问政（民信）、君君臣臣。 · 本章 6 命题</div><div class="pian-grid"><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',12,4191)">
+          <div class="u-title">克己复礼为仁四勿</div>
+          <div class="u-meta"><span class="u-scheme">对话问答</span><span class="u-scheme">克己复礼</span><span class="u-scheme">仁</span><span class="u-scheme">四勿</span></div>
+          <div class="u-desc">颜渊问仁。孔子答：约束自己使言行合于礼就是仁；一旦做到，天下人都会归向你。四目：非禮勿視、勿聽、勿言、勿動。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「克己复礼为仁。一日克己复礼，天下归仁焉……非礼勿视非礼勿…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',12,4291)">
+          <div class="u-title">己所不欲勿施于人（仲弓问仁）</div>
+          <div class="u-meta"><span class="u-scheme">对话问答</span><span class="u-scheme">恕</span><span class="u-scheme">仁</span></div>
+          <div class="u-desc">仲弓问仁。孔子答：出门如见大宾、使民如承大祭，己所不欲勿施于人，在邦在家都无怨。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「己所不欲，勿施于人。在邦无怨，在家无怨…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',12,4599)">
+          <div class="u-title">民无信不立</div>
+          <div class="u-meta"><span class="u-scheme">对话问答</span><span class="u-scheme">信</span><span class="u-scheme">政</span></div>
+          <div class="u-desc">子贡问政（足食足兵民信），若必去先去兵再去食；因为自古皆有死，但人民不信任政府国家就立不住。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「自古皆有死，民无信不立…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',12,4795)">
+          <div class="u-title">君君臣臣父父子子</div>
+          <div class="u-meta"><span class="u-scheme">对话问答</span><span class="u-scheme">正名</span><span class="u-scheme">名分</span></div>
+          <div class="u-desc">齐景公问政。孔子答：君要像君、臣要像臣、父要像父、子要像子——名实相符，各守其分。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「君君，臣臣，父父，子子…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',12,4956)">
+          <div class="u-title">政者正也</div>
+          <div class="u-meta"><span class="u-scheme">对话问答</span><span class="u-scheme">正</span><span class="u-scheme">为政</span></div>
+          <div class="u-desc">政就是&quot;正&quot;。你自己率先行正，谁敢不正？</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「政者，正也。子帅以正，孰敢不正…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',12,5046)">
+          <div class="u-title">君子德风小人德草</div>
+          <div class="u-meta"><span class="u-scheme">譬喻</span><span class="u-scheme">德</span><span class="u-scheme">风化</span></div>
+          <div class="u-desc">君子的德像风，小人的德像草；风吹过草必倒伏。领导者率先行善民自随之。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「君子之德风，小人之德草。草上之风必偃…」</div>
+        </div></div></div><div class="pian-card"><h3>子路第十三</h3>
+        <div class="pian-sub">子路问政、正名论、&quot;欲速则不达&quot;&quot;父为子隐&quot;&quot;和而不同&quot;。 · 本章 6 命题</div><div class="pian-grid"><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',13,5691)">
+          <div class="u-title">正名论</div>
+          <div class="u-meta"><span class="u-scheme">对话问答</span><span class="u-scheme">正名</span><span class="u-scheme">名实</span></div>
+          <div class="u-desc">子路问为政奚先，孔子说&quot;必也正名乎&quot;：名不正则言不顺、事不成、礼乐不兴、刑罚不中、民无所措手足。子路笑孔子迂，孔子斥其野。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「名不正则言不顺，言不顺则事不成……刑罚不中则民无所错手足…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',13,5875)">
+          <div class="u-title">身正不令而行</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">正己</span><span class="u-scheme">表率</span></div>
+          <div class="u-desc">领导者自身端正，不用下令事情也行得通；自身不正即使下令也无人听从。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「其身正，不令而行；其身不正，虽令不从…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',13,5950)">
+          <div class="u-title">庶富教</div>
+          <div class="u-meta"><span class="u-scheme">对话问答</span><span class="u-scheme">庶富教</span><span class="u-scheme">治国</span></div>
+          <div class="u-desc">到卫国见人口众多，冉有问既庶矣又何加？曰&quot;富之&quot;；既富矣？曰&quot;教之&quot;——先富后教。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「庶矣哉…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',13,6108)">
+          <div class="u-title">欲速则不达</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">欲速不达</span><span class="u-scheme">远图</span></div>
+          <div class="u-desc">不要求快、不要贪小利；求快反而达不到目的，贪小利办不成大事。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「无欲速，无见小利。欲速则不达，见小利则大事不成…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',13,6173)">
+          <div class="u-title">父为子隐子为父隐</div>
+          <div class="u-meta"><span class="u-scheme">对话问答</span><span class="u-scheme">直</span><span class="u-scheme">亲亲相隐</span></div>
+          <div class="u-desc">叶公说&quot;其父攘羊而子证之&quot;为直，孔子反对：父为子隐、子为父隐，直就在其中——孝慈大于证父之直。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「父为子隐，子为父隐，直在其中矣…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',13,6383)">
+          <div class="u-title">和而不同</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">和</span><span class="u-scheme">同</span></div>
+          <div class="u-desc">君子能调和差异但不苟同；小人苟同但不能真正调和。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「君子和而不同，小人同而不和…」</div>
+        </div></div></div><div class="pian-card"><h3>卫灵公第十五</h3>
+        <div class="pian-sub">在陈绝粮、杀身成仁、恕道（己所不欲勿施于人）、人能弘道、有教无类。 · 本章 10 命题</div><div class="pian-grid"><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',15,6830)">
+          <div class="u-title">君子固穷</div>
+          <div class="u-meta"><span class="u-scheme">对话问答</span><span class="u-scheme">穷</span><span class="u-scheme">固</span></div>
+          <div class="u-desc">在陈绝粮子路愠问&quot;君子亦有穷乎&quot;，孔子答：君子能安守穷困，小人一穷困就胡作非为。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「君子固穷，小人穷斯滥矣…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',15,6870)">
+          <div class="u-title">予一以贯之</div>
+          <div class="u-meta"><span class="u-scheme">对话问答</span><span class="u-scheme">一贯</span></div>
+          <div class="u-desc">孔子对子贡说：我不是多学而强记，而是有一个核心贯穿始终。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「予一以贯之…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',15,6891)">
+          <div class="u-title">无为而治其舜</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">无为而治</span><span class="u-scheme">舜</span></div>
+          <div class="u-desc">能无为而治的大概是舜吧？他做了什么？只是庄严端正面南而坐而已——任贤使能，恭己无为。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「无为而治者其舜也与？夫何为哉？恭己正南面而已矣…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',15,7078)">
+          <div class="u-title">杀身成仁</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">成仁</span><span class="u-scheme">牺牲</span></div>
+          <div class="u-desc">有志之士和仁德之人，不会为了求生损害仁道，只会牺牲生命来成就仁。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「志士仁人无求生以害仁，有杀身以成仁…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',15,7108)">
+          <div class="u-title">工欲善其事必先利其器</div>
+          <div class="u-meta"><span class="u-scheme">譬喻</span><span class="u-scheme">器</span><span class="u-scheme">工具</span></div>
+          <div class="u-desc">做工要做好先要有好工具；为仁要先事贤友仁。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「工欲善其事必先利其器…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',15,7187)">
+          <div class="u-title">人无远虑必有近忧</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">虑</span><span class="u-scheme">远</span></div>
+          <div class="u-desc">没有长远考虑就会有眼前忧患。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「人无远虑必有近忧…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',15,7443)">
+          <div class="u-title">恕：己所不欲勿施于人</div>
+          <div class="u-meta"><span class="u-scheme">对话问答</span><span class="u-scheme">恕</span><span class="u-scheme">终身</span></div>
+          <div class="u-desc">子贡问&quot;有一言而可以终身行之者乎&quot;，孔子答&quot;恕&quot;——自己不愿的不要强加于人。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「其恕乎！己所不欲勿施于人…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',15,7527)">
+          <div class="u-title">小不忍则乱大谋</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">忍</span><span class="u-scheme">大谋</span></div>
+          <div class="u-desc">花言巧语败坏道德；小事不能忍耐会败坏大计。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「巧言乱德。小不忍则乱大谋…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',15,7561)">
+          <div class="u-title">人能弘道非道弘人</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">弘道</span><span class="u-scheme">践行</span></div>
+          <div class="u-desc">人能够弘扬道，道不能自动弘扬人——道要人去践行光大。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「人能弘道，非道弘人…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',15,7819)">
+          <div class="u-title">有教无类</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">教育</span><span class="u-scheme">平等</span></div>
+          <div class="u-desc">教育不分贵贱贫富类别，人人都可受教育。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「有教无类…」</div>
+        </div></div></div><div class="pian-card"><h3>季氏第十六</h3>
+        <div class="pian-sub">季氏伐颛臾；不患寡患不均；三友三乐三戒三畏九思；过庭之训。 · 本章 3 命题</div><div class="pian-grid"><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',16,8259)">
+          <div class="u-title">不患寡患不均</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">均</span><span class="u-scheme">安</span><span class="u-scheme">文德</span></div>
+          <div class="u-desc">季氏将伐颛臾，孔子批评：不怕少而怕分配不均，不怕穷而怕不安定。均则无贫、和则无寡、安则不倾。修文德以来远人。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「不患寡而患不均，不患贫而患不安。盖均无贫，和无寡，安无倾…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',16,8355)">
+          <div class="u-title">祸起萧墙</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">萧墙</span><span class="u-scheme">内忧</span></div>
+          <div class="u-desc">季氏真正的忧患不在颛臾而在自己内部（鲁君与家臣之间）。后作成语&quot;祸起萧墙&quot;。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「吾恐季孙之忧不在颛臾而在萧墙之内也…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/论语.txt',16,8379)">
+          <div class="u-title">礼乐征伐自天子出</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">有道无道</span><span class="u-scheme">政权</span></div>
+          <div class="u-desc">天下有道时制礼作乐出兵征伐决定自天子；无道时出自诸侯、大夫、陪臣。政出多门必不能久。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「天下有道则礼乐征伐自天子出；天下无道则礼乐征伐自诸侯出…」</div>
+        </div></div></div></div><div class="tab-panel " id="tab-dialogues"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">29对话单元</h2>
+      <div class="section-note">对话即 zcon:Dialogue，按"曰/问/对曰"切分，记录问答轮次与主题。</div><div class="pian-grid"><div class="unit-block dialogue" onclick="jumpTo('诸子/论语.txt',1,119)">
+        <div class="u-title">巧言令色鲜矣仁</div>
+        <div class="u-meta"><span class="u-scheme">孔子</span><span class="u-scheme">1 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/论语.txt',1,131)">
+        <div class="u-title">三省吾身</div>
+        <div class="u-meta"><span class="u-scheme">曾子</span><span class="u-scheme">1 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/论语.txt',1,545)">
+        <div class="u-title">贫而乐富而好礼</div>
+        <div class="u-meta"><span class="u-scheme">子贡↔孔子</span><span class="u-scheme">3 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/论语.txt',2,828)">
+        <div class="u-title">问孝</div>
+        <div class="u-meta"><span class="u-scheme">孟懿子/孟武伯/子游/子夏↔孔子</span><span class="u-scheme">4 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/论语.txt',2,1104)">
+        <div class="u-title">学思关系</div>
+        <div class="u-meta"><span class="u-scheme">孔子</span><span class="u-scheme">1 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/论语.txt',2,1210)">
+        <div class="u-title">使民服</div>
+        <div class="u-meta"><span class="u-scheme">哀公↔孔子</span><span class="u-scheme">2 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/论语.txt',3,1611)">
+        <div class="u-title">礼之本</div>
+        <div class="u-meta"><span class="u-scheme">林放↔孔子</span><span class="u-scheme">2 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/论语.txt',3,1733)">
+        <div class="u-title">绘事后素</div>
+        <div class="u-meta"><span class="u-scheme">子夏↔孔子</span><span class="u-scheme">3 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/论语.txt',3,2068)">
+        <div class="u-title">君臣之礼</div>
+        <div class="u-meta"><span class="u-scheme">定公↔孔子</span><span class="u-scheme">2 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/论语.txt',3,2174)">
+        <div class="u-title">管仲器小</div>
+        <div class="u-meta"><span class="u-scheme">或人↔孔子</span><span class="u-scheme">3 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/论语.txt',4,2932)">
+        <div class="u-title">吾道一以贯之</div>
+        <div class="u-meta"><span class="u-scheme">孔子→曾子</span><span class="u-scheme">3 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/论语.txt',4,2980)">
+        <div class="u-title">义利之辨</div>
+        <div class="u-meta"><span class="u-scheme">孔子</span><span class="u-scheme">1 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/论语.txt',7,3448)">
+        <div class="u-title">用行舍藏与暴虎冯河</div>
+        <div class="u-meta"><span class="u-scheme">孔子↔颜渊↔子路</span><span class="u-scheme">3 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/论语.txt',7,3652)">
+        <div class="u-title">不义富贵如浮云</div>
+        <div class="u-meta"><span class="u-scheme">孔子</span><span class="u-scheme">1 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/论语.txt',7,3806)">
+        <div class="u-title">三人行必有我师</div>
+        <div class="u-meta"><span class="u-scheme">孔子</span><span class="u-scheme">1 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/论语.txt',12,4184)">
+        <div class="u-title">克己复礼四勿</div>
+        <div class="u-meta"><span class="u-scheme">颜渊↔孔子</span><span class="u-scheme">3 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/论语.txt',12,4268)">
+        <div class="u-title">己所不欲勿施于人</div>
+        <div class="u-meta"><span class="u-scheme">仲弓↔孔子</span><span class="u-scheme">2 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/论语.txt',12,4416)">
+        <div class="u-title">四海之内皆兄弟</div>
+        <div class="u-meta"><span class="u-scheme">司马牛↔子夏</span><span class="u-scheme">2 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/论语.txt',12,4535)">
+        <div class="u-title">足食足兵民信</div>
+        <div class="u-meta"><span class="u-scheme">子贡↔孔子</span><span class="u-scheme">4 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/论语.txt',12,4780)">
+        <div class="u-title">君君臣臣</div>
+        <div class="u-meta"><span class="u-scheme">齐景公↔孔子</span><span class="u-scheme">2 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/论语.txt',12,4941)">
+        <div class="u-title">君子德风</div>
+        <div class="u-meta"><span class="u-scheme">季康子↔孔子</span><span class="u-scheme">3 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/论语.txt',13,5627)">
+        <div class="u-title">正名</div>
+        <div class="u-meta"><span class="u-scheme">子路↔孔子</span><span class="u-scheme">3 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/论语.txt',13,5939)">
+        <div class="u-title">庶富教</div>
+        <div class="u-meta"><span class="u-scheme">冉有↔孔子</span><span class="u-scheme">3 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/论语.txt',13,6095)">
+        <div class="u-title">欲速不达</div>
+        <div class="u-meta"><span class="u-scheme">子夏↔孔子</span><span class="u-scheme">2 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/论语.txt',13,6133)">
+        <div class="u-title">父子相隐</div>
+        <div class="u-meta"><span class="u-scheme">叶公↔孔子</span><span class="u-scheme">2 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/论语.txt',15,6814)">
+        <div class="u-title">君子固穷</div>
+        <div class="u-meta"><span class="u-scheme">子路↔孔子</span><span class="u-scheme">2 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/论语.txt',15,7421)">
+        <div class="u-title">恕终身行</div>
+        <div class="u-meta"><span class="u-scheme">子贡↔孔子</span><span class="u-scheme">2 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/论语.txt',16,8048)">
+        <div class="u-title">季氏将伐颛臾</div>
+        <div class="u-meta"><span class="u-scheme">冉有/子路↔孔子</span><span class="u-scheme">4 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/论语.txt',16,8850)">
+        <div class="u-title">过庭之训（诗礼）</div>
+        <div class="u-meta"><span class="u-scheme">陈亢↔伯鱼</span><span class="u-scheme">4 轮</span></div>
+        <div class="u-desc"></div>
+      </div></div></div><div class="tab-panel " id="tab-metaphors"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">5譬喻</h2>
+      <div class="section-note">譬喻即 zcon:Metaphor，以近喻远、以具象喻抽象。</div><div class="pian-grid"><div class="unit-block metaphor" onclick="jumpTo('诸子/论语.txt',2,709)">
+        <div class="u-title">北辰安居 <span style="color:#b8860b">→</span> 为政以德</div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block metaphor" onclick="jumpTo('诸子/论语.txt',2,1350)">
+        <div class="u-title">车无辕销 <span style="color:#b8860b">→</span> 人无信不可行</div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block metaphor" onclick="jumpTo('诸子/论语.txt',12,5046)">
+        <div class="u-title">风过草偃 <span style="color:#b8860b">→</span> 领导者率先正己</div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block metaphor" onclick="jumpTo('诸子/论语.txt',15,7108)">
+        <div class="u-title">工利器 <span style="color:#b8860b">→</span> 事贤友仁</div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block metaphor" onclick="jumpTo('诸子/论语.txt',16,8184)">
+        <div class="u-title">猛兽出笼玉器毁匣 <span style="color:#b8860b">→</span> 辅相者失职</div>
+        <div class="u-desc"></div>
+      </div></div></div><div class="tab-panel " id="tab-people"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">23出场人物</h2><div class="people-grid"><div class="pcard">
+        <div class="pname">孔子</div>
+        <div class="prole">核心/作者</div>
+        <div><span class="alias">孔丘</span><span class="alias">仲尼</span><span class="alias">夫子</span><span class="alias">子</span></div>
+        <div class="pbio">名丘字仲尼，春秋鲁人。儒家学派创始人，我国最伟大的思想家教育家。删诗书定礼乐赞周易修春秋，弟子三千贤人七十二。</div>
+      </div><div class="pcard">
+        <div class="pname">颜回</div>
+        <div class="prole">弟子/第一</div>
+        <div><span class="alias">颜渊</span><span class="alias">回</span></div>
+        <div class="pbio">孔门德行科第一，最得孔子喜爱，不迁怒不贰过，安贫乐道，不幸早夭。</div>
+      </div><div class="pcard">
+        <div class="pname">仲由</div>
+        <div class="prole">弟子</div>
+        <div><span class="alias">子路</span><span class="alias">季路</span><span class="alias">由</span></div>
+        <div class="pbio">孔门政事科；性勇直，好勇过我，后仕卫死于孔悝之难。</div>
+      </div><div class="pcard">
+        <div class="pname">端木赐</div>
+        <div class="prole">弟子</div>
+        <div><span class="alias">子贡</span><span class="alias">赐</span></div>
+        <div class="pbio">孔门言语科；善辞令外交，经商致千金，孔子死后独守墓六年。</div>
+      </div><div class="pcard">
+        <div class="pname">卜商</div>
+        <div class="prole">弟子</div>
+        <div><span class="alias">子夏</span><span class="alias">商</span></div>
+        <div class="pbio">孔门文学科；传经之儒，后为魏文侯师。</div>
+      </div><div class="pcard">
+        <div class="pname">曾参</div>
+        <div class="prole">弟子</div>
+        <div><span class="alias">曾子</span><span class="alias">参</span></div>
+        <div class="pbio">以孝著称，述《大学》《孝经》；日三省吾身。</div>
+      </div><div class="pcard">
+        <div class="pname">有若</div>
+        <div class="prole">弟子</div>
+        <div><span class="alias">有子</span></div>
+        <div class="pbio">其言似孔子，提出&quot;孝弟为仁之本&quot;&quot;礼之用和为贵&quot;。</div>
+      </div><div class="pcard">
+        <div class="pname">冉雍</div>
+        <div class="prole">弟子</div>
+        <div><span class="alias">仲弓</span><span class="alias">雍</span></div>
+        <div class="pbio">孔门德行科；孔子称&quot;雍也可使南面&quot;；问仁章主角。</div>
+      </div><div class="pcard">
+        <div class="pname">冉求</div>
+        <div class="prole">弟子</div>
+        <div><span class="alias">冉有</span><span class="alias">求</span></div>
+        <div class="pbio">孔门政事科；为季氏宰；孔子对其为季氏聚敛鸣鼓攻之。</div>
+      </div><div class="pcard">
+        <div class="pname">司马耕</div>
+        <div class="prole">弟子</div>
+        <div><span class="alias">司马牛</span></div>
+        <div class="pbio">宋人；问仁问君子，子夏答&quot;四海之内皆兄弟&quot;。</div>
+      </div><div class="pcard">
+        <div class="pname">颛孙师</div>
+        <div class="prole">弟子</div>
+        <div><span class="alias">子张</span></div>
+        <div class="pbio">陈人；才高意广，问政问干禄问明问达。</div>
+      </div><div class="pcard">
+        <div class="pname">樊须</div>
+        <div class="prole">弟子</div>
+        <div><span class="alias">樊迟</span></div>
+        <div class="pbio">请学稼圃被斥为小人；问仁（爱人）问知（知人）。</div>
+      </div><div class="pcard">
+        <div class="pname">言偃</div>
+        <div class="prole">弟子</div>
+        <div><span class="alias">子游</span></div>
+        <div class="pbio">孔门文学科；武城宰，以弦歌治。</div>
+      </div><div class="pcard">
+        <div class="pname">鲁哀公</div>
+        <div class="prole">鲁君</div>
+        
+        <div class="pbio">春秋末鲁君；问政于孔子。</div>
+      </div><div class="pcard">
+        <div class="pname">季康子</div>
+        <div class="prole">鲁大夫</div>
+        
+        <div class="pbio">鲁国正卿；三问政于孔子。</div>
+      </div><div class="pcard">
+        <div class="pname">齐景公</div>
+        <div class="prole">齐君</div>
+        
+        <div class="pbio">春秋齐君；问政孔子，欲以尼溪田封孔子而未果。</div>
+      </div><div class="pcard">
+        <div class="pname">孟懿子</div>
+        <div class="prole">鲁大夫</div>
+        
+        <div class="pbio">三家之一；问孝于孔子。</div>
+      </div><div class="pcard">
+        <div class="pname">林放</div>
+        <div class="prole">鲁人</div>
+        
+        <div class="pbio">问礼之本于孔子；孔子称&quot;大哉问&quot;。</div>
+      </div><div class="pcard">
+        <div class="pname">叶公</div>
+        <div class="prole">楚大夫</div>
+        <div><span class="alias">沈诸梁</span></div>
+        <div class="pbio">楚叶县尹；问政于孔子，与孔子论直躬。</div>
+      </div><div class="pcard">
+        <div class="pname">孔鲤</div>
+        <div class="prole">孔子之子</div>
+        <div><span class="alias">伯鱼</span><span class="alias">鲤</span></div>
+        <div class="pbio">孔子之子；过庭之训（学诗学礼）主角。</div>
+      </div><div class="pcard">
+        <div class="pname">陈亢</div>
+        <div class="prole">弟子</div>
+        <div><span class="alias">子禽</span></div>
+        <div class="pbio">问伯鱼异闻；知君子远其子。</div>
+      </div><div class="pcard">
+        <div class="pname">公冶长</div>
+        <div class="prole">弟子</div>
+        
+        <div class="pbio">孔子女婿；在缧绁之中非其罪。</div>
+      </div><div class="pcard">
+        <div class="pname">伯夷叔齐</div>
+        <div class="prole">古贤</div>
+        
+        <div class="pbio">孤竹君二子；不食周粟饿于首阳；孔子称&quot;求仁得仁&quot;。</div>
+      </div></div></div><div class="tab-panel " id="tab-text"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">原文阅读</h2>
+    <div class="section-note">点击下方章节进入 reader 逐句阅读。</div>
+    <div class="pian-grid">
+      <div class="unit-block" onclick="jumpTo('诸子/论语.txt',1,21)">
+        <div class="u-title">学而第一</div>
+        <div class="u-meta">674字</div>
+        <div class="u-desc">论学、孝弟、仁本、忠信；&quot;学而时习之&quot;&quot;吾日三省&quot;&quot;和为贵&quot;。</div>
+      </div>
+      <div class="unit-block" onclick="jumpTo('诸子/论语.txt',2,702)">
+        <div class="u-title">为政第二</div>
+        <div class="u-meta">827字</div>
+        <div class="u-desc">论为政以德；三十而立；温故知新；君子不器；因材施教；民信为本。</div>
+      </div>
+      <div class="unit-block" onclick="jumpTo('诸子/论语.txt',3,1536)">
+        <div class="u-title">八佾第三</div>
+        <div class="u-meta">991字</div>
+        <div class="u-desc">论礼、乐；&quot;是可忍孰不可忍&quot;&quot;人而不仁如礼何&quot;&quot;尽美尽善&quot;。</div>
+      </div>
+      <div class="unit-block" onclick="jumpTo('诸子/论语.txt',4,2534)">
+        <div class="u-title">里仁第四</div>
+        <div class="u-meta">709字</div>
+        <div class="u-desc">论仁与君子；&quot;朝闻道夕死可矣&quot;&quot;君子喻于义&quot;&quot;忠恕一贯&quot;&quot;见贤思齐&quot;。</div>
+      </div>
+      <div class="unit-block" onclick="jumpTo('诸子/论语.txt',7,3250)">
+        <div class="u-title">述而第七</div>
+        <div class="u-meta">926字</div>
+        <div class="u-desc">孔子自述：述而不作、学而不厌诲人不倦、不愤不启、三人行必有我师。</div>
+      </div>
+      <div class="unit-block" onclick="jumpTo('诸子/论语.txt',12,4184)">
+        <div class="u-title">颜渊第十二</div>
+        <div class="u-meta">1362字</div>
+        <div class="u-desc">颜渊问仁（克己复礼）、仲弓问仁（己所不欲勿施于人）、子贡问政（民信）、君君臣臣。</div>
+      </div>
+      <div class="unit-block" onclick="jumpTo('诸子/论语.txt',13,5554)">
+        <div class="u-title">子路第十三</div>
+        <div class="u-meta">1200字</div>
+        <div class="u-desc">子路问政、正名论、&quot;欲速则不达&quot;&quot;父为子隐&quot;&quot;和而不同&quot;。</div>
+      </div>
+      <div class="unit-block" onclick="jumpTo('诸子/论语.txt',15,6763)">
+        <div class="u-title">卫灵公第十五</div>
+        <div class="u-meta">1277字</div>
+        <div class="u-desc">在陈绝粮、杀身成仁、恕道（己所不欲勿施于人）、人能弘道、有教无类。</div>
+      </div>
+      <div class="unit-block" onclick="jumpTo('诸子/论语.txt',16,8048)">
+        <div class="u-title">季氏第十六</div>
+        <div class="u-meta">996字</div>
+        <div class="u-desc">季氏伐颛臾；不患寡患不均；三友三乐三戒三畏九思；过庭之训。</div>
+      </div>
+    </div></div>
+
+</main>
+<footer class="site-footer">
+  <p>子藏 Zi-Cang Ontology · 诸子百家深度研究 · CC BY-SA 4.0</p>
+</footer>
+<script src="js/common.js?v=22"></script>
+<script src="data/lunyu-data.js?v=22"></script>
+<script>
+function jumpTo(b,ch,s){window.open('reader.html?b='+encodeURIComponent(b)+'&ch='+ch+'&s='+s,'_blank');}
+const tabBtns=document.querySelectorAll('.tab-btn');
+const tabPans=document.querySelectorAll('.tab-panel');
+tabBtns.forEach(b=>b.addEventListener('click',()=>{
+  tabBtns.forEach(x=>x.classList.remove('active'));
+  tabPans.forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  document.getElementById('tab-'+b.dataset.tab).classList.add('active');
+  window.scrollTo({top:b.offsetTop-80,behavior:'smooth'});
+}));
+</script>
+</body>
+</html>

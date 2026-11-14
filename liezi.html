@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>《列子》深度研究 · 子藏本体论</title>
+<link rel="stylesheet" href="css/common.css?v=22">
+<style>
+.depth-hero{background:linear-gradient(135deg,var(--hero-from,#1a2a3f) 0%,var(--hero-mid,#2d4258) 60%,var(--hero-to,#4a6481) 100%);color:#f5efe0;padding:32px 28px;border-radius:10px;margin-bottom:22px;position:relative;overflow:hidden}
+.depth-hero::before{content:attr(data-char);position:absolute;right:-20px;top:-40px;font-size:260px;color:rgba(245,239,224,.06);font-family:"KaiTi","STKaiti",serif;font-weight:900;line-height:1}
+.depth-hero h1{margin:0 0 8px 0;font-size:32px;letter-spacing:4px;font-family:"KaiTi","STKaiti",serif}
+.depth-hero .sub{color:#c9b98f;font-size:15px;margin-bottom:14px;letter-spacing:2px}
+.depth-hero .meta-row{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px}
+.depth-hero .chip{background:rgba(245,239,224,.12);border:1px solid rgba(201,185,143,.35);padding:6px 14px;border-radius:20px;font-size:13px;color:#e8dec4}
+.depth-hero .chip b{color:#f2d98a;margin-right:4px}
+.depth-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin:20px 0}
+.depth-kpi{background:#faf6ec;border:1px solid #e2d8bc;padding:14px 12px;border-radius:8px;text-align:center}
+.depth-kpi .num{font-size:28px;color:var(--accent,#8b3a2f);font-weight:700;font-family:"KaiTi",serif}
+.depth-kpi .lbl{color:#6a5a3c;font-size:12px;margin-top:4px;letter-spacing:1px}
+.tabs{display:flex;gap:6px;border-bottom:2px solid #c9b98f;margin:20px 0 16px;flex-wrap:wrap}
+.tab-btn{padding:10px 18px;background:#faf6ec;border:1px solid #e2d8bc;border-bottom:none;border-radius:8px 8px 0 0;cursor:pointer;font-size:14px;color:#6a5a3c;font-family:"KaiTi",serif;letter-spacing:1px;transition:all .2s}
+.tab-btn:hover{background:#f0e8cf}
+.tab-btn.active{background:var(--accent,#8b3a2f);color:#f5efe0;border-color:var(--accent,#8b3a2f);transform:translateY(2px)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.pian-card{background:#fff;border:1px solid #e2d8bc;border-radius:10px;padding:18px 22px;margin-bottom:18px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.pian-card h3{margin:0 0 6px 0;font-size:22px;color:#2d4258;font-family:"KaiTi",serif;letter-spacing:3px;border-left:4px solid var(--accent,#8b3a2f);padding-left:12px}
+.pian-card .pian-sub{color:#8a7a5c;font-size:13px;margin-bottom:10px}
+.pian-card .pian-stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.pian-card .pian-stats span{background:#f0e8cf;padding:3px 10px;border-radius:12px;font-size:12px;color:#6a5a3c}
+.pian-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:10px}
+.unit-block{background:#faf6ec;border-radius:8px;padding:12px 14px;border-left:3px solid var(--accent,#8b3a2f);cursor:pointer;transition:all .2s}
+.unit-block:hover{background:#f0e8cf;transform:translateX(3px);box-shadow:0 2px 6px rgba(0,0,0,.12)}
+.unit-block.fable{border-left-color:#2d7d46}
+.unit-block.claim{border-left-color:var(--accent,#8b3a2f)}
+.unit-block.dialogue{border-left-color:#4a6481}
+.unit-block.metaphor{border-left-color:#b8860b}
+.unit-block.argument{border-left-color:#6a3fa0;background:linear-gradient(135deg,#faf6ec,#f5ecf8)}
+.unit-block .u-title{font-size:15px;font-weight:600;color:#2d4258;font-family:"KaiTi",serif;margin-bottom:4px}
+.unit-block .u-meta{font-size:11px;color:#8a7a5c;margin-bottom:6px;letter-spacing:.5px}
+.unit-block .u-desc{font-size:13px;color:#4a4a4a;line-height:1.6}
+.unit-block .u-scheme{display:inline-block;background:#efe5cf;color:#6a5a3c;padding:2px 8px;border-radius:10px;font-size:11px;margin:2px 4px 2px 0}
+.concept-cloud{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0;justify-content:center}
+.concept-cloud .tag{padding:6px 14px;border-radius:20px;background:#faf6ec;border:1px solid #c9b98f;color:var(--accent,#8b3a2f);font-family:"KaiTi",serif;font-size:14px;cursor:pointer;transition:all .2s}
+.concept-cloud .tag:hover{background:var(--accent,#8b3a2f);color:#f5efe0;transform:scale(1.08)}
+.concept-cloud .tag.core{background:var(--accent,#8b3a2f);color:#f5efe0;font-size:18px;padding:10px 20px}
+.read-link{display:inline-block;margin-top:6px;color:#4a6481;font-size:12px;text-decoration:none;border-bottom:1px dotted #4a6481}
+.read-link:hover{color:var(--accent,#8b3a2f);border-color:var(--accent,#8b3a2f)}
+.intro-paragraph{font-size:14px;line-height:1.9;color:#4a4a4a;margin:14px 0;text-indent:2em}
+.section-note{background:#faf6ec;border-left:4px solid #c9b98f;padding:12px 16px;border-radius:0 6px 6px 0;font-size:13px;color:#6a5a3c;line-height:1.7;margin:12px 0}
+.people-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:14px}
+.pcard{background:#fff;border:1px solid #e2d8bc;border-radius:8px;padding:10px 12px;border-top:3px solid var(--accent,#8b3a2f)}
+.pcard .pname{font-size:16px;font-weight:600;color:#2d4258;font-family:"KaiTi",serif;margin-bottom:2px}
+.pcard .prole{font-size:11px;color:#8a7a5c;margin-bottom:6px}
+.pcard .pbio{font-size:12px;color:#4a4a4a;line-height:1.6}
+.pcard .alias{display:inline-block;background:#e7dcc0;color:var(--accent,#8b3a2f);padding:1px 6px;border-radius:8px;font-size:10px;margin:1px 2px}
+#pian-timeline{position:relative;padding:20px 0;margin:20px 0}
+#pian-timeline::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:3px;background:linear-gradient(to bottom,var(--accent,#8b3a2f),#c9b98f,#2d7d46);transform:translateX(-50%)}
+.pian-node{position:relative;width:46%;padding:14px 18px;background:#fff;border:1px solid #e2d8bc;border-radius:8px;margin:14px 0;box-shadow:0 2px 6px rgba(0,0,0,.05)}
+.pian-node:nth-child(odd){margin-right:auto;text-align:right}
+.pian-node:nth-child(even){margin-left:auto}
+.pian-node::before{content:"";position:absolute;top:20px;width:14px;height:14px;background:var(--accent,#8b3a2f);border:3px solid #f5efe0;border-radius:50%}
+.pian-node:nth-child(odd)::before{right:-31px}
+.pian-node:nth-child(even)::before{left:-31px}
+.pian-node h4{margin:0 0 4px 0;font-size:18px;color:#2d4258;font-family:"KaiTi",serif}
+.pian-node .psub{font-size:12px;color:#8a7a5c;margin-bottom:6px}
+.pian-node .psummary{font-size:13px;color:#4a4a4a;line-height:1.6;text-align:left}
+@media(max-width:768px){
+  #pian-timeline::before{left:20px}
+  .pian-node{width:calc(100% - 44px);margin-left:44px !important;text-align:left !important}
+  .pian-node::before{left:-27px !important;right:auto !important}
+  .pian-grid{grid-template-columns:1fr}
+  .depth-hero h1{font-size:24px}
+  .people-grid{grid-template-columns:1fr}
+}
+</style>
+
+</head>
+<body class="ink-theme">
+<header class="topbar">
+  <div class="bar-inner">
+    <a class="brand" href="index.html"><span class="brand-zi">子</span><span class="brand-cang">藏</span><span class="brand-sub">Zi-Cang Ontology</span></a>
+    <nav class="mainnav" id="mainnav"></nav>
+    <button class="theme-toggle" id="themeToggle" title="切换主题">🎨</button>
+  </div>
+</header>
+<main class="container" style="max-width:1200px">
+
+<div class="depth-hero" data-char="子">
+  <h1>《列子》 · 深度标引</h1>
+  <div class="sub">冲虚真经</div>
+  <p style="margin:8px 0 0 0;font-size:13.5px;color:#d9cda8;line-height:1.7;max-width:820px">
+    本页依 zcon（概念论证本体）做五级语义单元标引：&lt;b&gt;命题 / 论证 / 对话 / 寓言 / 譬喻&lt;/b&gt;，全部锚点定位到句级字符偏移，可直接跳转原文阅读。
+  </p>
+  <div class="meta-row">
+    <span class="chip"><b>作者</b>列御寇（周（战国郑））</span>
+    <span class="chip"><b>文本长度</b>10,141 字</span>
+    <span class="chip"><b>标引单元</b>58 个句级锚点</span>
+    <span class="chip"><b>标引版本</b>zicang-v22</span>
+  </div>
+</div>
+
+<div class="depth-kpis"><div class="depth-kpi"><div class="num">8</div><div class="lbl">篇/章</div></div><div class="depth-kpi"><div class="num">28</div><div class="lbl">命题</div></div><div class="depth-kpi"><div class="num">13</div><div class="lbl">寓言</div></div><div class="depth-kpi"><div class="num">5</div><div class="lbl">对话</div></div><div class="depth-kpi"><div class="num">5</div><div class="lbl">譬喻</div></div><div class="depth-kpi"><div class="num">7</div><div class="lbl">论证</div></div><div class="depth-kpi"><div class="num">10</div><div class="lbl">概念</div></div><div class="depth-kpi"><div class="num">40</div><div class="lbl">人物</div></div><div class="depth-kpi"><div class="num">58</div><div class="lbl">句级锚点</div></div></div>
+
+<div class="tabs" id="tabs"><button class="tab-btn active" data-tab="overview">◇ 义理总览</button><button class="tab-btn " data-tab="map">❖ 篇章地图</button><button class="tab-btn " data-tab="claims">✦ 命题疏解</button><button class="tab-btn " data-tab="arguments">⚖ 论证结构</button><button class="tab-btn " data-tab="fables">☯ 寓言解读</button><button class="tab-btn " data-tab="dialogues">⌸ 对话问答</button><button class="tab-btn " data-tab="metaphors">✧ 譬喻举隅</button><button class="tab-btn " data-tab="people">☺ 出场人物</button><button class="tab-btn " data-tab="text">☰ 原文阅读</button></div>
+<div class="tab-panel active" id="tab-overview">
+    <h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px;margin-top:4px">《列子》义理系统</h2>
+    <p class="intro-paragraph">《列子》又名《冲虚真经》，旧题周列御寇撰，晋张湛注，《汉书·艺文志》著录八篇。书以贵虚、持后、力命、自生自化为要，寓言奇诡恣肆，既与《庄子》相表里，又独擅&quot;杞人忧天&quot;&quot;愚公移山&quot;&quot;歧路亡羊&quot;&quot;伯牙知音&quot;&quot;华胥之国&quot;等千古名篇。今本或有晋人缀补，然其气骨高妙，终为先秦道家要籍。</p><p class="intro-paragraph">《列子》八篇，以"虚"立宗，以"化"为脉，以"命"为归。<b>天瑞</b>言宇宙生成、万物自化；<b>黄帝</b>叙至人神凝、华胥之治；<b>周穆王</b>辨觉梦形神；<b>仲尼</b>借孔颜言真乐真知；<b>汤问</b>论无极无尽、愚公之志；<b>力命</b>辩人力与天命；<b>杨朱</b>陈且趣当生；<b>说符</b>明持后慎言——从宇宙论到人生论、从政治论到名实论，体大思精。</p><p class="intro-paragraph">《列子》寓言密度冠诸子：全书仅万余字，而标引得二十则核心寓言、十余组譬喻对话。其中"杞人忧天"明不可知之智，"愚公移山"显至诚能动，"歧路亡羊"戒多方丧生，"伯牙钟期"伤知音难遇，"华胥梦"寄至治之思——皆成为后世文学、哲学、日常成语的源头。</p>
+    <div class="section-note">
+      <b>本体建模说明</b>：本页标引依子藏 v2.2 本体——文献结构对应 zbib（zbib:Work/Chapter/Sentence），
+      义理单元对应 zcon（zcon:Claim/Argument/Dialogue/Fable/Metaphor/ArgumentScheme），
+      人物对应 zc:Person，可与《庄子》《列子》等子藏深度页进行义理互见。
+    </div><h3 style="font-family:KaiTi,serif;color:var(--accent,#8b3a2f);margin-top:20px;letter-spacing:2px">核心概念云</h3><div class="concept-cloud"><span class="tag core" title="列子核心；静虚自得、心不执物。">虚</span><span class="tag core" title="万物化生之机，细微之始。">机</span><span class="tag core" title="生化、变化、自化。">化</span><span class="tag " title="莫之致而至之自然。">命</span><span class="tag " title="纯气之守则神全。">神全</span><span class="tag " title="自生自化，非有主宰。">自然</span><span class="tag " title="杨朱之学：重一己之生。">为我</span><span class="tag " title="处后不争，如影随形。">持后</span><span class="tag " title="">纯气之守</span><span class="tag " title="">心凝形释</span></div><h3 style="font-family:KaiTi,serif;color:var(--accent,#8b3a2f);margin-top:24px;letter-spacing:2px">义理线索</h3><div class="pian-grid"><div class="unit-block argument"><div class="u-title">本体论：不生不化·自生自化</div><div class="u-desc">能生化万物者自身不被生化，万物皆自生自化自形自色，没有外在主宰。</div></div><div class="unit-block argument"><div class="u-title">宇宙论：太易→太初→太始→太素</div><div class="u-desc">四阶段宇宙生成论，气形质具而未离谓之浑沦，清轻者为天浊重者为地。</div></div><div class="unit-block argument"><div class="u-title">境界论：虚静·纯气·心凝形释</div><div class="u-desc">学道九年内外两忘、乘风而归；纯气之守则神全，醉者坠车犹不死。</div></div><div class="unit-block argument"><div class="u-title">命定论：自寿自夭·朕岂能识</div><div class="u-desc">力谓命不能制，命自谓自然而已；非有主宰之天，乃莫之致而至之命。</div></div><div class="unit-block argument"><div class="u-title">人生论：为我·持后·且趣当生</div><div class="u-desc">杨朱篇重一己之生，说符篇倡处后不争；与庄子逍遥一脉，但更重&quot;贵己&quot;。</div></div><div class="unit-block argument"><div class="u-title">政治论：自然无为·类无贵贱</div><div class="u-desc">华胥国无师长自然而治；鲍氏之子斥&quot;天为人&quot;，主万物齐类。</div></div></div></div><div class="tab-panel " id="tab-map"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">列子篇章思想地图</h2>
+    <div class="section-note">点击篇章卡片可跳转至原文。</div><div id="pianTimeline"><div class="pian-node"><h4>天瑞第一</h4>
+      <div class="psub">第1篇 · 3796字</div>
+      <div class="psummary">天道生化；万物自化；生死自然；虚静无为。含「杞人忧天」「荣启期三乐」「林类论生死」「国氏为盗」等寓言。 <a class="read-link" href="reader.html?b=%E8%AF%B8%E5%AD%90%2F%E5%88%97%E5%AD%90.txt&ch=1&s=27" target="_blank">读原文 →</a></div></div><div class="pian-node"><h4>黄帝第二</h4>
+      <div class="psub">第2篇 · 1775字</div>
+      <div class="psummary">黄帝梦游华胥；列姑射神人；列子学射；伯昏无人临渊；杨朱见老子。论至人无己、神凝形释。 <a class="read-link" href="reader.html?b=%E8%AF%B8%E5%AD%90%2F%E5%88%97%E5%AD%90.txt&ch=2&s=3831" target="_blank">读原文 →</a></div></div><div class="pian-node"><h4>周穆王第三</h4>
+      <div class="psub">第3篇 · 897字</div>
+      <div class="psummary">化人神游；周穆王西游见西王母。论觉与梦、形与神。 <a class="read-link" href="reader.html?b=%E8%AF%B8%E5%AD%90%2F%E5%88%97%E5%AD%90.txt&ch=3&s=5615" target="_blank">读原文 →</a></div></div><div class="pian-node"><h4>仲尼第四</h4>
+      <div class="psub">第4篇 · 446字</div>
+      <div class="psummary">孔子与颜回论「乐天知命」之忧，辨析无乐无知为真乐真知。 <a class="read-link" href="reader.html?b=%E8%AF%B8%E5%AD%90%2F%E5%88%97%E5%AD%90.txt&ch=4&s=6520" target="_blank">读原文 →</a></div></div><div class="pian-node"><h4>汤问第五</h4>
+      <div class="psub">第5篇 · 766字</div>
+      <div class="psummary">殷汤夏革问答无极无尽；愚公移山；伯牙鼓琴知音。 <a class="read-link" href="reader.html?b=%E8%AF%B8%E5%AD%90%2F%E5%88%97%E5%AD%90.txt&ch=5&s=6974" target="_blank">读原文 →</a></div></div><div class="pian-node"><h4>力命第六</h4>
+      <div class="psub">第6篇 · 281字</div>
+      <div class="psummary">力与命的对辩：人力有限，命运自尔。 <a class="read-link" href="reader.html?b=%E8%AF%B8%E5%AD%90%2F%E5%88%97%E5%AD%90.txt&ch=6&s=7748" target="_blank">读原文 →</a></div></div><div class="pian-node"><h4>杨朱第七</h4>
+      <div class="psub">第7篇 · 824字</div>
+      <div class="psummary">杨朱论名实；百年人生之乐；且趣当生，奚遑死后。 <a class="read-link" href="reader.html?b=%E8%AF%B8%E5%AD%90%2F%E5%88%97%E5%AD%90.txt&ch=7&s=8037" target="_blank">读原文 →</a></div></div><div class="pian-node"><h4>说符第八</h4>
+      <div class="psub">第8篇 · 1271字</div>
+      <div class="psummary">持后持身；慎言慎行；歧路亡羊；鲍氏之子论类无贵贱；子列子辞粟。 <a class="read-link" href="reader.html?b=%E8%AF%B8%E5%AD%90%2F%E5%88%97%E5%AD%90.txt&ch=8&s=8869" target="_blank">读原文 →</a></div></div></div></div><div class="tab-panel " id="tab-claims"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">28核心命题</h2>
+      <div class="section-note">命题即 zcon:Claim——可以判断义理立场的最小判断单元；点击可跳至原文对应句段。</div><div class="pian-card"><h3>天瑞第一</h3>
+        <div class="pian-sub">天道生化；万物自化；生死自然；虚静无为。含「杞人忧天」「荣启期三乐」「林类论生死」「国氏为盗」等寓言。 · 本章 9 命题</div><div class="pian-grid"><div class="unit-block claim" onclick="jumpTo('诸子/列子.txt',1,137)">
+          <div class="u-title">不生不化者能生生化化</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">道</span><span class="u-scheme">自生自化</span><span class="u-scheme">生生</span></div>
+          <div class="u-desc">能生化万物者，自身不被生化；它是万物的本原（道），自生自化、自形自色、自智自力。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「有生不生，有化不化。不生者能生生，不化者能化化…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/列子.txt',1,358)">
+          <div class="u-title">宇宙生成四阶段：太易→太初→太始→太素</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">太易</span><span class="u-scheme">浑沦</span><span class="u-scheme">宇宙生成</span></div>
+          <div class="u-desc">太易未见气、太初气之始、太始形之始、太素质之始；气形质具而未离谓之浑沦，易变而为一，清轻者上为天、浊重者下为地。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「有太易，有太初，有太始，有太素…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/列子.txt',1,543)">
+          <div class="u-title">天地圣人万物皆有所偏</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">无为</span><span class="u-scheme">分职</span><span class="u-scheme">各得其宜</span></div>
+          <div class="u-desc">天职生覆、地职形载、圣职教化、物职所宜；皆随所宜而不能出所位。万物齐职，无独尊者。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「天地无全功，圣人无全能，万物无全用…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/列子.txt',1,955)">
+          <div class="u-title">万物皆出于机皆入于机</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">机</span><span class="u-scheme">物种变化</span><span class="u-scheme">化生</span></div>
+          <div class="u-desc">物种变化无穷，从微至著、从生物到人，皆自机出、复入于机——列子生物演化观。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「种有几…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/列子.txt',1,1461)">
+          <div class="u-title">鬼者归也，归其真宅</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">鬼</span><span class="u-scheme">精神</span><span class="u-scheme">归真</span></div>
+          <div class="u-desc">精神属天清散，骨骸属地浊聚；精神离形各归其真，便是「鬼」——归也。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「精神者，天之分；骨骸者，地之分…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/列子.txt',1,2513)">
+          <div class="u-title">虚者无贵，贵在静虚自得</div>
+          <div class="u-meta"><span class="u-scheme">对话问答</span><span class="u-scheme">虚</span><span class="u-scheme">静</span><span class="u-scheme">无为</span></div>
+          <div class="u-desc">贵虚不是标榜「虚」之名，而是心守静虚、不为外扰，方能得其安居。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「非其名也，莫如静，莫如虚。静也虚也，得其居矣…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/列子.txt',1,2626)">
+          <div class="u-title">天地密移，损益潜移</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">密移</span><span class="u-scheme">渐变</span><span class="u-scheme">潜移</span></div>
+          <div class="u-desc">天地运转无息，气不顿进、形不顿亏，人自幼至老貌色智态日异而不觉；渐变非骤变。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「凡一气不顿进，一形不顿亏…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/列子.txt',1,3066)">
+          <div class="u-title">坏与不坏吾何容心</div>
+          <div class="u-meta"><span class="u-scheme">对话问答</span><span class="u-scheme">不可知</span><span class="u-scheme">容心</span><span class="u-scheme">无忧</span></div>
+          <div class="u-desc">天地是否会坏是不可知之事；生不知死、死不知生，不必以未知之忧劳心。——杞人忧天的解答。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「坏与不坏，吾所不能知也…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/列子.txt',1,3629)">
+          <div class="u-title">盗天公道，盗人私心</div>
+          <div class="u-meta"><span class="u-scheme">譬喻</span><span class="u-scheme">公道</span><span class="u-scheme">私心</span><span class="u-scheme">盗亦有道</span></div>
+          <div class="u-desc">国氏盗天地之时利（耕作渔猎）是公道，无殃；向氏盗人之金玉财货是私心，获罪。公私之分即是天地之德。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「国氏之盗，公道也，故亡殃；若之盗，私心也，故得罪…」</div>
+        </div></div></div><div class="pian-card"><h3>黄帝第二</h3>
+        <div class="pian-sub">黄帝梦游华胥；列姑射神人；列子学射；伯昏无人临渊；杨朱见老子。论至人无己、神凝形释。 · 本章 6 命题</div><div class="pian-grid"><div class="unit-block claim" onclick="jumpTo('诸子/列子.txt',2,4037)">
+          <div class="u-title">华胥氏之国：自然无为之治</div>
+          <div class="u-meta"><span class="u-scheme">寓言</span><span class="u-scheme">华胥国</span><span class="u-scheme">自然无为</span><span class="u-scheme">至治</span></div>
+          <div class="u-desc">华胥国入水不溺、入火不热、乘空如履实，是至德之世的理想；黄帝悟至道，天下大治几若华胥。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「其国无师长，自然而已。其民无嗜欲，自然而已…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/列子.txt',2,4310)">
+          <div class="u-title">姑射神人：不偎不爱、阴阳常调</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">神人</span><span class="u-scheme">无为</span><span class="u-scheme">姑射</span></div>
+          <div class="u-desc">神人无为而万物自足；不施不惠而物自足、不聚不敛而己无愆，是神凝之至。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「列姑射山在海河洲中，山上有神人焉，吸风饮露，不食五谷…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/列子.txt',2,4705)">
+          <div class="u-title">学道九阶：心凝形释、骨肉都融</div>
+          <div class="u-meta"><span class="u-scheme">对话问答</span><span class="u-scheme">心凝形释</span><span class="u-scheme">学道阶段</span><span class="u-scheme">乘风</span></div>
+          <div class="u-desc">三年不敢念是非言利害→五年更念更言→七年从心念无是非→九年内外两忘→不觉形之所倚足之所履，竟不知风乘我还是我乘风。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「九年之后，横心之所念，横口之所言，亦不知我之是非利害欤…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/列子.txt',2,5047)">
+          <div class="u-title">纯气之守：醉者坠车而神全</div>
+          <div class="u-meta"><span class="u-scheme">譬喻</span><span class="u-scheme">纯气</span><span class="u-scheme">神全</span><span class="u-scheme">守气</span></div>
+          <div class="u-desc">至人潜行不窒蹈火不热，靠的是纯气之守而非智巧果敢；醉者坠车虽疾不死，因神全惊惧不入胸。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「壹其性，养其气，含其德，以通乎物之所造…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/列子.txt',2,5319)">
+          <div class="u-title">伯昏无人临渊射：至人神气不变</div>
+          <div class="u-meta"><span class="u-scheme">寓言</span><span class="u-scheme">至人</span><span class="u-scheme">神气不变</span><span class="u-scheme">射之射</span></div>
+          <div class="u-desc">列御寇平地能射，临百仞渊则伏地汗流，因为心中有矜；至人上窥下潜挥斥八极而神气不变。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「夫至人者，上窥青天，下潜黄泉，挥斥八极，神气不变…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/列子.txt',2,5500)">
+          <div class="u-title">大白若辱，盛德若不足（老子告杨朱）</div>
+          <div class="u-meta"><span class="u-scheme">对话问答</span><span class="u-scheme">大白若辱</span><span class="u-scheme">谦德</span><span class="u-scheme">杨朱</span></div>
+          <div class="u-desc">杨朱初见老子时骄矜自满，被老子以&quot;大白若辱盛德若不足&quot;教诲，归来改容，遂与舍者争席。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「大白若辱，盛德若不足…」</div>
+        </div></div></div><div class="pian-card"><h3>周穆王第三</h3>
+        <div class="pian-sub">化人神游；周穆王西游见西王母。论觉与梦、形与神。 · 本章 1 命题</div><div class="pian-grid"><div class="unit-block claim" onclick="jumpTo('诸子/列子.txt',3,6178)">
+          <div class="u-title">化人神游：觉梦无异</div>
+          <div class="u-meta"><span class="u-scheme">寓言</span><span class="u-scheme">神游</span><span class="u-scheme">梦觉</span><span class="u-scheme">化人</span></div>
+          <div class="u-desc">周穆王与化人神游，寤后方知形未动；化人点化&quot;所居奚异王之宫&quot;，王大悦，不恤国事肆意远游。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「吾与王神游也，形奚动哉…」</div>
+        </div></div></div><div class="pian-card"><h3>仲尼第四</h3>
+        <div class="pian-sub">孔子与颜回论「乐天知命」之忧，辨析无乐无知为真乐真知。 · 本章 1 命题</div><div class="pian-grid"><div class="unit-block claim" onclick="jumpTo('诸子/列子.txt',4,6838)">
+          <div class="u-title">无乐无知是真乐真知</div>
+          <div class="u-meta"><span class="u-scheme">对话问答</span><span class="u-scheme">真乐真知</span><span class="u-scheme">乐天知命</span><span class="u-scheme">颜回</span></div>
+          <div class="u-desc">孔子纠正颜回：徒知乐天知命无忧是浅境；无乐无知方为真乐真知，即无所不乐无所不忧——既不弃诗书礼乐，也不必革之。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「无乐无知，是真乐真知；故无所不乐，无所不知…」</div>
+        </div></div></div><div class="pian-card"><h3>汤问第五</h3>
+        <div class="pian-sub">殷汤夏革问答无极无尽；愚公移山；伯牙鼓琴知音。 · 本章 3 命题</div><div class="pian-grid"><div class="unit-block claim" onclick="jumpTo('诸子/列子.txt',5,7116)">
+          <div class="u-title">无极无尽：上下八方无极尽</div>
+          <div class="u-meta"><span class="u-scheme">对话问答</span><span class="u-scheme">无极</span><span class="u-scheme">无尽</span><span class="u-scheme">时空无限</span></div>
+          <div class="u-desc">殷汤问夏革上下八方是否有极尽；答曰无则无极、有则有尽，无极之外复无极，无尽之中复无尽——故不知其有极有尽。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「无极之外复无无极，无尽之中复无无尽…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/列子.txt',5,7452)">
+          <div class="u-title">愚公移山：诚能动天</div>
+          <div class="u-meta"><span class="u-scheme">寓言</span><span class="u-scheme">愚公移山</span><span class="u-scheme">诚</span><span class="u-scheme">坚持</span></div>
+          <div class="u-desc">愚公年且九十率子孙叩石垦壤，智叟笑之；愚公以子孙无穷山不加增驳之。帝感其诚，命夸蛾氏二子负二山。寓意：至诚感神、有志竟成。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「子子孙孙，无穷匮也；而山不加增，何苦而不平…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/列子.txt',5,7599)">
+          <div class="u-title">伯牙鼓琴知音：高山流水</div>
+          <div class="u-meta"><span class="u-scheme">寓言</span><span class="u-scheme">知音</span><span class="u-scheme">高山流水</span><span class="u-scheme">伯牙子期</span></div>
+          <div class="u-desc">伯牙鼓琴志在高山则钟子期曰峨峨泰山，志在流水则洋洋江河；曲每奏钟子期辄穷其趣。子期死伯牙终身不复鼓琴。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「伯牙所念，钟子期必得之…」</div>
+        </div></div></div><div class="pian-card"><h3>力命第六</h3>
+        <div class="pian-sub">力与命的对辩：人力有限，命运自尔。 · 本章 1 命题</div><div class="pian-grid"><div class="unit-block claim" onclick="jumpTo('诸子/列子.txt',6,7797)">
+          <div class="u-title">力命之辩：寿夭穷达非力所能</div>
+          <div class="u-meta"><span class="u-scheme">两难</span><span class="u-scheme">力命</span><span class="u-scheme">寿夭</span><span class="u-scheme">自然</span></div>
+          <div class="u-desc">力自谓能寿夭穷达；命反诘：彭祖寿、颜渊夭、孔子困、纣居位、夷齐饿、季氏富，若非力之所及，即是自寿自夭、自穷自达，命无制之者。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「彭祖之智不出尧舜之上，而寿八百；颜渊之才不出众人之下，而…」</div>
+        </div></div></div><div class="pian-card"><h3>杨朱第七</h3>
+        <div class="pian-sub">杨朱论名实；百年人生之乐；且趣当生，奚遑死后。 · 本章 3 命题</div><div class="pian-grid"><div class="unit-block claim" onclick="jumpTo('诸子/列子.txt',7,8260)">
+          <div class="u-title">名实之辨：实名贫，伪名富</div>
+          <div class="u-meta"><span class="u-scheme">对话问答</span><span class="u-scheme">名实</span><span class="u-scheme">伪</span><span class="u-scheme">杨朱</span></div>
+          <div class="u-desc">杨朱论名实为伪：尧舜伪让天下不失国祚，伯夷叔齐实让孤竹饿于首阳。实伪之辩若此之省。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「实无名，名无实。名者，伪而已矣…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/列子.txt',7,8343)">
+          <div class="u-title">百年人生：且趣当生，奚遑死后</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">且趣当生</span><span class="u-scheme">为我</span><span class="u-scheme">享乐</span></div>
+          <div class="u-desc">百年中孩抱昏老夜眠昼觉痛疾哀苦居其大半，畅然自得者无多时。古人知生暂来死暂往，从心而动不违自然，当身之娱非所去，死后之名非所取。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「百年，寿之大齐。得百年者千无一焉…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/列子.txt',7,8751)">
+          <div class="u-title">齐生齐死，腐骨一矣</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">齐生死</span><span class="u-scheme">腐骨一</span><span class="u-scheme">为我</span></div>
+          <div class="u-desc">万物生异死同：生有贤愚贵贱，死皆臭腐消灭。十年亦死百年亦死，仁圣凶愚死皆腐骨——且趣当生，遑论死后。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「万物齐生齐死，齐贤齐愚，齐贵齐贱…」</div>
+        </div></div></div><div class="pian-card"><h3>说符第八</h3>
+        <div class="pian-sub">持后持身；慎言慎行；歧路亡羊；鲍氏之子论类无贵贱；子列子辞粟。 · 本章 4 命题</div><div class="pian-grid"><div class="unit-block claim" onclick="jumpTo('诸子/列子.txt',8,8922)">
+          <div class="u-title">持后处先：如影随形</div>
+          <div class="u-meta"><span class="u-scheme">譬喻</span><span class="u-scheme">持后</span><span class="u-scheme">形影</span><span class="u-scheme">处先</span></div>
+          <div class="u-desc">列子学持后于壶丘子林：顾影则知，枉直随形不在影，屈申任物不在我；持后而处先。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「形枉则影曲，形直则影正…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/列子.txt',8,8971)">
+          <div class="u-title">慎尔言将有和之，慎尔行将有随之</div>
+          <div class="u-meta"><span class="u-scheme">譬喻</span><span class="u-scheme">言行</span><span class="u-scheme">慎</span><span class="u-scheme">应验</span></div>
+          <div class="u-desc">名如响、身如影，言行是响影之原；圣人见出知入、观往来。汤武爱天下故王，桀纣恶天下故亡——度在身而稽在人。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「言美则响美，言恶则响恶；身长则影长，身短则影短…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/列子.txt',8,9541)">
+          <div class="u-title">歧路亡羊：大道以多歧亡羊，学者以多方丧生</div>
+          <div class="u-meta"><span class="u-scheme">寓言</span><span class="u-scheme">歧路亡羊</span><span class="u-scheme">反一</span><span class="u-scheme">为学</span></div>
+          <div class="u-desc">杨子邻人亡羊因多歧路而不获；杨子戚然变容——大道本同末异，唯归同反一为亡得丧，否则多方丧生。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「歧路之中又有歧焉，吾不知所之，所以反也…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/列子.txt',8,9989)">
+          <div class="u-title">类无贵贱，非相为而生（鲍氏之子）</div>
+          <div class="u-meta"><span class="u-scheme">反驳</span><span class="u-scheme">类无贵贱</span><span class="u-scheme">天非为人</span><span class="u-scheme">齐物</span></div>
+          <div class="u-desc">齐田氏叹&quot;天之于民厚矣，殖五谷生鱼鸟以为之用&quot;，鲍氏之子十二岁反驳：万物与我并生类也，类无贵贱，非天本为人生之——蚊蚋肤虎狼食肉，岂天本为蚊蚋生人虎狼生肉者？</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「天地万物与我并生，类也。类无贵贱，徒以小大智力而相制…」</div>
+        </div></div></div></div><div class="tab-panel " id="tab-arguments"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">7核心论证/问难</h2>
+      <div class="section-note">含譬喻、对话问答、两难、反驳等论证图式。</div><div class="pian-grid"><div class="unit-block argument" onclick="jumpTo('诸子/列子.txt',1,2159)">
+        <div class="u-title">子贡愿息</div>
+        <div class="u-meta"><span class="u-scheme">对话问答</span><span class="u-scheme">子贡</span><span class="u-scheme">孔子</span><span class="u-scheme">晏子</span></div>
+        <div class="u-desc">生无所息；望圹则知所息——死为大归，古者谓死人为归人，生人为行人。</div>
+      </div><div class="unit-block argument" onclick="jumpTo('诸子/列子.txt',2,5087)">
+        <div class="u-title">醉者坠车神全</div>
+        <div class="u-meta"><span class="u-scheme">譬喻</span><span class="u-scheme">关尹</span></div>
+        <div class="u-desc">醉者神全死生惊惧不入胸，故遌物而不慴；彼得全于酒犹如此，况得全于天乎？</div>
+      </div><div class="unit-block argument" onclick="jumpTo('诸子/列子.txt',4,6520)">
+        <div class="u-title">颜回论乐天知命</div>
+        <div class="u-meta"><span class="u-scheme">对话问答</span><span class="u-scheme">孔子</span><span class="u-scheme">颜回</span><span class="u-scheme">子贡</span></div>
+        <div class="u-desc">无乐无知是真乐真知，故无所不乐无所不知无所不忧无所不为；诗书礼乐不必弃、不必革。</div>
+      </div><div class="unit-block argument" onclick="jumpTo('诸子/列子.txt',6,7748)">
+        <div class="u-title">力命对辩</div>
+        <div class="u-meta"><span class="u-scheme">对话问答</span><span class="u-scheme">力</span><span class="u-scheme">命</span><span class="u-scheme">彭祖</span><span class="u-scheme">颜渊</span><span class="u-scheme">孔子</span><span class="u-scheme">纣</span><span class="u-scheme">季札</span><span class="u-scheme">田恒</span><span class="u-scheme">伯夷</span><span class="u-scheme">叔齐</span><span class="u-scheme">季氏</span></div>
+        <div class="u-desc">自寿自夭自穷自达，命非有制之者；自然而已，朕岂能识之哉？</div>
+      </div><div class="unit-block argument" onclick="jumpTo('诸子/列子.txt',7,8037)">
+        <div class="u-title">杨朱论名实</div>
+        <div class="u-meta"><span class="u-scheme">对话问答</span><span class="u-scheme">杨朱</span><span class="u-scheme">孟氏</span><span class="u-scheme">管仲</span><span class="u-scheme">田氏</span><span class="u-scheme">尧舜</span><span class="u-scheme">许由</span><span class="u-scheme">善卷</span><span class="u-scheme">伯夷</span><span class="u-scheme">叔齐</span></div>
+        <div class="u-desc">实无名、名无实，名者伪而已。尧舜伪让天下而不失，夷齐实让而饿死；实名贫伪名富。</div>
+      </div><div class="unit-block argument" onclick="jumpTo('诸子/列子.txt',8,8869)">
+        <div class="u-title">持后处先（影喻）</div>
+        <div class="u-meta"><span class="u-scheme">譬喻</span><span class="u-scheme">列子</span><span class="u-scheme">壶丘子林</span></div>
+        <div class="u-desc">形枉影曲形直影正；枉直随形不在影，屈申任物不在我。持后而处先。</div>
+      </div><div class="unit-block argument" onclick="jumpTo('诸子/列子.txt',8,9914)">
+        <div class="u-title">鲍氏之子论天非为人</div>
+        <div class="u-meta"><span class="u-scheme">反驳</span><span class="u-scheme">田氏</span><span class="u-scheme">鲍氏之子（十二岁）</span></div>
+        <div class="u-desc">天地万物与我并生类也，类无贵贱；非相为而生，非天本为人生之。</div>
+      </div></div></div><div class="tab-panel " id="tab-fables"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">13寓言</h2>
+      <div class="section-note">寓言即 zcon:Fable——"寓言十九，藉外论之"，以虚构故事寄寓哲学义理。</div><div class="pian-grid"><div class="unit-block fable" onclick="jumpTo('诸子/列子.txt',1,2700)">
+        <div class="u-title">杞人忧天</div>
+        <div class="u-meta"><span class="u-scheme">杞人</span><span class="u-scheme">晓之者</span><span class="u-scheme">长庐子</span><span class="u-scheme">子列子</span></div>
+        <div class="u-desc">忧天地崩坠是过虑；言坏与不坏皆未是。坏与不坏吾所不能知，吾何容心哉。</div>
+      </div><div class="unit-block fable" onclick="jumpTo('诸子/列子.txt',1,1666)">
+        <div class="u-title">荣启期三乐</div>
+        <div class="u-meta"><span class="u-scheme">孔子</span><span class="u-scheme">荣启期</span></div>
+        <div class="u-desc">天生万物唯人为贵（一乐）、男尊女卑吾得为男（二乐）、吾行年九十（三乐）。处常得终，当何忧哉？能自宽者也。</div>
+      </div><div class="unit-block fable" onclick="jumpTo('诸子/列子.txt',1,1829)">
+        <div class="u-title">林类论生死</div>
+        <div class="u-meta"><span class="u-scheme">子贡</span><span class="u-scheme">林类</span><span class="u-scheme">孔子</span></div>
+        <div class="u-desc">死之与生一往一反，死于是安知不生于彼？营营求生非惑乎？彼得之而不尽。</div>
+      </div><div class="unit-block fable" onclick="jumpTo('诸子/列子.txt',1,3249)">
+        <div class="u-title">国氏为盗</div>
+        <div class="u-meta"><span class="u-scheme">国氏</span><span class="u-scheme">向氏</span><span class="u-scheme">东郭先生</span></div>
+        <div class="u-desc">国氏盗天地之时利是公道无殃；向氏盗人金玉是私心获罪。公公私私天地之德。</div>
+      </div><div class="unit-block fable" onclick="jumpTo('诸子/列子.txt',2,3983)">
+        <div class="u-title">黄帝梦游华胥</div>
+        <div class="u-meta"><span class="u-scheme">黄帝</span><span class="u-scheme">天老</span><span class="u-scheme">力牧</span><span class="u-scheme">太山稽</span></div>
+        <div class="u-desc">华胥国无师长、无嗜欲、自然而已；入水不溺入火不热、乘空如履实。至道不可以情求。</div>
+      </div><div class="unit-block fable" onclick="jumpTo('诸子/列子.txt',2,4442)">
+        <div class="u-title">列子学射乘风</div>
+        <div class="u-meta"><span class="u-scheme">列子</span><span class="u-scheme">老商氏</span><span class="u-scheme">伯高子</span><span class="u-scheme">尹生（章戴）</span></div>
+        <div class="u-desc">学道九年后内外两忘、心凝形释、骨肉都融，不知风乘我还是我乘风。尹生求术亟去，故不得。</div>
+      </div><div class="unit-block fable" onclick="jumpTo('诸子/列子.txt',2,5182)">
+        <div class="u-title">伯昏无人临渊射</div>
+        <div class="u-meta"><span class="u-scheme">列御寇</span><span class="u-scheme">伯昏无人</span></div>
+        <div class="u-desc">是射之射非不射之射；至人上窥青天下潜黄泉，挥斥八极神气不变。</div>
+      </div><div class="unit-block fable" onclick="jumpTo('诸子/列子.txt',2,5363)">
+        <div class="u-title">杨朱见老子</div>
+        <div class="u-meta"><span class="u-scheme">杨朱</span><span class="u-scheme">老子</span></div>
+        <div class="u-desc">大白若辱，盛德若不足。杨朱敬闻命改容，归来舍者与之争席。</div>
+      </div><div class="unit-block fable" onclick="jumpTo('诸子/列子.txt',3,5615)">
+        <div class="u-title">化人神游</div>
+        <div class="u-meta"><span class="u-scheme">周穆王</span><span class="u-scheme">化人</span><span class="u-scheme">西王母</span><span class="u-scheme">造父</span></div>
+        <div class="u-desc">神游形不动；觉梦之辨。王大悦，不恤国事，肆意远游，宾西王母于瑶池。</div>
+      </div><div class="unit-block fable" onclick="jumpTo('诸子/列子.txt',5,7170)">
+        <div class="u-title">愚公移山</div>
+        <div class="u-meta"><span class="u-scheme">愚公</span><span class="u-scheme">智叟</span><span class="u-scheme">遗男</span><span class="u-scheme">操蛇之神</span><span class="u-scheme">夸蛾氏</span></div>
+        <div class="u-desc">子子孙孙无穷匮而山不加增，何苦而不平？帝感其诚，命夸蛾氏负山。至诚感天。</div>
+      </div><div class="unit-block fable" onclick="jumpTo('诸子/列子.txt',5,7541)">
+        <div class="u-title">伯牙鼓琴遇知音</div>
+        <div class="u-meta"><span class="u-scheme">伯牙</span><span class="u-scheme">钟子期</span></div>
+        <div class="u-desc">伯牙所念钟子期必得之；高山流水之志。子期死伯牙终身不复鼓琴。</div>
+      </div><div class="unit-block fable" onclick="jumpTo('诸子/列子.txt',8,9297)">
+        <div class="u-title">列子辞粟</div>
+        <div class="u-meta"><span class="u-scheme">列子</span><span class="u-scheme">列子妻</span><span class="u-scheme">郑子阳</span><span class="u-scheme">客</span></div>
+        <div class="u-desc">君非自知我，以人之言遗粟；至其罪我也又且以人之言，此吾所以不受也。后民果作难杀子阳。</div>
+      </div><div class="unit-block fable" onclick="jumpTo('诸子/列子.txt',8,9479)">
+        <div class="u-title">歧路亡羊</div>
+        <div class="u-meta"><span class="u-scheme">杨子（杨朱）</span><span class="u-scheme">邻人</span><span class="u-scheme">孟孙阳</span><span class="u-scheme">心都子</span></div>
+        <div class="u-desc">大道以多歧亡羊，学者以多方丧生；学非本不同非本不一而末异若是，唯归同反一为亡得丧。</div>
+      </div></div></div><div class="tab-panel " id="tab-dialogues"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">5对话单元</h2>
+      <div class="section-note">对话即 zcon:Dialogue，按"曰/问/对曰"切分，记录问答轮次与主题。</div><div class="pian-grid"><div class="unit-block dialogue" onclick="jumpTo('诸子/列子.txt',1,2487)">
+        <div class="u-title">何谓贵虚</div>
+        <div class="u-meta"><span class="u-scheme">或人→子列子</span><span class="u-scheme">3 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/列子.txt',1,3120)">
+        <div class="u-title">道可得而有乎</div>
+        <div class="u-meta"><span class="u-scheme">舜→烝（丞）</span><span class="u-scheme">5 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/列子.txt',2,4895)">
+        <div class="u-title">至人何以潜行不窒蹈火不热</div>
+        <div class="u-meta"><span class="u-scheme">列子→关尹</span><span class="u-scheme">6 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/列子.txt',5,6974)">
+        <div class="u-title">古初有物？上下八方有极尽？</div>
+        <div class="u-meta"><span class="u-scheme">殷汤→夏革</span><span class="u-scheme">7 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/列子.txt',6,7748)">
+        <div class="u-title">寿夭穷达是力还是命</div>
+        <div class="u-meta"><span class="u-scheme">力↔命</span><span class="u-scheme">6 轮</span></div>
+        <div class="u-desc"></div>
+      </div></div></div><div class="tab-panel " id="tab-metaphors"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">5譬喻</h2>
+      <div class="section-note">譬喻即 zcon:Metaphor，以近喻远、以具象喻抽象。</div><div class="pian-grid"><div class="unit-block metaphor" onclick="jumpTo('诸子/列子.txt',8,8906)">
+        <div class="u-title">形之枉直 <span style="color:#b8860b">→</span> 我之屈申</div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block metaphor" onclick="jumpTo('诸子/列子.txt',8,8995)">
+        <div class="u-title">言/身 <span style="color:#b8860b">→</span> 名/影</div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block metaphor" onclick="jumpTo('诸子/列子.txt',2,5087)">
+        <div class="u-title">醉者神全 <span style="color:#b8860b">→</span> 圣人藏于天</div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block metaphor" onclick="jumpTo('诸子/列子.txt',1,3429)">
+        <div class="u-title">盗天地 <span style="color:#b8860b">→</span> 公道</div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block metaphor" onclick="jumpTo('诸子/列子.txt',2,5319)">
+        <div class="u-title">登高山临百仞渊而射 <span style="color:#b8860b">→</span> 至人无惊</div>
+        <div class="u-desc"></div>
+      </div></div></div><div class="tab-panel " id="tab-people"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">40出场人物</h2><div class="people-grid"><div class="pcard">
+        <div class="pname">列子</div>
+        <div class="prole">核心/作者</div>
+        <div><span class="alias">子列子</span><span class="alias">列御寇</span><span class="alias">御寇</span></div>
+        <div class="pbio">战国郑人，道家，师壶丘子林、友伯昏无人、学于老商氏；能乘风而行；主虚静无为、贵虚、持后、力命。《汉书·艺文志》道家《列子》八篇。</div>
+      </div><div class="pcard">
+        <div class="pname">壶丘子林</div>
+        <div class="prole">老师</div>
+        <div><span class="alias">壶子</span></div>
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">伯昏无人</div>
+        <div class="prole">师友</div>
+        
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">老商氏</div>
+        <div class="prole">老师</div>
+        
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">伯高子</div>
+        <div class="prole">道友</div>
+        
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">关尹</div>
+        <div class="prole">先师/对话者</div>
+        <div><span class="alias">关尹喜</span></div>
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">尹生</div>
+        <div class="prole">弟子</div>
+        <div><span class="alias">章戴</span></div>
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">黄帝</div>
+        <div class="prole">主角（第二、三）</div>
+        
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">天老</div>
+        <div class="prole">黄帝臣</div>
+        
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">力牧</div>
+        <div class="prole">黄帝臣</div>
+        
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">太山稽</div>
+        <div class="prole">黄帝臣</div>
+        
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">化人</div>
+        <div class="prole">神人</div>
+        
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">周穆王</div>
+        <div class="prole">主角（第三）</div>
+        
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">西王母</div>
+        <div class="prole">神人</div>
+        
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">造父</div>
+        <div class="prole">御者</div>
+        
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">孔子</div>
+        <div class="prole">出场/被论</div>
+        <div><span class="alias">仲尼</span><span class="alias">夫子</span></div>
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">颜回</div>
+        <div class="prole">弟子</div>
+        <div><span class="alias">回</span></div>
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">子贡</div>
+        <div class="prole">弟子</div>
+        <div><span class="alias">赐</span></div>
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">荣启期</div>
+        <div class="prole">隐士</div>
+        
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">林类</div>
+        <div class="prole">隐士</div>
+        
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">杞人</div>
+        <div class="prole">寓言主角</div>
+        
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">晓之者</div>
+        <div class="prole">晓者</div>
+        
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">长庐子</div>
+        <div class="prole">楚贤者</div>
+        
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">国氏</div>
+        <div class="prole">齐富人</div>
+        
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">向氏</div>
+        <div class="prole">宋贫人</div>
+        
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">东郭先生</div>
+        <div class="prole">齐贤者</div>
+        
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">愚公</div>
+        <div class="prole">寓言主角</div>
+        <div><span class="alias">北山愚公</span></div>
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">智叟</div>
+        <div class="prole">笑者</div>
+        <div><span class="alias">河曲智叟</span></div>
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">夸蛾氏</div>
+        <div class="prole">神</div>
+        
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">伯牙</div>
+        <div class="prole">音乐家</div>
+        
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">钟子期</div>
+        <div class="prole">知音</div>
+        
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">杨朱</div>
+        <div class="prole">主角（第七）</div>
+        <div><span class="alias">杨子</span></div>
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">孟氏</div>
+        <div class="prole">对话者</div>
+        
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">郑子阳</div>
+        <div class="prole">郑相</div>
+        
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">孟孙阳</div>
+        <div class="prole">杨朱弟子</div>
+        
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">心都子</div>
+        <div class="prole">学者</div>
+        
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">鲍氏之子</div>
+        <div class="prole">少年</div>
+        
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">老子</div>
+        <div class="prole">导师</div>
+        <div><span class="alias">老聃</span></div>
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">殷汤</div>
+        <div class="prole">问者</div>
+        <div><span class="alias">汤</span></div>
+        <div class="pbio"></div>
+      </div><div class="pcard">
+        <div class="pname">夏革</div>
+        <div class="prole">答者</div>
+        <div><span class="alias">夏棘</span></div>
+        <div class="pbio"></div>
+      </div></div></div><div class="tab-panel " id="tab-text"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">原文阅读</h2>
+    <div class="section-note">点击下方章节进入 reader 逐句阅读。</div>
+    <div class="pian-grid">
+      <div class="unit-block" onclick="jumpTo('诸子/列子.txt',1,27)">
+        <div class="u-title">天瑞第一</div>
+        <div class="u-meta">3796字</div>
+        <div class="u-desc">天道生化；万物自化；生死自然；虚静无为。含「杞人忧天」「荣启期三乐」「林类论生死」「国氏为盗」等寓言。</div>
+      </div>
+      <div class="unit-block" onclick="jumpTo('诸子/列子.txt',2,3831)">
+        <div class="u-title">黄帝第二</div>
+        <div class="u-meta">1775字</div>
+        <div class="u-desc">黄帝梦游华胥；列姑射神人；列子学射；伯昏无人临渊；杨朱见老子。论至人无己、神凝形释。</div>
+      </div>
+      <div class="unit-block" onclick="jumpTo('诸子/列子.txt',3,5615)">
+        <div class="u-title">周穆王第三</div>
+        <div class="u-meta">897字</div>
+        <div class="u-desc">化人神游；周穆王西游见西王母。论觉与梦、形与神。</div>
+      </div>
+      <div class="unit-block" onclick="jumpTo('诸子/列子.txt',4,6520)">
+        <div class="u-title">仲尼第四</div>
+        <div class="u-meta">446字</div>
+        <div class="u-desc">孔子与颜回论「乐天知命」之忧，辨析无乐无知为真乐真知。</div>
+      </div>
+      <div class="unit-block" onclick="jumpTo('诸子/列子.txt',5,6974)">
+        <div class="u-title">汤问第五</div>
+        <div class="u-meta">766字</div>
+        <div class="u-desc">殷汤夏革问答无极无尽；愚公移山；伯牙鼓琴知音。</div>
+      </div>
+      <div class="unit-block" onclick="jumpTo('诸子/列子.txt',6,7748)">
+        <div class="u-title">力命第六</div>
+        <div class="u-meta">281字</div>
+        <div class="u-desc">力与命的对辩：人力有限，命运自尔。</div>
+      </div>
+      <div class="unit-block" onclick="jumpTo('诸子/列子.txt',7,8037)">
+        <div class="u-title">杨朱第七</div>
+        <div class="u-meta">824字</div>
+        <div class="u-desc">杨朱论名实；百年人生之乐；且趣当生，奚遑死后。</div>
+      </div>
+      <div class="unit-block" onclick="jumpTo('诸子/列子.txt',8,8869)">
+        <div class="u-title">说符第八</div>
+        <div class="u-meta">1271字</div>
+        <div class="u-desc">持后持身；慎言慎行；歧路亡羊；鲍氏之子论类无贵贱；子列子辞粟。</div>
+      </div>
+    </div></div>
+
+</main>
+<footer class="site-footer">
+  <p>子藏 Zi-Cang Ontology · 诸子百家深度研究 · CC BY-SA 4.0</p>
+</footer>
+<script src="js/common.js?v=22"></script>
+<script src="data/liezi-data.js?v=22"></script>
+<script>
+function jumpTo(b,ch,s){window.open('reader.html?b='+encodeURIComponent(b)+'&ch='+ch+'&s='+s,'_blank');}
+const tabBtns=document.querySelectorAll('.tab-btn');
+const tabPans=document.querySelectorAll('.tab-panel');
+tabBtns.forEach(b=>b.addEventListener('click',()=>{
+  tabBtns.forEach(x=>x.classList.remove('active'));
+  tabPans.forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  document.getElementById('tab-'+b.dataset.tab).classList.add('active');
+  window.scrollTo({top:b.offsetTop-80,behavior:'smooth'});
+}));
+</script>
+</body>
+</html>

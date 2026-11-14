@@ -109,66 +109,76 @@ input, select, textarea { font-family: inherit; font-size: 15px; }
 .nav-drop-item.active { background: var(--gold); color: var(--paper); font-weight: 700; }
 
 /* ---- 主题切换器（胶囊按钮+下拉） ---- */
-.theme-menu-wrap { position: relative; margin-left: auto; flex-shrink: 0; }
+.theme-menu-wrap { position: relative; margin-left: auto; flex-shrink: 0; z-index: 600; }
 .theme-btn {
-  display: flex; align-items: center; gap: 8px;
-  padding: 9px 20px;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 7px 16px 7px 14px;
   background: var(--paper);
-  border: 1.5px solid var(--gold);
+  border: 1.5px solid var(--border);
   border-radius: 999px;
   color: var(--ink); font-weight: 600;
-  cursor: pointer; transition: all .2s;
+  cursor: pointer; transition: all .2s ease;
   position: relative;
-  font-size: 15px;
+  font-size: 14px; line-height: 1;
   white-space: nowrap;
-  z-index: 502;
+  box-shadow: 0 2px 8px rgba(0,0,0,.12);
 }
-.theme-btn::before {
-  content: ''; position: absolute;
-  top: -1.5px; left: 25%; right: 25%; height: 4px;
-  background: var(--gold); border-radius: 2px;
-  opacity: 0; transition: opacity .2s;
+.theme-btn:hover { border-color: var(--gold); background: var(--bg-soft); }
+.theme-btn[aria-open="true"] { border-color: var(--gold); background: var(--bg-soft); }
+.theme-btn .theme-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--accent); flex-shrink: 0;
+  box-shadow: 0 0 0 2px var(--paper), 0 0 0 3px var(--accent);
 }
-.theme-btn:hover { background: var(--bg-soft); }
-.theme-btn[aria-open="true"]::before,
-.theme-menu-wrap:focus-within .theme-btn::before { opacity: 1; }
-.theme-diamond { color: var(--gold); font-size: 16px; line-height: 1; }
+.theme-btn .theme-caret {
+  font-size: 10px; opacity: .6; margin-left: 2px;
+  transition: transform .2s;
+}
+.theme-btn[aria-open="true"] .theme-caret { transform: rotate(180deg); }
 
 /* 下拉面板 */
 .theme-dropdown {
-  position: absolute; right: 0; top: calc(100% + 8px);
-  min-width: 240px;
+  position: absolute; right: 0; top: calc(100% + 10px);
+  min-width: 220px;
   background: var(--paper);
   border: 1.5px solid var(--border);
   border-radius: 12px;
-  box-shadow: 0 10px 32px var(--shadow);
-  padding: 8px; z-index: 501;
+  box-shadow: 0 12px 36px rgba(0,0,0,.18);
+  padding: 8px; z-index: 601;
   display: none;
+  animation: themeDropIn .18s ease-out;
+}
+@keyframes themeDropIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 .theme-dropdown.open { display: block; }
 .theme-option {
   display: flex; align-items: center; gap: 12px;
-  padding: 10px 12px; border-radius: 9px;
+  padding: 9px 12px; border-radius: 8px;
   cursor: pointer; transition: background .15s;
 }
 .theme-option:hover { background: var(--bg-soft); }
 .theme-option.active { background: var(--bg-soft); }
 .theme-swatch {
-  width: 28px; height: 28px; border-radius: 50%;
+  width: 24px; height: 24px; border-radius: 50%;
   border: 2px solid;
   position: relative; flex-shrink: 0;
-  box-shadow: 0 1px 4px rgba(0,0,0,.15);
+  box-shadow: 0 1px 3px rgba(0,0,0,.2);
 }
-.theme-swatch span {
-  position: absolute; top: 50%; left: 50%;
-  width: 12px; height: 12px; border-radius: 50%;
+.theme-swatch::after {
+  content: ''; position: absolute;
+  top: 50%; left: 50%;
+  width: 10px; height: 10px; border-radius: 50%;
   transform: translate(-50%,-50%);
+  background: var(--gold, #c9a96e);
 }
 .theme-info { flex: 1; min-width: 0; }
-.theme-info .theme-name { font-weight: 700; color: var(--ink); font-size: 15px; letter-spacing: 1px; }
+.theme-info .theme-name { font-weight: 600; color: var(--ink); font-size: 14px; letter-spacing: 1px; }
 .theme-check {
-  color: var(--gold); font-size: 11px;
+  color: var(--gold); font-size: 14px; font-weight: 700;
   opacity: 0; transition: opacity .15s;
+  line-height: 1;
 }
 .theme-option.active .theme-check { opacity: 1; }
 

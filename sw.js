@@ -1,4 +1,4 @@
-const CACHE = 'zicang-v21';
+const CACHE = 'zicang-v22';
 const APP_SHELL = [
   './',
   './index.html',

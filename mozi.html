@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>《墨子》深度研究 · 子藏本体论</title>
+<link rel="stylesheet" href="css/common.css?v=22">
+<style>
+.depth-hero{background:linear-gradient(135deg,var(--hero-from,#1a2a3f) 0%,var(--hero-mid,#2d4258) 60%,var(--hero-to,#4a6481) 100%);color:#f5efe0;padding:32px 28px;border-radius:10px;margin-bottom:22px;position:relative;overflow:hidden}
+.depth-hero::before{content:attr(data-char);position:absolute;right:-20px;top:-40px;font-size:260px;color:rgba(245,239,224,.06);font-family:"KaiTi","STKaiti",serif;font-weight:900;line-height:1}
+.depth-hero h1{margin:0 0 8px 0;font-size:32px;letter-spacing:4px;font-family:"KaiTi","STKaiti",serif}
+.depth-hero .sub{color:#c9b98f;font-size:15px;margin-bottom:14px;letter-spacing:2px}
+.depth-hero .meta-row{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px}
+.depth-hero .chip{background:rgba(245,239,224,.12);border:1px solid rgba(201,185,143,.35);padding:6px 14px;border-radius:20px;font-size:13px;color:#e8dec4}
+.depth-hero .chip b{color:#f2d98a;margin-right:4px}
+.depth-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin:20px 0}
+.depth-kpi{background:#faf6ec;border:1px solid #e2d8bc;padding:14px 12px;border-radius:8px;text-align:center}
+.depth-kpi .num{font-size:28px;color:var(--accent,#8b3a2f);font-weight:700;font-family:"KaiTi",serif}
+.depth-kpi .lbl{color:#6a5a3c;font-size:12px;margin-top:4px;letter-spacing:1px}
+.tabs{display:flex;gap:6px;border-bottom:2px solid #c9b98f;margin:20px 0 16px;flex-wrap:wrap}
+.tab-btn{padding:10px 18px;background:#faf6ec;border:1px solid #e2d8bc;border-bottom:none;border-radius:8px 8px 0 0;cursor:pointer;font-size:14px;color:#6a5a3c;font-family:"KaiTi",serif;letter-spacing:1px;transition:all .2s}
+.tab-btn:hover{background:#f0e8cf}
+.tab-btn.active{background:var(--accent,#8b3a2f);color:#f5efe0;border-color:var(--accent,#8b3a2f);transform:translateY(2px)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.pian-card{background:#fff;border:1px solid #e2d8bc;border-radius:10px;padding:18px 22px;margin-bottom:18px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.pian-card h3{margin:0 0 6px 0;font-size:22px;color:#2d4258;font-family:"KaiTi",serif;letter-spacing:3px;border-left:4px solid var(--accent,#8b3a2f);padding-left:12px}
+.pian-card .pian-sub{color:#8a7a5c;font-size:13px;margin-bottom:10px}
+.pian-card .pian-stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.pian-card .pian-stats span{background:#f0e8cf;padding:3px 10px;border-radius:12px;font-size:12px;color:#6a5a3c}
+.pian-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:10px}
+.unit-block{background:#faf6ec;border-radius:8px;padding:12px 14px;border-left:3px solid var(--accent,#8b3a2f);cursor:pointer;transition:all .2s}
+.unit-block:hover{background:#f0e8cf;transform:translateX(3px);box-shadow:0 2px 6px rgba(0,0,0,.12)}
+.unit-block.fable{border-left-color:#2d7d46}
+.unit-block.claim{border-left-color:var(--accent,#8b3a2f)}
+.unit-block.dialogue{border-left-color:#4a6481}
+.unit-block.metaphor{border-left-color:#b8860b}
+.unit-block.argument{border-left-color:#6a3fa0;background:linear-gradient(135deg,#faf6ec,#f5ecf8)}
+.unit-block .u-title{font-size:15px;font-weight:600;color:#2d4258;font-family:"KaiTi",serif;margin-bottom:4px}
+.unit-block .u-meta{font-size:11px;color:#8a7a5c;margin-bottom:6px;letter-spacing:.5px}
+.unit-block .u-desc{font-size:13px;color:#4a4a4a;line-height:1.6}
+.unit-block .u-scheme{display:inline-block;background:#efe5cf;color:#6a5a3c;padding:2px 8px;border-radius:10px;font-size:11px;margin:2px 4px 2px 0}
+.concept-cloud{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0;justify-content:center}
+.concept-cloud .tag{padding:6px 14px;border-radius:20px;background:#faf6ec;border:1px solid #c9b98f;color:var(--accent,#8b3a2f);font-family:"KaiTi",serif;font-size:14px;cursor:pointer;transition:all .2s}
+.concept-cloud .tag:hover{background:var(--accent,#8b3a2f);color:#f5efe0;transform:scale(1.08)}
+.concept-cloud .tag.core{background:var(--accent,#8b3a2f);color:#f5efe0;font-size:18px;padding:10px 20px}
+.read-link{display:inline-block;margin-top:6px;color:#4a6481;font-size:12px;text-decoration:none;border-bottom:1px dotted #4a6481}
+.read-link:hover{color:var(--accent,#8b3a2f);border-color:var(--accent,#8b3a2f)}
+.intro-paragraph{font-size:14px;line-height:1.9;color:#4a4a4a;margin:14px 0;text-indent:2em}
+.section-note{background:#faf6ec;border-left:4px solid #c9b98f;padding:12px 16px;border-radius:0 6px 6px 0;font-size:13px;color:#6a5a3c;line-height:1.7;margin:12px 0}
+.people-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:14px}
+.pcard{background:#fff;border:1px solid #e2d8bc;border-radius:8px;padding:10px 12px;border-top:3px solid var(--accent,#8b3a2f)}
+.pcard .pname{font-size:16px;font-weight:600;color:#2d4258;font-family:"KaiTi",serif;margin-bottom:2px}
+.pcard .prole{font-size:11px;color:#8a7a5c;margin-bottom:6px}
+.pcard .pbio{font-size:12px;color:#4a4a4a;line-height:1.6}
+.pcard .alias{display:inline-block;background:#e7dcc0;color:var(--accent,#8b3a2f);padding:1px 6px;border-radius:8px;font-size:10px;margin:1px 2px}
+#pian-timeline{position:relative;padding:20px 0;margin:20px 0}
+#pian-timeline::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:3px;background:linear-gradient(to bottom,var(--accent,#8b3a2f),#c9b98f,#2d7d46);transform:translateX(-50%)}
+.pian-node{position:relative;width:46%;padding:14px 18px;background:#fff;border:1px solid #e2d8bc;border-radius:8px;margin:14px 0;box-shadow:0 2px 6px rgba(0,0,0,.05)}
+.pian-node:nth-child(odd){margin-right:auto;text-align:right}
+.pian-node:nth-child(even){margin-left:auto}
+.pian-node::before{content:"";position:absolute;top:20px;width:14px;height:14px;background:var(--accent,#8b3a2f);border:3px solid #f5efe0;border-radius:50%}
+.pian-node:nth-child(odd)::before{right:-31px}
+.pian-node:nth-child(even)::before{left:-31px}
+.pian-node h4{margin:0 0 4px 0;font-size:18px;color:#2d4258;font-family:"KaiTi",serif}
+.pian-node .psub{font-size:12px;color:#8a7a5c;margin-bottom:6px}
+.pian-node .psummary{font-size:13px;color:#4a4a4a;line-height:1.6;text-align:left}
+@media(max-width:768px){
+  #pian-timeline::before{left:20px}
+  .pian-node{width:calc(100% - 44px);margin-left:44px !important;text-align:left !important}
+  .pian-node::before{left:-27px !important;right:auto !important}
+  .pian-grid{grid-template-columns:1fr}
+  .depth-hero h1{font-size:24px}
+  .people-grid{grid-template-columns:1fr}
+}
+</style>
+:root{--accent:#3a5a3a;--hero-from:#0f1a10;--hero-mid:#1a3020;--hero-to:#3a6040}
+</head>
+<body class="ink-theme">
+<header class="topbar">
+  <div class="bar-inner">
+    <a class="brand" href="index.html"><span class="brand-zi">子</span><span class="brand-cang">藏</span><span class="brand-sub">Zi-Cang Ontology</span></a>
+    <nav class="mainnav" id="mainnav"></nav>
+    <button class="theme-toggle" id="themeToggle" title="切换主题">🎨</button>
+  </div>
+</header>
+<main class="container" style="max-width:1200px">
+
+<div class="depth-hero" data-char="子">
+  <h1>《墨子》 · 深度标引</h1>
+  <div class="sub">墨翟·墨家显学·核心三章精标</div>
+  <p style="margin:8px 0 0 0;font-size:13.5px;color:#d9cda8;line-height:1.7;max-width:820px">
+    《墨子》是&lt;b style=&quot;color:#f2d98a&quot;&gt;先秦墨家学派著作总集&lt;/b&gt;，与儒家并称「显学」。本页精标&lt;b&gt;尚贤/兼爱/非攻&lt;/b&gt;三篇——&lt;b&gt;尚贤为政之本、官无常贵民无终贱、兼相爱交相利、窃桃李非之攻国誉之（义不义之辨）&lt;/b&gt;：9命题、3寓言、4譬喻。
+  </p>
+  <div class="meta-row">
+    <span class="chip"><b>作者</b>墨翟（周（战国初鲁））</span>
+    <span class="chip"><b>文本长度</b>95,899 字</span>
+    <span class="chip"><b>标引单元</b>19 个句级锚点</span>
+    <span class="chip"><b>标引版本</b>zicang-v22</span>
+  </div>
+</div>
+
+<div class="depth-kpis"><div class="depth-kpi"><div class="num">3</div><div class="lbl">篇/章</div></div><div class="depth-kpi"><div class="num">9</div><div class="lbl">命题</div></div><div class="depth-kpi"><div class="num">0</div><div class="lbl">寓言</div></div><div class="depth-kpi"><div class="num">3</div><div class="lbl">对话</div></div><div class="depth-kpi"><div class="num">4</div><div class="lbl">譬喻</div></div><div class="depth-kpi"><div class="num">2</div><div class="lbl">论证</div></div><div class="depth-kpi"><div class="num">8</div><div class="lbl">概念</div></div><div class="depth-kpi"><div class="num">2</div><div class="lbl">人物</div></div><div class="depth-kpi"><div class="num">19</div><div class="lbl">句级锚点</div></div></div>
+
+<div class="tabs" id="tabs"><button class="tab-btn active" data-tab="overview">◇ 义理总览</button><button class="tab-btn " data-tab="map">❖ 篇章地图</button><button class="tab-btn " data-tab="claims">✦ 命题疏解</button><button class="tab-btn " data-tab="arguments">⚖ 论证结构</button><button class="tab-btn " data-tab="fables">☯ 寓言解读</button><button class="tab-btn " data-tab="dialogues">⌸ 对话问答</button><button class="tab-btn " data-tab="metaphors">✧ 譬喻举隅</button><button class="tab-btn " data-tab="people">☺ 出场人物</button><button class="tab-btn " data-tab="text">☰ 原文阅读</button></div>
+<div class="tab-panel active" id="tab-overview">
+    <h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px;margin-top:4px">《墨子》义理系统</h2>
+    <p class="intro-paragraph">《墨子》七十一篇（今存五十三篇），战国墨翟及其后学撰。尚贤论任贤使能官无常贵；兼爱论平等相爱交相利；非攻论反不义之战辨义与不义。</p><p class="intro-paragraph">墨家十论核心：<b>兼爱、非攻、尚贤、尚同、节用、节葬、天志、明鬼、非乐、非命</b>——以<b>兴天下之利除天下之害</b>为宗旨。</p><p class="intro-paragraph"><b>兼爱</b>是核心：乱起不相爱，治起兼相爱；视人之国若视其国、视人之家若视其家、视人之身若视其身——<b>兼相爱交相利</b>。</p><p class="intro-paragraph"><b>非攻</b>以层层递进譬喻反战：窃桃李→攘犬豕→取马牛→杀不辜→攻国——小不义则非，大不义反而誉之为义，是义不义之辩乱。</p>
+    <div class="section-note">
+      <b>本体建模说明</b>：本页标引依子藏 v2.2 本体——文献结构对应 zbib（zbib:Work/Chapter/Sentence），
+      义理单元对应 zcon（zcon:Claim/Argument/Dialogue/Fable/Metaphor/ArgumentScheme），
+      人物对应 zc:Person，可与《庄子》《列子》等子藏深度页进行义理互见。
+    </div><h3 style="font-family:KaiTi,serif;color:var(--accent,#8b3a2f);margin-top:20px;letter-spacing:2px">核心概念云</h3><div class="concept-cloud"><span class="tag core" title="视人如己、平等相爱，墨家核心主张。">兼爱</span><span class="tag core" title="互爱互利，兴天下之利除天下之害。">交相利</span><span class="tag core" title="反对不义攻战，区分诛（义战）与攻（不义战）。">非攻</span><span class="tag " title="尚贤使能、官无常贵民无终贱。">尚贤</span><span class="tag " title="以天意为兼爱非攻的终极依据。">天志</span><span class="tag " title="强本节用兴利除害（墨家经济思想）。">节用</span><span class="tag " title="以天下百姓之利为价值标准的功利主义。">实利</span><span class="tag " title="有本之者、有原之者、有用之者——早期经验实证三标准。">三表法</span></div><h3 style="font-family:KaiTi,serif;color:var(--accent,#8b3a2f);margin-top:24px;letter-spacing:2px">义理线索</h3><div class="pian-grid"><div class="unit-block argument"><div class="u-title">兼爱：平等相爱·交相利</div><div class="u-desc">视人如己，兼相爱交相利，墨家伦理核心。</div></div><div class="unit-block argument"><div class="u-title">非攻：反不义之战·义利之辨</div><div class="u-desc">窃桃李知非攻国反誉之，大小不义颠倒。</div></div><div class="unit-block argument"><div class="u-title">尚贤：官无常贵民无终贱</div><div class="u-desc">有能则举之无能则下之，先秦任贤平等思想。</div></div><div class="unit-block argument"><div class="u-title">尚同：上同于天·壹同天下之义</div><div class="u-desc">逐级上同于天子上同于天，统一思想标准。</div></div><div class="unit-block argument"><div class="u-title">天志：兼爱的终极依据</div><div class="u-desc">以天意为兼爱非攻超越性依据，天欲义恶不义。</div></div><div class="unit-block argument"><div class="u-title">功利主义：兴天下之利</div><div class="u-desc">以百姓之利为价值标准，节用节葬非乐皆由此出。</div></div><div class="unit-block argument"><div class="u-title">三表法：实证认识论</div><div class="u-desc">有本之者有原之者有用之者，早期经验实证三标准。</div></div></div></div><div class="tab-panel " id="tab-map"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">墨子篇章思想地图</h2>
+    <div class="section-note">点击篇章卡片可跳转至原文。</div><div id="pianTimeline"><div class="pian-node"><h4>尚贤</h4>
+      <div class="psub">第1篇 · 11659字</div>
+      <div class="psummary">尚贤为政之本；不义不富不义不贵；官无常贵民无终贱。 <a class="read-link" href="reader.html?b=%E8%AF%B8%E5%AD%90%2F%E5%A2%A8%E5%AD%90.txt&ch=1&s=5859" target="_blank">读原文 →</a></div></div><div class="pian-node"><h4>兼爱</h4>
+      <div class="psub">第2篇 · 5577字</div>
+      <div class="psummary">乱起不相爱；兼相爱交相利。 <a class="read-link" href="reader.html?b=%E8%AF%B8%E5%AD%90%2F%E5%A2%A8%E5%AD%90.txt&ch=2&s=17532" target="_blank">读原文 →</a></div></div><div class="pian-node"><h4>非攻</h4>
+      <div class="psub">第3篇 · 501字</div>
+      <div class="psummary">窃桃李人人非之；攻国杀人多反谓之义——义不义之辩。 <a class="read-link" href="reader.html?b=%E8%AF%B8%E5%AD%90%2F%E5%A2%A8%E5%AD%90.txt&ch=3&s=23123" target="_blank">读原文 →</a></div></div></div></div><div class="tab-panel " id="tab-claims"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">9核心命题</h2>
+      <div class="section-note">命题即 zcon:Claim——可以判断义理立场的最小判断单元；点击可跳至原文对应句段。</div><div class="pian-card"><h3>尚贤</h3>
+        <div class="pian-sub">尚贤为政之本；不义不富不义不贵；官无常贵民无终贱。 · 本章 3 命题</div><div class="pian-grid"><div class="unit-block claim" onclick="jumpTo('诸子/墨子.txt',1,6917)">
+          <div class="u-title">尚贤为政之本</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">尚贤</span><span class="u-scheme">为政之本</span></div>
+          <div class="u-desc">尚贤使能是治国根本；古者圣王甚尊尚贤而任使能。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「尚贤为政之本…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/墨子.txt',1,6181)">
+          <div class="u-title">不义不富不义不贵</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">尚贤</span><span class="u-scheme">举贤</span></div>
+          <div class="u-desc">不义不富不义不贵不义不亲不义不近；贤能举之不肖抑之。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「不义不富…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/墨子.txt',1,6610)">
+          <div class="u-title">官无常贵而民无终贱</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">尚贤</span><span class="u-scheme">平等</span></div>
+          <div class="u-desc">官无常贵民无终贱；有能则举之无能则下之——先秦最激进的任贤平等思想。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「官无常贵…」</div>
+        </div></div></div><div class="pian-card"><h3>兼爱</h3>
+        <div class="pian-sub">乱起不相爱；兼相爱交相利。 · 本章 3 命题</div><div class="pian-grid"><div class="unit-block claim" onclick="jumpTo('诸子/墨子.txt',2,17542)">
+          <div class="u-title">乱何自起起不相爱</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">兼爱</span><span class="u-scheme">不相爱</span></div>
+          <div class="u-desc">乱起于不相爱。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「必知乱之所自起…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/墨子.txt',2,17972)">
+          <div class="u-title">兼相爱交相利</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">兼爱</span><span class="u-scheme">交相利</span></div>
+          <div class="u-desc">兼相爱交相利：视人之国若视其国、视人之身若视其身。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「兼相爱…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/墨子.txt',2,18187)">
+          <div class="u-title">兼爱则治交恶则乱</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">兼爱</span><span class="u-scheme">治</span></div>
+          <div class="u-desc">天下兼相爱则治交相恶则乱。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「天下兼相爱则治…」</div>
+        </div></div></div><div class="pian-card"><h3>非攻</h3>
+        <div class="pian-sub">窃桃李人人非之；攻国杀人多反谓之义——义不义之辩。 · 本章 3 命题</div><div class="pian-grid"><div class="unit-block claim" onclick="jumpTo('诸子/墨子.txt',3,23119)">
+          <div class="u-title">窃桃李非之攻国誉之为义</div>
+          <div class="u-meta"><span class="u-scheme">譬喻</span><span class="u-scheme">非攻</span><span class="u-scheme">义利之辨</span></div>
+          <div class="u-desc">窃桃李人人知非；攘犬豕更不义；取马牛更不义；杀不辜更不义；至攻国杀人多反谓之义——黑白不分。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「今有一人入人园圃…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/墨子.txt',3,23371)">
+          <div class="u-title">杀一人不义杀万人谓之义</div>
+          <div class="u-meta"><span class="u-scheme">归谬</span><span class="u-scheme">非攻</span><span class="u-scheme">义</span></div>
+          <div class="u-desc">杀一人一死罪、杀十人十死罪、杀万人万死罪；攻国杀万人反谓之义。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「杀一人谓之不义…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/墨子.txt',3,23511)">
+          <div class="u-title">少见黑曰黑多见黑曰白</div>
+          <div class="u-meta"><span class="u-scheme">譬喻</span><span class="u-scheme">非攻</span><span class="u-scheme">黑白之辨</span></div>
+          <div class="u-desc">小非知大非不知。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「少见黑曰黑…」</div>
+        </div></div></div></div><div class="tab-panel " id="tab-arguments"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">3核心论证/问难</h2>
+      <div class="section-note">含譬喻、对话问答、两难、反驳等论证图式。</div><div class="pian-grid"><div class="unit-block argument" onclick="jumpTo('诸子/墨子.txt',3,23127)">
+        <div class="u-title">窃桃李攘犬豕取马牛杀不辜</div>
+        <div class="u-meta"><span class="u-scheme">譬喻</span><span class="u-scheme">窃者</span></div>
+        <div class="u-desc">小不义则非大不义反誉之为义。</div>
+      </div><div class="unit-block argument" onclick="jumpTo('诸子/墨子.txt',3,23371)">
+        <div class="u-title">杀一人杀十人杀万人</div>
+        <div class="u-meta"><span class="u-scheme">归谬</span></div>
+        <div class="u-desc">数量累加由不义变为义是逻辑矛盾。</div>
+      </div><div class="unit-block argument" onclick="jumpTo('诸子/墨子.txt',3,23511)">
+        <div class="u-title">黑白甘苦之辩</div>
+        <div class="u-meta"><span class="u-scheme">譬喻</span></div>
+        <div class="u-desc">小是大非混淆。</div>
+      </div></div></div><div class="tab-panel " id="tab-dialogues"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">3对话单元</h2>
+      <div class="section-note">对话即 zcon:Dialogue，按"曰/问/对曰"切分，记录问答轮次与主题。</div><div class="pian-grid"><div class="unit-block dialogue" onclick="jumpTo('诸子/墨子.txt',1,5866)">
+        <div class="u-title">尚贤使能</div>
+        <div class="u-meta"><span class="u-scheme">墨子→王公大人</span><span class="u-scheme">1 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/墨子.txt',2,17528)">
+        <div class="u-title">兼爱治天下</div>
+        <div class="u-meta"><span class="u-scheme">墨子</span><span class="u-scheme">1 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/墨子.txt',3,23119)">
+        <div class="u-title">非攻辨义</div>
+        <div class="u-meta"><span class="u-scheme">墨子</span><span class="u-scheme">1 轮</span></div>
+        <div class="u-desc"></div>
+      </div></div></div><div class="tab-panel " id="tab-metaphors"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">4譬喻</h2>
+      <div class="section-note">譬喻即 zcon:Metaphor，以近喻远、以具象喻抽象。</div><div class="pian-grid"><div class="unit-block metaphor" onclick="jumpTo('诸子/墨子.txt',1,6425)">
+        <div class="u-title">富者高墙深宫 <span style="color:#b8860b">→</span> 圣王尚贤</div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block metaphor" onclick="jumpTo('诸子/墨子.txt',3,23127)">
+        <div class="u-title">桃李→犬豕→马牛→不辜人→攻国 <span style="color:#b8860b">→</span> 不义程度递进</div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block metaphor" onclick="jumpTo('诸子/墨子.txt',3,23511)">
+        <div class="u-title">黑白甘苦 <span style="color:#b8860b">→</span> 义不义之辨</div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block metaphor" onclick="jumpTo('诸子/墨子.txt',2,17568)">
+        <div class="u-title">医攻疾必知疾之所自起 <span style="color:#b8860b">→</span> 治乱必知乱之所自起</div>
+        <div class="u-desc"></div>
+      </div></div></div><div class="tab-panel " id="tab-people"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">2出场人物</h2><div class="people-grid"><div class="pcard">
+        <div class="pname">墨子</div>
+        <div class="prole">核心/作者</div>
+        <div><span class="alias">墨翟</span></div>
+        <div class="pbio">名翟战国初鲁人；墨家创始人倡兼爱非攻尚贤尚同节用节葬天志明鬼非乐非命；先秦显学与儒并称。</div>
+      </div><div class="pcard">
+        <div class="pname">王公大人</div>
+        <div class="prole">论说对象</div>
+        
+        <div class="pbio">墨子游说的当权者。</div>
+      </div></div></div><div class="tab-panel " id="tab-text"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">原文阅读</h2>
+    <div class="section-note">点击下方章节进入 reader 逐句阅读。</div>
+    <div class="pian-grid">
+      <div class="unit-block" onclick="jumpTo('诸子/墨子.txt',1,5859)">
+        <div class="u-title">尚贤</div>
+        <div class="u-meta">11659字</div>
+        <div class="u-desc">尚贤为政之本；不义不富不义不贵；官无常贵民无终贱。</div>
+      </div>
+      <div class="unit-block" onclick="jumpTo('诸子/墨子.txt',2,17532)">
+        <div class="u-title">兼爱</div>
+        <div class="u-meta">5577字</div>
+        <div class="u-desc">乱起不相爱；兼相爱交相利。</div>
+      </div>
+      <div class="unit-block" onclick="jumpTo('诸子/墨子.txt',3,23123)">
+        <div class="u-title">非攻</div>
+        <div class="u-meta">501字</div>
+        <div class="u-desc">窃桃李人人非之；攻国杀人多反谓之义——义不义之辩。</div>
+      </div>
+    </div></div>
+
+</main>
+<footer class="site-footer">
+  <p>子藏 Zi-Cang Ontology · 诸子百家深度研究 · CC BY-SA 4.0</p>
+</footer>
+<script src="js/common.js?v=22"></script>
+<script src="data/mozi-data.js?v=22"></script>
+<script>
+function jumpTo(b,ch,s){window.open('reader.html?b='+encodeURIComponent(b)+'&ch='+ch+'&s='+s,'_blank');}
+const tabBtns=document.querySelectorAll('.tab-btn');
+const tabPans=document.querySelectorAll('.tab-panel');
+tabBtns.forEach(b=>b.addEventListener('click',()=>{
+  tabBtns.forEach(x=>x.classList.remove('active'));
+  tabPans.forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  document.getElementById('tab-'+b.dataset.tab).classList.add('active');
+  window.scrollTo({top:b.offsetTop-80,behavior:'smooth'});
+}));
+</script>
+</body>
+</html>

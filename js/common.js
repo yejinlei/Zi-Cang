@@ -24,17 +24,21 @@ function applyTheme(key){
     el.classList.toggle('active', el.dataset.theme===key);
   });
   const btn = document.getElementById('themeBtn');
-  if(btn) btn.innerHTML = `<span class="theme-diamond">✦</span> ${t.name} <span style="font-size:.8em;opacity:.6">▾</span>`;
+  if(btn){
+    btn.innerHTML = `<span class="theme-dot" style="background:${t.accent};box-shadow:0 0 0 2px var(--paper),0 0 0 3px ${t.accent}"></span><span>${t.name}</span><span class="theme-caret">▾</span>`;
+  }
 }
 function buildThemeMenu(){
+  const saved = localStorage.getItem('zicang-theme') || 'xuanzhi';
+  const cur = THEMES[saved] || THEMES.xuanzhi;
   return `<div class="theme-menu-wrap">
-    <button id="themeBtn" class="theme-btn"><span class="theme-diamond">✦</span> 宣紙古籍 <span style="font-size:.8em;opacity:.6">▾</span></button>
+    <button id="themeBtn" class="theme-btn" aria-open="false"><span class="theme-dot" style="background:${cur.accent};box-shadow:0 0 0 2px var(--paper),0 0 0 3px ${cur.accent}"></span><span>${cur.name}</span><span class="theme-caret">▾</span></button>
     <div class="theme-dropdown" id="themeDropdown">
       ${Object.entries(THEMES).map(([k,v])=>`
-        <div class="theme-option${k==='xuanzhi'?' active':''}" data-theme="${k}" onclick="applyTheme('${k}');closeThemeMenu()">
-          <span class="theme-swatch" style="background:${v.card};border-color:${v.border}"><span style="background:${v.gold}"></span></span>
+        <div class="theme-option${k===saved?' active':''}" data-theme="${k}" onclick="applyTheme('${k}');closeThemeMenu()">
+          <span class="theme-swatch" style="background:${v.card};border-color:${v.border}"></span>
           <div class="theme-info"><div class="theme-name">${v.name}</div></div>
-          <span class="theme-check">●</span>
+          <span class="theme-check">✓</span>
         </div>`).join('')}
     </div>
   </div>`;
@@ -84,6 +88,13 @@ function buildNav(active){
       {key:'citation',  href:'citation.html',   label:'⇌ 引文關聯'},
       {key:'reasoning', href:'reasoning.html',  label:'⚙ 本體推理'},
       {key:'zhuangzi', href:'zhuangzi.html',  label:'🦋 《莊子》深讀'},
+      {key:'laozi',    href:'laozi.html',     label:'☯ 《老子》深讀'},
+      {key:'liezi',    href:'liezi.html',     label:'☁ 《列子》深讀'},
+      {key:'lunyu',    href:'lunyu.html',     label:'📜 《論語》深讀'},
+      {key:'mengzi',   href:'mengzi.html',    label:'🪶 《孟子》深讀'},
+      {key:'xunzi',    href:'xunzi.html',     label:'📐 《荀子》精讀'},
+      {key:'hanfeizi', href:'hanfeizi.html',  label:'⚔ 《韓非子》精讀'},
+      {key:'mozi',     href:'mozi.html',      label:'◈ 《墨子》精讀'},
       {key:'statistics',href:'statistics.html',  label:'▤ 典籍統計'}
     ]},
     {key:'map',     href:'map.html',      icon:'🗺', label:'時空'},
@@ -191,6 +202,13 @@ function getProgress(path){
     'citation.html': 'citation',
     'reasoning.html': 'reasoning',
     'zhuangzi.html': 'zhuangzi',
+    'laozi.html': 'laozi',
+    'liezi.html': 'liezi',
+    'lunyu.html': 'lunyu',
+    'mengzi.html': 'mengzi',
+    'xunzi.html': 'xunzi',
+    'hanfeizi.html': 'hanfeizi',
+    'mozi.html': 'mozi',
     'statistics.html': 'statistics',
     'map.html': 'map',
     'data.html': 'data',

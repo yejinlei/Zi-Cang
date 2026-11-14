@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>《孟子》深度研究 · 子藏本体论</title>
+<link rel="stylesheet" href="css/common.css?v=22">
+<style>
+.depth-hero{background:linear-gradient(135deg,var(--hero-from,#1a2a3f) 0%,var(--hero-mid,#2d4258) 60%,var(--hero-to,#4a6481) 100%);color:#f5efe0;padding:32px 28px;border-radius:10px;margin-bottom:22px;position:relative;overflow:hidden}
+.depth-hero::before{content:attr(data-char);position:absolute;right:-20px;top:-40px;font-size:260px;color:rgba(245,239,224,.06);font-family:"KaiTi","STKaiti",serif;font-weight:900;line-height:1}
+.depth-hero h1{margin:0 0 8px 0;font-size:32px;letter-spacing:4px;font-family:"KaiTi","STKaiti",serif}
+.depth-hero .sub{color:#c9b98f;font-size:15px;margin-bottom:14px;letter-spacing:2px}
+.depth-hero .meta-row{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px}
+.depth-hero .chip{background:rgba(245,239,224,.12);border:1px solid rgba(201,185,143,.35);padding:6px 14px;border-radius:20px;font-size:13px;color:#e8dec4}
+.depth-hero .chip b{color:#f2d98a;margin-right:4px}
+.depth-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin:20px 0}
+.depth-kpi{background:#faf6ec;border:1px solid #e2d8bc;padding:14px 12px;border-radius:8px;text-align:center}
+.depth-kpi .num{font-size:28px;color:var(--accent,#8b3a2f);font-weight:700;font-family:"KaiTi",serif}
+.depth-kpi .lbl{color:#6a5a3c;font-size:12px;margin-top:4px;letter-spacing:1px}
+.tabs{display:flex;gap:6px;border-bottom:2px solid #c9b98f;margin:20px 0 16px;flex-wrap:wrap}
+.tab-btn{padding:10px 18px;background:#faf6ec;border:1px solid #e2d8bc;border-bottom:none;border-radius:8px 8px 0 0;cursor:pointer;font-size:14px;color:#6a5a3c;font-family:"KaiTi",serif;letter-spacing:1px;transition:all .2s}
+.tab-btn:hover{background:#f0e8cf}
+.tab-btn.active{background:var(--accent,#8b3a2f);color:#f5efe0;border-color:var(--accent,#8b3a2f);transform:translateY(2px)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.pian-card{background:#fff;border:1px solid #e2d8bc;border-radius:10px;padding:18px 22px;margin-bottom:18px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.pian-card h3{margin:0 0 6px 0;font-size:22px;color:#2d4258;font-family:"KaiTi",serif;letter-spacing:3px;border-left:4px solid var(--accent,#8b3a2f);padding-left:12px}
+.pian-card .pian-sub{color:#8a7a5c;font-size:13px;margin-bottom:10px}
+.pian-card .pian-stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.pian-card .pian-stats span{background:#f0e8cf;padding:3px 10px;border-radius:12px;font-size:12px;color:#6a5a3c}
+.pian-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:10px}
+.unit-block{background:#faf6ec;border-radius:8px;padding:12px 14px;border-left:3px solid var(--accent,#8b3a2f);cursor:pointer;transition:all .2s}
+.unit-block:hover{background:#f0e8cf;transform:translateX(3px);box-shadow:0 2px 6px rgba(0,0,0,.12)}
+.unit-block.fable{border-left-color:#2d7d46}
+.unit-block.claim{border-left-color:var(--accent,#8b3a2f)}
+.unit-block.dialogue{border-left-color:#4a6481}
+.unit-block.metaphor{border-left-color:#b8860b}
+.unit-block.argument{border-left-color:#6a3fa0;background:linear-gradient(135deg,#faf6ec,#f5ecf8)}
+.unit-block .u-title{font-size:15px;font-weight:600;color:#2d4258;font-family:"KaiTi",serif;margin-bottom:4px}
+.unit-block .u-meta{font-size:11px;color:#8a7a5c;margin-bottom:6px;letter-spacing:.5px}
+.unit-block .u-desc{font-size:13px;color:#4a4a4a;line-height:1.6}
+.unit-block .u-scheme{display:inline-block;background:#efe5cf;color:#6a5a3c;padding:2px 8px;border-radius:10px;font-size:11px;margin:2px 4px 2px 0}
+.concept-cloud{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0;justify-content:center}
+.concept-cloud .tag{padding:6px 14px;border-radius:20px;background:#faf6ec;border:1px solid #c9b98f;color:var(--accent,#8b3a2f);font-family:"KaiTi",serif;font-size:14px;cursor:pointer;transition:all .2s}
+.concept-cloud .tag:hover{background:var(--accent,#8b3a2f);color:#f5efe0;transform:scale(1.08)}
+.concept-cloud .tag.core{background:var(--accent,#8b3a2f);color:#f5efe0;font-size:18px;padding:10px 20px}
+.read-link{display:inline-block;margin-top:6px;color:#4a6481;font-size:12px;text-decoration:none;border-bottom:1px dotted #4a6481}
+.read-link:hover{color:var(--accent,#8b3a2f);border-color:var(--accent,#8b3a2f)}
+.intro-paragraph{font-size:14px;line-height:1.9;color:#4a4a4a;margin:14px 0;text-indent:2em}
+.section-note{background:#faf6ec;border-left:4px solid #c9b98f;padding:12px 16px;border-radius:0 6px 6px 0;font-size:13px;color:#6a5a3c;line-height:1.7;margin:12px 0}
+.people-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:14px}
+.pcard{background:#fff;border:1px solid #e2d8bc;border-radius:8px;padding:10px 12px;border-top:3px solid var(--accent,#8b3a2f)}
+.pcard .pname{font-size:16px;font-weight:600;color:#2d4258;font-family:"KaiTi",serif;margin-bottom:2px}
+.pcard .prole{font-size:11px;color:#8a7a5c;margin-bottom:6px}
+.pcard .pbio{font-size:12px;color:#4a4a4a;line-height:1.6}
+.pcard .alias{display:inline-block;background:#e7dcc0;color:var(--accent,#8b3a2f);padding:1px 6px;border-radius:8px;font-size:10px;margin:1px 2px}
+#pian-timeline{position:relative;padding:20px 0;margin:20px 0}
+#pian-timeline::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:3px;background:linear-gradient(to bottom,var(--accent,#8b3a2f),#c9b98f,#2d7d46);transform:translateX(-50%)}
+.pian-node{position:relative;width:46%;padding:14px 18px;background:#fff;border:1px solid #e2d8bc;border-radius:8px;margin:14px 0;box-shadow:0 2px 6px rgba(0,0,0,.05)}
+.pian-node:nth-child(odd){margin-right:auto;text-align:right}
+.pian-node:nth-child(even){margin-left:auto}
+.pian-node::before{content:"";position:absolute;top:20px;width:14px;height:14px;background:var(--accent,#8b3a2f);border:3px solid #f5efe0;border-radius:50%}
+.pian-node:nth-child(odd)::before{right:-31px}
+.pian-node:nth-child(even)::before{left:-31px}
+.pian-node h4{margin:0 0 4px 0;font-size:18px;color:#2d4258;font-family:"KaiTi",serif}
+.pian-node .psub{font-size:12px;color:#8a7a5c;margin-bottom:6px}
+.pian-node .psummary{font-size:13px;color:#4a4a4a;line-height:1.6;text-align:left}
+@media(max-width:768px){
+  #pian-timeline::before{left:20px}
+  .pian-node{width:calc(100% - 44px);margin-left:44px !important;text-align:left !important}
+  .pian-node::before{left:-27px !important;right:auto !important}
+  .pian-grid{grid-template-columns:1fr}
+  .depth-hero h1{font-size:24px}
+  .people-grid{grid-template-columns:1fr}
+}
+</style>
+:root{--accent:#6a4a2a;--hero-from:#241812;--hero-mid:#3d2a1a;--hero-to:#7a5432}
+</head>
+<body class="ink-theme">
+<header class="topbar">
+  <div class="bar-inner">
+    <a class="brand" href="index.html"><span class="brand-zi">子</span><span class="brand-cang">藏</span><span class="brand-sub">Zi-Cang Ontology</span></a>
+    <nav class="mainnav" id="mainnav"></nav>
+    <button class="theme-toggle" id="themeToggle" title="切换主题">🎨</button>
+  </div>
+</header>
+<main class="container" style="max-width:1200px">
+
+<div class="depth-hero" data-char="子">
+  <h1>《孟子》 · 深度标引</h1>
+  <div class="sub">亚圣·核心章句选本</div>
+  <p style="margin:8px 0 0 0;font-size:13.5px;color:#d9cda8;line-height:1.7;max-width:820px">
+    《孟子》是&lt;b style=&quot;color:#f2d98a&quot;&gt;先秦儒家第二经典，四书之一&lt;/b&gt;，被尊亚圣。本页精标&lt;b&gt;梁惠王上/公孙丑上/滕文公下/离娄上/告子上/尽心上&lt;/b&gt;六篇核心章句：&lt;b&gt;性善论·四端·浩然之气·王道仁政·民贵君轻·舍生取义·大丈夫&lt;/b&gt;——23命题、6寓言、7譬喻。
+  </p>
+  <div class="meta-row">
+    <span class="chip"><b>作者</b>孟轲（周（战国邹））</span>
+    <span class="chip"><b>文本长度</b>3,431 字</span>
+    <span class="chip"><b>标引单元</b>46 个句级锚点</span>
+    <span class="chip"><b>标引版本</b>zicang-v22</span>
+  </div>
+</div>
+
+<div class="depth-kpis"><div class="depth-kpi"><div class="num">6</div><div class="lbl">篇/章</div></div><div class="depth-kpi"><div class="num">23</div><div class="lbl">命题</div></div><div class="depth-kpi"><div class="num">1</div><div class="lbl">寓言</div></div><div class="depth-kpi"><div class="num">10</div><div class="lbl">对话</div></div><div class="depth-kpi"><div class="num">7</div><div class="lbl">譬喻</div></div><div class="depth-kpi"><div class="num">5</div><div class="lbl">论证</div></div><div class="depth-kpi"><div class="num">11</div><div class="lbl">概念</div></div><div class="depth-kpi"><div class="num">8</div><div class="lbl">人物</div></div><div class="depth-kpi"><div class="num">46</div><div class="lbl">句级锚点</div></div></div>
+
+<div class="tabs" id="tabs"><button class="tab-btn active" data-tab="overview">◇ 义理总览</button><button class="tab-btn " data-tab="map">❖ 篇章地图</button><button class="tab-btn " data-tab="claims">✦ 命题疏解</button><button class="tab-btn " data-tab="arguments">⚖ 论证结构</button><button class="tab-btn " data-tab="fables">☯ 寓言解读</button><button class="tab-btn " data-tab="dialogues">⌸ 对话问答</button><button class="tab-btn " data-tab="metaphors">✧ 譬喻举隅</button><button class="tab-btn " data-tab="people">☺ 出场人物</button><button class="tab-btn " data-tab="text">☰ 原文阅读</button></div>
+<div class="tab-panel active" id="tab-overview">
+    <h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px;margin-top:4px">《孟子》义理系统</h2>
+    <p class="intro-paragraph">《孟子》七篇十四卷，战国孟轲及弟子万章等撰。记录孟子与诸侯、弟子、告子等论敌的问答，系统提出性善论、仁政王道、民贵君轻、浩然之气、义利之辨等思想；为思孟学派核心典籍，宋以后列四书，孟子尊为亚圣。</p><p class="intro-paragraph">《孟子》围绕<b>性善</b>立根：人皆有不忍人之心，四端固有非外铄我也；扩而充之足以保四海，不充之事父母不足。修养即<b>求放心、集义、养浩然之气</b>。</p><p class="intro-paragraph">政治上倡<b>王道仁政</b>：保民而王、制民之产、不违农时、庠序之教；反对霸道；<b>民贵君轻</b>是中国民本思想最高表达。</p><p class="intro-paragraph">人格上立<b>大丈夫</b>：富贵不淫贫贱不移威武不屈；<b>舍生取义</b>；穷独善达兼善。文风犀利雄辩，长譬喻排比气势充沛。</p>
+    <div class="section-note">
+      <b>本体建模说明</b>：本页标引依子藏 v2.2 本体——文献结构对应 zbib（zbib:Work/Chapter/Sentence），
+      义理单元对应 zcon（zcon:Claim/Argument/Dialogue/Fable/Metaphor/ArgumentScheme），
+      人物对应 zc:Person，可与《庄子》《列子》等子藏深度页进行义理互见。
+    </div><h3 style="font-family:KaiTi,serif;color:var(--accent,#8b3a2f);margin-top:20px;letter-spacing:2px">核心概念云</h3><div class="concept-cloud"><span class="tag core" title="仁义为孟子政学之本；以仁义代霸力、代利益。">仁义</span><span class="tag core" title="以德服人之王道政治：保民、制产、庠序；与霸道对立。">王道</span><span class="tag core" title="人性本善，四端固有；不善是放良心非才之罪。">性善</span><span class="tag " title="恻隐/羞恶/辞让/是非四心，对应仁/义/礼/智。">四端</span><span class="tag " title="至大至刚、配义与道、集义所生的精神境界。">浩然之气</span><span class="tag " title="恻隐同情之心；仁政心理根基。">不忍人之心</span><span class="tag " title="顶天立地守道不移的理想人格。">大丈夫</span><span class="tag " title="民为邦本，民贵君轻，得丘民为天子。">民本</span><span class="tag " title="大义重于生命；与孔子杀身成仁并称。">舍生取义</span><span class="tag " title="以直养而无害、集义所生的修养功夫。">养气</span><span class="tag " title="遇事反省自己而非责人；内省修养核心。">反求诸己</span></div><h3 style="font-family:KaiTi,serif;color:var(--accent,#8b3a2f);margin-top:24px;letter-spacing:2px">义理线索</h3><div class="pian-grid"><div class="unit-block argument"><div class="u-title">性善论：四端固有·水之就下</div><div class="u-desc">人皆有不忍人之心，四端（仁义礼智）我固有之；不善是放其良心。</div></div><div class="unit-block argument"><div class="u-title">修养论：浩然之气·集义·求放心</div><div class="u-desc">养浩然之气至大至刚，配义与道；集义所生；求其放心反求诸己。</div></div><div class="unit-block argument"><div class="u-title">王道仁政：保民而王·制民之产</div><div class="u-desc">养生丧死无憾王道之始；五亩之宅百亩之田；不违农时。</div></div><div class="unit-block argument"><div class="u-title">义利之辨：王何必曰利</div><div class="u-desc">仁义为本，上下交征利则国危；与孔子君子喻于义一脉。</div></div><div class="unit-block argument"><div class="u-title">民本思想：民贵君轻</div><div class="u-desc">民为贵社稷次之君为轻；得丘民为天子。</div></div><div class="unit-block argument"><div class="u-title">人格理想：大丈夫·舍生取义</div><div class="u-desc">富贵不淫贫贱不移威武不屈；舍生取义；穷独善达兼善。</div></div><div class="unit-block argument"><div class="u-title">方法论：能近取譬·推恩</div><div class="u-desc">老吾老以及人之老；不为不能之辨；善用譬喻。</div></div></div></div><div class="tab-panel " id="tab-map"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">孟子篇章思想地图</h2>
+    <div class="section-note">点击篇章卡片可跳转至原文。</div><div id="pianTimeline"><div class="pian-node"><h4>梁惠王上</h4>
+      <div class="psub">第1篇 · 822字</div>
+      <div class="psummary">王何必曰利亦有仁义；五十步笑百步；不违农时王道之始；老吾老以及人之老；缘木求鱼。 <a class="read-link" href="reader.html?b=%E8%AF%B8%E5%AD%90%2F%E5%AD%9F%E5%AD%90.txt&ch=1&s=27" target="_blank">读原文 →</a></div></div><div class="pian-node"><h4>公孙丑上</h4>
+      <div class="psub">第2篇 · 580字</div>
+      <div class="psummary">知言养气；浩然之气至大至刚；揠苗助长；人皆有不忍人之心；四端说。 <a class="read-link" href="reader.html?b=%E8%AF%B8%E5%AD%90%2F%E5%AD%9F%E5%AD%90.txt&ch=2&s=856" target="_blank">读原文 →</a></div></div><div class="pian-node"><h4>滕文公下</h4>
+      <div class="psub">第3篇 · 455字</div>
+      <div class="psummary">富贵不能淫贫贱不能移威武不能屈——大丈夫；予岂好辩予不得已距杨墨承三圣。 <a class="read-link" href="reader.html?b=%E8%AF%B8%E5%AD%90%2F%E5%AD%9F%E5%AD%90.txt&ch=3&s=1443" target="_blank">读原文 →</a></div></div><div class="pian-node"><h4>离娄上</h4>
+      <div class="psub">第4篇 · 340字</div>
+      <div class="psummary">不以规矩不能成方圆；三代得失天下以仁不仁；行有不得反求诸己；天下之本在身。 <a class="read-link" href="reader.html?b=%E8%AF%B8%E5%AD%90%2F%E5%AD%9F%E5%AD%90.txt&ch=4&s=1904" target="_blank">读原文 →</a></div></div><div class="pian-node"><h4>告子上</h4>
+      <div class="psub">第5篇 · 869字</div>
+      <div class="psummary">性善论（杞柳、湍水之辨）；仁义礼智非由外铄我固有之；牛山之木；舍生取义。 <a class="read-link" href="reader.html?b=%E8%AF%B8%E5%AD%90%2F%E5%AD%9F%E5%AD%90.txt&ch=5&s=2250" target="_blank">读原文 →</a></div></div><div class="pian-node"><h4>尽心上</h4>
+      <div class="psub">第6篇 · 305字</div>
+      <div class="psummary">尽心知性知天；万物皆备于我反身而诚；登泰山小天下；民贵君轻。 <a class="read-link" href="reader.html?b=%E8%AF%B8%E5%AD%90%2F%E5%AD%9F%E5%AD%90.txt&ch=6&s=3125" target="_blank">读原文 →</a></div></div></div></div><div class="tab-panel " id="tab-claims"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">23核心命题</h2>
+      <div class="section-note">命题即 zcon:Claim——可以判断义理立场的最小判断单元；点击可跳至原文对应句段。</div><div class="pian-card"><h3>梁惠王上</h3>
+        <div class="pian-sub">王何必曰利亦有仁义；五十步笑百步；不违农时王道之始；老吾老以及人之老；缘木求鱼。 · 本章 6 命题</div><div class="pian-grid"><div class="unit-block claim" onclick="jumpTo('诸子/孟子.txt',1,61)">
+          <div class="u-title">何必曰利亦有仁义</div>
+          <div class="u-meta"><span class="u-scheme">对话问答</span><span class="u-scheme">义利之辨</span><span class="u-scheme">仁义</span><span class="u-scheme">王道</span></div>
+          <div class="u-desc">王问何以利吾国，孟子反：王何必曰利，只有仁义就够了；上下交征利则国危。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「王何必曰利…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/孟子.txt',1,369)">
+          <div class="u-title">五十步笑百步</div>
+          <div class="u-meta"><span class="u-scheme">譬喻</span><span class="u-scheme">五十步笑百步</span><span class="u-scheme">王道</span></div>
+          <div class="u-desc">逃五十步笑百步都是逃；梁惠王移民移粟之政与邻国本质无异。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「五十步笑百步…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/孟子.txt',1,480)">
+          <div class="u-title">养生丧死无憾王道之始</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">王道</span><span class="u-scheme">仁政</span><span class="u-scheme">不违农时</span></div>
+          <div class="u-desc">王道之始：不违农时谷不可胜食、数罟不入洿池、斧斤以时入山林；五亩宅百亩田庠序之教。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「养生丧死无憾…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/孟子.txt',1,664)">
+          <div class="u-title">不为与不能</div>
+          <div class="u-meta"><span class="u-scheme">譬喻</span><span class="u-scheme">不为</span><span class="u-scheme">不能</span></div>
+          <div class="u-desc">挟泰山超北海是真不能；为长者折枝是不为；王之不王是折枝之类——能做却不做。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「挟太山以超北海…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/孟子.txt',1,743)">
+          <div class="u-title">老吾老以及人之老</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">推恩</span><span class="u-scheme">恕道</span><span class="u-scheme">仁政</span></div>
+          <div class="u-desc">推己及人，将爱亲之心推及天下，治天下如运于掌。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「老吾老，以及人之老…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/孟子.txt',1,834)">
+          <div class="u-title">缘木求鱼</div>
+          <div class="u-meta"><span class="u-scheme">譬喻</span><span class="u-scheme">缘木求鱼</span><span class="u-scheme">霸道</span></div>
+          <div class="u-desc">想以武力辟土地莅中国犹缘木求鱼——方法错必不得且有后灾。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「缘木而求鱼…」</div>
+        </div></div></div><div class="pian-card"><h3>公孙丑上</h3>
+        <div class="pian-sub">知言养气；浩然之气至大至刚；揠苗助长；人皆有不忍人之心；四端说。 · 本章 4 命题</div><div class="pian-grid"><div class="unit-block claim" onclick="jumpTo('诸子/孟子.txt',2,880)">
+          <div class="u-title">浩然之气至大至刚</div>
+          <div class="u-meta"><span class="u-scheme">对话问答</span><span class="u-scheme">浩然之气</span><span class="u-scheme">集义</span><span class="u-scheme">养气</span></div>
+          <div class="u-desc">浩然之气配义与道，集义所生非义袭而取；是孟子修养论核心。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「我善养吾浩然之气…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/孟子.txt',2,1001)">
+          <div class="u-title">揠苗助长</div>
+          <div class="u-meta"><span class="u-scheme">寓言</span><span class="u-scheme">揠苗助长</span><span class="u-scheme">集义</span></div>
+          <div class="u-desc">宋人嫌苗不长拔高苗反枯；喻养气必集义、不可助长。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「宋人有闵其苗之不长…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/孟子.txt',2,1106)">
+          <div class="u-title">人皆有不忍人之心</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">不忍人之心</span><span class="u-scheme">恻隐</span></div>
+          <div class="u-desc">人见孺子将坠井都会本能怵惕恻隐——是本心自然之善。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「人皆有不忍人之心…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/孟子.txt',2,1270)">
+          <div class="u-title">四端：恻隐羞恶辞让是非</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">四端</span><span class="u-scheme">仁义礼智</span></div>
+          <div class="u-desc">四端是仁/义/礼/智四德之萌芽，如四体；扩而充之足以保四海。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「恻隐之心，仁之端也…」</div>
+        </div></div></div><div class="pian-card"><h3>滕文公下</h3>
+        <div class="pian-sub">富贵不能淫贫贱不能移威武不能屈——大丈夫；予岂好辩予不得已距杨墨承三圣。 · 本章 2 命题</div><div class="pian-grid"><div class="unit-block claim" onclick="jumpTo('诸子/孟子.txt',3,1528)">
+          <div class="u-title">富贵不能淫贫贱不能移</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">大丈夫</span><span class="u-scheme">气节</span></div>
+          <div class="u-desc">大丈夫居仁、立礼、行义；不为富贵淫、贫贱移、威武屈。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「富贵不能淫…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/孟子.txt',3,1590)">
+          <div class="u-title">予岂好辩予不得已</div>
+          <div class="u-meta"><span class="u-scheme">反驳</span><span class="u-scheme">好辩</span><span class="u-scheme">辟杨墨</span><span class="u-scheme">三圣</span></div>
+          <div class="u-desc">天下言不归杨则归墨；孟子以距杨墨承大禹周公孔子三圣自任。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「予岂好辩哉…」</div>
+        </div></div></div><div class="pian-card"><h3>离娄上</h3>
+        <div class="pian-sub">不以规矩不能成方圆；三代得失天下以仁不仁；行有不得反求诸己；天下之本在身。 · 本章 3 命题</div><div class="pian-grid"><div class="unit-block claim" onclick="jumpTo('诸子/孟子.txt',4,1919)">
+          <div class="u-title">不以规矩不能成方圆</div>
+          <div class="u-meta"><span class="u-scheme">譬喻</span><span class="u-scheme">规矩</span><span class="u-scheme">仁政</span></div>
+          <div class="u-desc">规矩是方圆标准、六律是五音标准、仁政是平治天下的标准。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「不以规矩…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/孟子.txt',4,2143)">
+          <div class="u-title">行有不得反求诸己</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">反求诸己</span><span class="u-scheme">正己</span></div>
+          <div class="u-desc">所做没有效果就反身自省，自身端正天下自然归服。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「行有不得者…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/孟子.txt',4,2213)">
+          <div class="u-title">天下之本在身</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">修齐治平</span><span class="u-scheme">修身</span></div>
+          <div class="u-desc">修身→齐家→治国→平天下层层递进本在一身。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「天下之本在国…」</div>
+        </div></div></div><div class="pian-card"><h3>告子上</h3>
+        <div class="pian-sub">性善论（杞柳、湍水之辨）；仁义礼智非由外铄我固有之；牛山之木；舍生取义。 · 本章 4 命题</div><div class="pian-grid"><div class="unit-block claim" onclick="jumpTo('诸子/孟子.txt',5,2426)">
+          <div class="u-title">性善犹水就下</div>
+          <div class="u-meta"><span class="u-scheme">譬喻</span><span class="u-scheme">性善论</span><span class="u-scheme">水之就下</span></div>
+          <div class="u-desc">水确无分东西但必就下；人性之善是自然趋向，搏跃过山是势非性。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「人性之善也…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/孟子.txt',5,2700)">
+          <div class="u-title">仁义礼智我固有之</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">四端</span><span class="u-scheme">固有</span></div>
+          <div class="u-desc">四端非外铄而是我固有；求则得之舍则失之。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「仁义礼智，非由外铄…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/孟子.txt',5,2755)">
+          <div class="u-title">牛山之木：良心放失</div>
+          <div class="u-meta"><span class="u-scheme">譬喻</span><span class="u-scheme">良心</span><span class="u-scheme">放失</span><span class="u-scheme">牛山</span></div>
+          <div class="u-desc">牛山本美木被伐被牧变秃；人心本善旦旦被伐则放其良心。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「牛山之木尝美矣…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/孟子.txt',5,2906)">
+          <div class="u-title">舍生取义</div>
+          <div class="u-meta"><span class="u-scheme">譬喻</span><span class="u-scheme">舍生取义</span><span class="u-scheme">本心</span></div>
+          <div class="u-desc">义比生命更贵；一箪食呼尔蹴尔虽乞人不屑；万钟不辨礼义则失本心。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「鱼，我所欲也…」</div>
+        </div></div></div><div class="pian-card"><h3>尽心上</h3>
+        <div class="pian-sub">尽心知性知天；万物皆备于我反身而诚；登泰山小天下；民贵君轻。 · 本章 4 命题</div><div class="pian-grid"><div class="unit-block claim" onclick="jumpTo('诸子/孟子.txt',6,3128)">
+          <div class="u-title">尽心知性知天</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">尽心</span><span class="u-scheme">知性</span><span class="u-scheme">知天</span><span class="u-scheme">立命</span></div>
+          <div class="u-desc">充分扩充本心则知本性、知天道；存养心性是事天；修身以俟是立命。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「尽其心者…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/孟子.txt',6,3257)">
+          <div class="u-title">万物皆备于我反身而诚</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">万物皆备</span><span class="u-scheme">诚</span><span class="u-scheme">恕</span></div>
+          <div class="u-desc">一切道理本性都具于我心；反躬诚实是大乐；恕道求仁最近。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「万物皆备于我…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/孟子.txt',6,3311)">
+          <div class="u-title">登泰山小天下</div>
+          <div class="u-meta"><span class="u-scheme">譬喻</span><span class="u-scheme">境界</span><span class="u-scheme">观海</span></div>
+          <div class="u-desc">境界提升眼界自不同；观于海者难为水、游圣门者难为言。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「孔子登东山…」</div>
+        </div><div class="unit-block claim" onclick="jumpTo('诸子/孟子.txt',6,3370)">
+          <div class="u-title">民贵君轻</div>
+          <div class="u-meta"><span class="u-scheme">正论</span><span class="u-scheme">民贵君轻</span><span class="u-scheme">民本</span></div>
+          <div class="u-desc">人民最重要、国家次之、君主最轻易；得丘民为天子；是民本思想最高表达。</div>
+          <div style="font-size:12px;color:#8a7a5c;margin-top:6px;font-family:KaiTi,serif">「民为贵，社稷次之…」</div>
+        </div></div></div></div><div class="tab-panel " id="tab-arguments"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">5核心论证/问难</h2>
+      <div class="section-note">含譬喻、对话问答、两难、反驳等论证图式。</div><div class="pian-grid"><div class="unit-block argument" onclick="jumpTo('诸子/孟子.txt',1,834)">
+        <div class="u-title">缘木求鱼</div>
+        <div class="u-meta"><span class="u-scheme">譬喻</span><span class="u-scheme">孟子</span><span class="u-scheme">齐宣王</span></div>
+        <div class="u-desc">方法错必不得；以霸求王如缘木求鱼。</div>
+      </div><div class="unit-block argument" onclick="jumpTo('诸子/孟子.txt',1,345)">
+        <div class="u-title">五十步笑百步</div>
+        <div class="u-meta"><span class="u-scheme">譬喻</span><span class="u-scheme">孟子</span><span class="u-scheme">梁惠王</span></div>
+        <div class="u-desc">程度不同本质相同；梁惠王与邻国皆未尽仁。</div>
+      </div><div class="unit-block argument" onclick="jumpTo('诸子/孟子.txt',5,2755)">
+        <div class="u-title">牛山之木</div>
+        <div class="u-meta"><span class="u-scheme">譬喻</span><span class="u-scheme">孟子</span></div>
+        <div class="u-desc">良心本善，旦旦伐之则濯濯，是放失非性本恶。</div>
+      </div><div class="unit-block argument" onclick="jumpTo('诸子/孟子.txt',2,1174)">
+        <div class="u-title">孺子将入于井</div>
+        <div class="u-meta"><span class="u-scheme">譬喻</span><span class="u-scheme">路人</span><span class="u-scheme">孺子</span></div>
+        <div class="u-desc">人皆有怵惕恻隐之心——性善根本例证。</div>
+      </div><div class="unit-block argument" onclick="jumpTo('诸子/孟子.txt',5,3065)">
+        <div class="u-title">呼尔蹴尔</div>
+        <div class="u-meta"><span class="u-scheme">譬喻</span><span class="u-scheme">乞人</span></div>
+        <div class="u-desc">即使饥饿也不受侮辱性施舍；羞恶之心人皆有之。</div>
+      </div></div></div><div class="tab-panel " id="tab-fables"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">1寓言</h2>
+      <div class="section-note">寓言即 zcon:Fable——"寓言十九，藉外论之"，以虚构故事寄寓哲学义理。</div><div class="pian-grid"><div class="unit-block fable" onclick="jumpTo('诸子/孟子.txt',2,1001)">
+        <div class="u-title">揠苗助长</div>
+        <div class="u-meta"><span class="u-scheme">宋人</span></div>
+        <div class="u-desc">助长者非徒无益又害之；集义养气必循序渐进。</div>
+      </div></div></div><div class="tab-panel " id="tab-dialogues"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">10对话单元</h2>
+      <div class="section-note">对话即 zcon:Dialogue，按"曰/问/对曰"切分，记录问答轮次与主题。</div><div class="pian-grid"><div class="unit-block dialogue" onclick="jumpTo('诸子/孟子.txt',1,39)">
+        <div class="u-title">何必曰利</div>
+        <div class="u-meta"><span class="u-scheme">梁惠王↔孟子</span><span class="u-scheme">2 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/孟子.txt',1,246)">
+        <div class="u-title">五十步笑百步·王道</div>
+        <div class="u-meta"><span class="u-scheme">梁惠王↔孟子</span><span class="u-scheme">4 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/孟子.txt',1,647)">
+        <div class="u-title">不为与不能</div>
+        <div class="u-meta"><span class="u-scheme">孟子→（推）</span><span class="u-scheme">3 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/孟子.txt',1,796)">
+        <div class="u-title">缘木求鱼</div>
+        <div class="u-meta"><span class="u-scheme">（齐宣王）↔孟子</span><span class="u-scheme">2 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/孟子.txt',2,889)">
+        <div class="u-title">浩然之气</div>
+        <div class="u-meta"><span class="u-scheme">公孙丑↔孟子</span><span class="u-scheme">3 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/孟子.txt',3,1446)">
+        <div class="u-title">大丈夫</div>
+        <div class="u-meta"><span class="u-scheme">景春↔孟子</span><span class="u-scheme">2 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/孟子.txt',3,1577)">
+        <div class="u-title">予岂好辩</div>
+        <div class="u-meta"><span class="u-scheme">公都子↔孟子</span><span class="u-scheme">2 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/孟子.txt',5,2253)">
+        <div class="u-title">性善（杞柳湍水）</div>
+        <div class="u-meta"><span class="u-scheme">告子↔孟子</span><span class="u-scheme">4 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/孟子.txt',5,2546)">
+        <div class="u-title">性善四端固有</div>
+        <div class="u-meta"><span class="u-scheme">公都子↔孟子</span><span class="u-scheme">2 轮</span></div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block dialogue" onclick="jumpTo('诸子/孟子.txt',5,2906)">
+        <div class="u-title">舍生取义</div>
+        <div class="u-meta"><span class="u-scheme">孟子</span><span class="u-scheme">1 轮</span></div>
+        <div class="u-desc"></div>
+      </div></div></div><div class="tab-panel " id="tab-metaphors"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">7譬喻</h2>
+      <div class="section-note">譬喻即 zcon:Metaphor，以近喻远、以具象喻抽象。</div><div class="pian-grid"><div class="unit-block metaphor" onclick="jumpTo('诸子/孟子.txt',1,345)">
+        <div class="u-title">战场逃兵五十步笑百步 <span style="color:#b8860b">→</span> 移民移粟亦未尽仁</div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block metaphor" onclick="jumpTo('诸子/孟子.txt',1,664)">
+        <div class="u-title">挟山超海 <span style="color:#b8860b">→</span> 真不能</div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block metaphor" onclick="jumpTo('诸子/孟子.txt',1,688)">
+        <div class="u-title">折枝 <span style="color:#b8860b">→</span> 能为而不为</div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block metaphor" onclick="jumpTo('诸子/孟子.txt',5,2906)">
+        <div class="u-title">鱼/熊掌取舍 <span style="color:#b8860b">→</span> 生/义取舍</div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block metaphor" onclick="jumpTo('诸子/孟子.txt',5,2755)">
+        <div class="u-title">牛山被伐 <span style="color:#b8860b">→</span> 良心放失</div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block metaphor" onclick="jumpTo('诸子/孟子.txt',4,1919)">
+        <div class="u-title">规矩 <span style="color:#b8860b">→</span> 仁政法度</div>
+        <div class="u-desc"></div>
+      </div><div class="unit-block metaphor" onclick="jumpTo('诸子/孟子.txt',6,3311)">
+        <div class="u-title">登山观海 <span style="color:#b8860b">→</span> 圣门进学</div>
+        <div class="u-desc"></div>
+      </div></div></div><div class="tab-panel " id="tab-people"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">8出场人物</h2><div class="people-grid"><div class="pcard">
+        <div class="pname">孟子</div>
+        <div class="prole">核心/作者</div>
+        <div><span class="alias">孟轲</span><span class="alias">子舆</span></div>
+        <div class="pbio">名轲字子舆，战国邹人，受业子思门人；倡仁政性善王道，被尊&quot;亚圣&quot;，与孔子并称孔孟。</div>
+      </div><div class="pcard">
+        <div class="pname">梁惠王</div>
+        <div class="prole">魏君</div>
+        <div><span class="alias">魏惠王</span></div>
+        <div class="pbio">魏惠王，迁都大梁；孟子游梁开篇之主。</div>
+      </div><div class="pcard">
+        <div class="pname">齐宣王</div>
+        <div class="prole">齐君</div>
+        
+        <div class="pbio">稷下学宫赞助者；孟子在齐与齐宣王多番论政。</div>
+      </div><div class="pcard">
+        <div class="pname">公孙丑</div>
+        <div class="prole">弟子</div>
+        <div><span class="alias">丑</span></div>
+        <div class="pbio">孟子弟子，《公孙丑》篇命名者。</div>
+      </div><div class="pcard">
+        <div class="pname">公都子</div>
+        <div class="prole">弟子</div>
+        
+        <div class="pbio">孟子弟子，问性、问好辩。</div>
+      </div><div class="pcard">
+        <div class="pname">告子</div>
+        <div class="prole">论敌</div>
+        <div><span class="alias">告不害</span></div>
+        <div class="pbio">主性无善无不善、仁内义外；与孟子辩性。</div>
+      </div><div class="pcard">
+        <div class="pname">景春</div>
+        <div class="prole">纵横家</div>
+        
+        <div class="pbio">称公孙衍张仪为大丈夫被孟子驳。</div>
+      </div><div class="pcard">
+        <div class="pname">揠苗宋人</div>
+        <div class="prole">寓言人物</div>
+        
+        <div class="pbio">揠苗助长的宋人。</div>
+      </div></div></div><div class="tab-panel " id="tab-text"><h2 style="font-family:KaiTi,serif;color:#2d4258;letter-spacing:3px">原文阅读</h2>
+    <div class="section-note">点击下方章节进入 reader 逐句阅读。</div>
+    <div class="pian-grid">
+      <div class="unit-block" onclick="jumpTo('诸子/孟子.txt',1,27)">
+        <div class="u-title">梁惠王上</div>
+        <div class="u-meta">822字</div>
+        <div class="u-desc">王何必曰利亦有仁义；五十步笑百步；不违农时王道之始；老吾老以及人之老；缘木求鱼。</div>
+      </div>
+      <div class="unit-block" onclick="jumpTo('诸子/孟子.txt',2,856)">
+        <div class="u-title">公孙丑上</div>
+        <div class="u-meta">580字</div>
+        <div class="u-desc">知言养气；浩然之气至大至刚；揠苗助长；人皆有不忍人之心；四端说。</div>
+      </div>
+      <div class="unit-block" onclick="jumpTo('诸子/孟子.txt',3,1443)">
+        <div class="u-title">滕文公下</div>
+        <div class="u-meta">455字</div>
+        <div class="u-desc">富贵不能淫贫贱不能移威武不能屈——大丈夫；予岂好辩予不得已距杨墨承三圣。</div>
+      </div>
+      <div class="unit-block" onclick="jumpTo('诸子/孟子.txt',4,1904)">
+        <div class="u-title">离娄上</div>
+        <div class="u-meta">340字</div>
+        <div class="u-desc">不以规矩不能成方圆；三代得失天下以仁不仁；行有不得反求诸己；天下之本在身。</div>
+      </div>
+      <div class="unit-block" onclick="jumpTo('诸子/孟子.txt',5,2250)">
+        <div class="u-title">告子上</div>
+        <div class="u-meta">869字</div>
+        <div class="u-desc">性善论（杞柳、湍水之辨）；仁义礼智非由外铄我固有之；牛山之木；舍生取义。</div>
+      </div>
+      <div class="unit-block" onclick="jumpTo('诸子/孟子.txt',6,3125)">
+        <div class="u-title">尽心上</div>
+        <div class="u-meta">305字</div>
+        <div class="u-desc">尽心知性知天；万物皆备于我反身而诚；登泰山小天下；民贵君轻。</div>
+      </div>
+    </div></div>
+
+</main>
+<footer class="site-footer">
+  <p>子藏 Zi-Cang Ontology · 诸子百家深度研究 · CC BY-SA 4.0</p>
+</footer>
+<script src="js/common.js?v=22"></script>
+<script src="data/mengzi-data.js?v=22"></script>
+<script>
+function jumpTo(b,ch,s){window.open('reader.html?b='+encodeURIComponent(b)+'&ch='+ch+'&s='+s,'_blank');}
+const tabBtns=document.querySelectorAll('.tab-btn');
+const tabPans=document.querySelectorAll('.tab-panel');
+tabBtns.forEach(b=>b.addEventListener('click',()=>{
+  tabBtns.forEach(x=>x.classList.remove('active'));
+  tabPans.forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  document.getElementById('tab-'+b.dataset.tab).classList.add('active');
+  window.scrollTo({top:b.offsetTop-80,behavior:'smooth'});
+}));
+</script>
+</body>
+</html>

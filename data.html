@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>數據下載 · 子藏本體論 Zi-Cang</title>
-<link rel="stylesheet" href="css/common.css?v=21">
+<link rel="stylesheet" href="css/common.css?v=22">
 <style>
   :root{--ink:#2c1810;--sub:#6b4423;--paper:#f5ecd7;--card:#faf4e3;--border:#d4b896;--gold:#8b2500;--accent:#a0522d}
   .data-hero{padding:48px 28px 24px;text-align:center;max-width:900px;margin:0 auto}
@@ -71,7 +71,7 @@
 </div>
 </div>
 
-<script src="js/common.js?v=21"></script>
+<script src="js/common.js?v=22"></script>
 <script>
 injectLayout('data');
 
@@ -114,6 +114,22 @@ const FILES=[
    files:[{name:'mention_full.js',url:'data/mention_full.js',label:'JS數據',isBig:true}]},
   {ico:'⚓',title:'引文錨點精確定位 (v19)',desc:'39條引文/術語/注疏出處錨定：去標點異文匹配+章節定位，其中27條精確定位到具體典籍+篇章+字符提示位置；閱讀器可直接打開並跳至關鍵詞高亮位置。',meta:['引文錨點','~7KB','39條·27精確定位'],
    files:[{name:'anchors_precise.js',url:'data/anchors_precise.js',label:'JS數據'}]},
+  {ico:'🦋',title:'《莊子》內七篇深度標引 (v22)',desc:'逍遙遊/齊物論/養生主/人間世/德充符/大宗師/應帝王 七篇五級語義標引：43寓言、25對話、36命題、22譬喻、11論證，句級錨點零缺失，含人物/命題/寓言/譬喻/對話五個維度。',meta:['莊子深讀','~55KB','7篇·137條'],
+   files:[{name:'zhuangzi-data.js',url:'data/zhuangzi-data.js',label:'標引數據'},{name:'zhuangzi.html',url:'zhuangzi.html',label:'深讀頁'}]},
+  {ico:'☯',title:'《老子》道德經深度標引 (v22)',desc:'道德經81章全量標引：51核心命題、11譬喻、15概念、2人物（老子/孔子），涵蓋道論/德論/修身/治國/辯證法五大維度。',meta:['老子深讀','~33KB','81章·51命題'],
+   files:[{name:'laozi-data.js',url:'data/laozi-data.js',label:'標引數據'},{name:'laozi.html',url:'laozi.html',label:'深讀頁'}]},
+  {ico:'☁',title:'《列子》沖虛經深度標引 (v22)',desc:'天瑞/黃帝/周穆王/仲尼/湯問/力命/楊朱/說符八篇標引：28命題、20寓言（杞人憂天/愚公移山/歧路亡羊/伯牙鼓琴/華胥夢等）、5譬喻、5對話、40人物。',meta:['列子深讀','~26KB','8篇·58條'],
+   files:[{name:'liezi-data.js',url:'data/liezi-data.js',label:'標引數據'},{name:'liezi.html',url:'liezi.html',label:'深讀頁'}]},
+  {ico:'📜',title:'《論語》深度標引 (v22)',desc:'學而/為政/八佾/里仁/述而/顏淵/子路/衛靈公/季氏九篇核心章句：65命題、29對話、5譬喻、15概念、23人物（孔子/弟子/諸侯）。',meta:['論語深讀','~36KB','9篇·104條'],
+   files:[{name:'lunyu-data.js',url:'data/lunyu-data.js',label:'標引數據'},{name:'lunyu.html',url:'lunyu.html',label:'深讀頁'}]},
+  {ico:'🪶',title:'《孟子》核心章句精標 (v22)',desc:'梁惠王上/公孫丑上/滕文公下/離婁上/告子上/盡心上六篇：23命題、6寓言（揠苗助長/緣木求魚/五十步笑百步/牛山之木/舍生取義等）、7譬喻、10對話、11概念。',meta:['孟子精讀','~20KB','6章·54條'],
+   files:[{name:'mengzi-data.js',url:'data/mengzi-data.js',label:'標引數據'},{name:'mengzi.html',url:'mengzi.html',label:'精讀頁'}]},
+  {ico:'📐',title:'《荀子》三章精標 (v22)',desc:'勸學/天論/性惡三篇核心章：20命題、6譬喻（青出藍/登高假物/積土成山/蚓蟹/枸木檃栝/陶人埏埴）、3辯難、10概念，涵蓋勸學論/天人之分/性惡論三大思想。',meta:['荀子精讀','~25KB','3篇·43條'],
+   files:[{name:'xunzi-data.js',url:'data/xunzi-data.js',label:'標引數據'},{name:'xunzi.html',url:'xunzi.html',label:'精讀頁'}]},
+  {ico:'⚔',title:'《韓非子》三章精標 (v22)',desc:'孤憤/說難/五蠹三篇核心章：12命題、5寓言（逆鱗/彌子瑕餘桃/守株待兔/徐偃王/有巢燧人）、5譬喻、10概念，涵蓋法術勢/法不阿貴/世異事異/五蠹/說難。',meta:['韓非子精讀','~7KB','3篇·34條'],
+   files:[{name:'hanfeizi-data.js',url:'data/hanfeizi-data.js',label:'標引數據'},{name:'hanfeizi.html',url:'hanfeizi.html',label:'精讀頁'}]},
+  {ico:'◈',title:'《墨子》三章精標 (v22)',desc:'尚賢/兼愛/非攻三篇核心章：9命題、3寓言（竊桃李攘犬豕取馬牛殺不辜/殺人層級/黑白甘苦辯）、4譬喻、8概念，涵蓋兼愛/非攻/尚賢/三表法。',meta:['墨子精讀','~6KB','3篇·27條'],
+   files:[{name:'mozi-data.js',url:'data/mozi-data.js',label:'標引數據'},{name:'mozi.html',url:'mozi.html',label:'精讀頁'}]},
   {ico:'🎯',title:'概念三教流轉數據',desc:'道/空性/太極/仁/無為/陰陽/氣/良知八大核心概念在六藏中的朝代演化流變（先秦→魏晉玄學→禪宗→宋明理學），共37個朝代節點、含人物典籍義理說明。',meta:['概念演化','~20KB','8概念·37朝代'],
    files:[{name:'concept-evolve.json',url:'data/concept-evolve.js',label:'JS數據'}]},
   {ico:'⚖️',title:'雙概念對比數據',desc:'八組核心概念的三教分合對比（道vs空性、仁vs兼愛、性善vs性惡、有為vs無為、理vs氣、天理vs良知、漸修vs頓悟、入世vs出世），每組含左右兩家分歧點與跨時代會通人物典籍。',meta:['概念對比','~17KB','8組三教分合'],
