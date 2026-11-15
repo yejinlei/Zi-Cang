@@ -74,97 +74,131 @@ document.addEventListener('click', e=>{
   }
 });
 
-// ====== 侧边栏导航（Ji-Cang风格：固定左侧、可折叠、分层分组）======
+// ====== 顶部横向一级菜单 + 左侧二级侧边栏（Ji-Cang双层导航） ======
+const TOP_NAV = [
+  {key:'home',    href:'index.html',    label:'总览'},
+  {key:'ont-group', href:'ontology.html', label:'本体'},
+  {key:'res-group', href:'cross.html',    label:'义理'},
+  {key:'book-group',href:'zhuangzi.html', label:'典籍'},
+  {key:'library', href:'library.html',  label:'文库'},
+  {key:'search',  href:'search.html',   label:'检索'},
+];
+const SIDE_NAV = {
+  home: {
+    title:'☰ 本体总览',
+    items:[
+      {key:'home',    href:'index.html',    icon:'☰', label:'本体总览'},
+      {key:'full-ontology', href:'full-ontology.html', icon:'⬡', label:'三维星图'},
+      {key:'spec',     href:'spec.html',     icon:'◈', label:'本體規範'},
+      {key:'tools',    href:'tools.html',    icon:'⚙', label:'研讀工具'},
+    ]
+  },
+  'ont-group': {
+    title:'☰ 諸子本體',
+    items:[
+      {key:'ontology', href:'ontology.html',  icon:'⬡', label:'本體總論'},
+      {key:'full-ontology', href:'full-ontology.html', icon:'◯', label:'三維星圖'},
+      {key:'spec',     href:'spec.html',      icon:'◈', label:'本體規範'},
+      {key:'classics', href:'classics.html',  icon:'籍', label:'典籍詳解'},
+      {key:'terms',    href:'terms.html',     icon:'词', label:'術語詞典'},
+      {key:'idioms',   href:'idioms.html',    icon:'语', label:'成語典故'},
+      {key:'tools',    href:'tools.html',     icon:'⚙', label:'研讀工具'},
+    ]
+  },
+  'res-group': {
+    title:'✦ 義理研究',
+    items:[
+      {key:'cross',     href:'cross.html',     icon:'互', label:'六藏互通'},
+      {key:'people',    href:'people.html',    icon:'人', label:'諸子人物'},
+      {key:'panjiao',   href:'panjiao.html',   icon:'评', label:'歷代評騭'},
+      {key:'timeline',  href:'timeline.html',  icon:'时', label:'時間長卷'},
+      {key:'graph',     href:'graph.html',     icon:'网', label:'譜系圖譜'},
+      {key:'citation',  href:'citation.html',  icon:'引', label:'引文關聯'},
+      {key:'reasoning', href:'reasoning.html', icon:'理', label:'本體推理'},
+      {key:'statistics',href:'statistics.html',icon:'计', label:'典籍統計'},
+    ]
+  },
+  'book-group': {
+    title:'📜 典籍深讀',
+    items:[
+      {key:'zhuangzi', href:'zhuangzi.html',  icon:'庄', label:'《莊子》'},
+      {key:'laozi',    href:'laozi.html',     icon:'老', label:'《老子》'},
+      {key:'liezi',    href:'liezi.html',     icon:'列', label:'《列子》'},
+      {key:'lunyu',    href:'lunyu.html',     icon:'论', label:'《論語》'},
+      {key:'mengzi',   href:'mengzi.html',    icon:'孟', label:'《孟子》'},
+      {key:'xunzi',    href:'xunzi.html',     icon:'荀', label:'《荀子》'},
+      {key:'hanfeizi', href:'hanfeizi.html',  icon:'韩', label:'《韓非子》'},
+      {key:'mozi',     href:'mozi.html',      icon:'墨', label:'《墨子》'},
+    ]
+  },
+  library: {
+    title:'📚 全文庫',
+    items:[
+      {key:'library', href:'library.html', icon:'籍', label:'典籍瀏覽'},
+      {key:'map',     href:'map.html',     icon:'🗺', label:'時空地圖'},
+      {key:'data',    href:'data.html',    icon:'💾', label:'數據下載'},
+    ]
+  },
+  search: {
+    title:'🔍 全文檢索',
+    items:[
+      {key:'search', href:'search.html', icon:'检', label:'全文檢索'},
+      {key:'map',    href:'map.html',    icon:'🗺', label:'時空地圖'},
+    ]
+  },
+};
+// 子key归到对应顶栏组
+const KEY_TO_TOP = {
+  home:'home', 'full-ontology':'home', spec:'home', tools:'home',
+  ontology:'ont-group', classics:'ont-group', terms:'ont-group', idioms:'ont-group',
+  cross:'res-group', people:'res-group', panjiao:'res-group', timeline:'res-group',
+  graph:'res-group', citation:'res-group', reasoning:'res-group', statistics:'res-group',
+  zhuangzi:'book-group', laozi:'book-group', liezi:'book-group', lunyu:'book-group',
+  mengzi:'book-group', xunzi:'book-group', hanfeizi:'book-group', mozi:'book-group',
+  library:'library', map:'library', data:'library',
+  search:'search',
+  'reader.html':'library',
+};
 function buildNav(active){
-  const sections = [
-    {
-      group:'', items:[
-        {key:'home',    href:'index.html',    icon:'🏠', label:'首頁'},
-        {key:'library', href:'library.html',  icon:'📚',label:'全文庫'},
-        {key:'search',  href:'search.html',   icon:'🔍',label:'檢索'},
-      ]
-    },
-    {
-      group:'諸子本體', icon:'⬡', collapsible:true,
-      items:[
-        {key:'ontology', href:'ontology.html',  label:'本體總論'},
-        {key:'full-ontology', href:'full-ontology.html', label:'三維星圖'},
-        {key:'spec',     href:'spec.html',      label:'本體規範'},
-        {key:'classics', href:'classics.html',  label:'典籍詳解'},
-        {key:'terms',    href:'terms.html',     label:'術語詞典'},
-        {key:'idioms',   href:'idioms.html',    label:'成語典故'},
-        {key:'tools',    href:'tools.html',     label:'研讀工具'},
-      ]
-    },
-    {
-      group:'義理研究', icon:'✦', collapsible:true,
-      items:[
-        {key:'cross',     href:'cross.html',     label:'六藏互通'},
-        {key:'people',    href:'people.html',    label:'諸子人物'},
-        {key:'panjiao',   href:'panjiao.html',   label:'歷代評騭'},
-        {key:'timeline',  href:'timeline.html',  label:'時間長卷'},
-        {key:'graph',     href:'graph.html',     label:'譜系圖譜'},
-        {key:'citation',  href:'citation.html',  label:'引文關聯'},
-        {key:'reasoning', href:'reasoning.html', label:'本體推理'},
-        {key:'statistics',href:'statistics.html',label:'典籍統計'},
-      ]
-    },
-    {
-      group:'典籍深讀', icon:'📜', collapsible:true,
-      items:[
-        {key:'zhuangzi', href:'zhuangzi.html',  label:'《莊子》'},
-        {key:'laozi',    href:'laozi.html',     label:'《老子》'},
-        {key:'liezi',    href:'liezi.html',     label:'《列子》'},
-        {key:'lunyu',    href:'lunyu.html',     label:'《論語》'},
-        {key:'mengzi',   href:'mengzi.html',    label:'《孟子》'},
-        {key:'xunzi',    href:'xunzi.html',     label:'《荀子》'},
-        {key:'hanfeizi', href:'hanfeizi.html',  label:'《韓非子》'},
-        {key:'mozi',     href:'mozi.html',      label:'《墨子》'},
-      ]
-    },
-    {
-      group:'', items:[
-        {key:'map',     href:'map.html',      icon:'🗺', label:'時空'},
-        {key:'data',    href:'data.html',     icon:'💾', label:'數據'}
-      ]
-    }
-  ];
+  // 判断当前激活哪个顶栏组
+  let topActive = KEY_TO_TOP[active] || 'home';
+  if(active==='reader') topActive='library';
+  const side = SIDE_NAV[topActive] || SIDE_NAV.home;
 
-  let navHTML = '';
-  sections.forEach((sec,si)=>{
-    if(sec.group){
-      const hasActive = sec.items.some(i=>active===i.key);
-      navHTML += `<div class="side-group ${hasActive?'expanded':''}">
-        <div class="side-group-title" onclick="this.parentElement.classList.toggle('expanded')">
-          <span class="side-group-label">${sec.icon?sec.icon+' ':''}${sec.group}</span>
-          <span class="side-group-arrow">▸</span>
-        </div>
-        <div class="side-group-items">`;
-      sec.items.forEach(i=>{
-        navHTML += `<a href="${i.href}" class="side-link ${active===i.key?'active':''}">${i.label}</a>\n`;
-      });
-      navHTML += '</div></div>';
-    } else {
-      sec.items.forEach(i=>{
-        navHTML += `<a href="${i.href}" class="side-link ${active===i.key?'active':''}">${i.icon?i.icon+' ':''}${i.label}</a>\n`;
-      });
-    }
-  });
-
-  return `<aside class="site-sidebar">
-    <div class="sidebar-header">
-      <a class="brand" href="index.html">
-        <span class="brand-box">子</span>
-        <span class="brand-text">藏本體<br><small>Zi-Cang Ontology</small></span>
+  // 顶部导航HTML
+  let topHTML = `<header class="top-nav">
+    <div class="top-nav-inner">
+      <a class="top-brand" href="index.html">
+        <span class="brand-chinese">藏本體</span>
+        <span class="brand-english">ZI-CANG ONTOLOGY</span>
       </a>
+      <nav class="top-menu">`;
+  TOP_NAV.forEach(t=>{
+    const isAct = topActive===t.key;
+    topHTML += `<a href="${t.href}" class="top-link${isAct?' active':''}">${t.label}</a>`;
+  });
+  topHTML += `</nav>
+      <div class="top-actions">
+        <a href="library.html" class="top-cta">入藏閱讀</a>
+        ${buildThemeMenu()}
+      </div>
     </div>
-    <div class="sidebar-body">
-      ${navHTML}
-    </div>
-    <div class="sidebar-footer">
-      ${buildThemeMenu()}
-    </div>
-  </aside>`;
+  </header>`;
+
+  // 左侧侧边栏（只显示当前一级菜单下的二级子项）
+  let sideHTML = `<aside class="site-sidebar">
+    <div class="sidebar-title">${side.title}</div>
+    <nav class="side-nav">`;
+  side.items.forEach(i=>{
+    const actCls = active===i.key?' active':'';
+    sideHTML += `<a href="${i.href}" class="side-link${actCls}">
+      <span class="side-link-icon">${i.icon||'◦'}</span>
+      <span class="side-link-label">${i.label}</span>
+    </a>`;
+  });
+  sideHTML += `</nav></aside>`;
+
+  return topHTML + sideHTML;
 }
 function buildFooter(){
   return `<footer class="site-footer">
@@ -180,18 +214,17 @@ function buildFooter(){
 function injectLayout(active){
   const n = document.getElementById('siteNav');
   const f = document.getElementById('siteFooter');
-  if(n) n.outerHTML = buildNav(active);
+  const navHTML = buildNav(active);
+  if(n) n.outerHTML = navHTML;
   if(f) f.outerHTML = buildFooter();
 
-  // 自动包裹main-content：如果body直接子元素里没有.main-content，就把body里除了sidebar之外的内容包进去
-  const sidebar = document.querySelector('.site-sidebar');
+  // 自动包裹main-content：把body里除了top-nav和sidebar之外的内容包进去
   let mainWrap = document.querySelector('.main-content');
   if(!mainWrap){
     mainWrap = document.createElement('div');
     mainWrap.className = 'main-content';
-    // 把body里所有非sidebar的元素移进去
     Array.from(document.body.children).forEach(child=>{
-      if(!child.classList.contains('site-sidebar')){
+      if(!child.classList.contains('top-nav') && !child.classList.contains('site-sidebar')){
         mainWrap.appendChild(child);
       }
     });
