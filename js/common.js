@@ -79,47 +79,47 @@ function buildNav(active){
   const sections = [
     {
       group:'', items:[
-        {key:'home',    href:'index.html',    icon:'☰', label:'首頁'},
+        {key:'home',    href:'index.html',    icon:'🏠', label:'首頁'},
         {key:'library', href:'library.html',  icon:'📚',label:'全文庫'},
         {key:'search',  href:'search.html',   icon:'🔍',label:'檢索'},
       ]
     },
     {
-      group:'諸子本體', icon:'⬡',
+      group:'諸子本體', icon:'⬡', collapsible:true,
       items:[
-        {key:'ontology', href:'ontology.html',  label:'☰ 本體總論'},
-        {key:'full-ontology', href:'full-ontology.html', label:'🌌 三維星圖'},
-        {key:'spec',     href:'spec.html',      label:'📐 本體規範'},
-        {key:'classics', href:'classics.html', label:'📖 典籍詳解'},
-        {key:'terms',    href:'terms.html',    label:'🔖 術語詞典'},
-        {key:'idioms',   href:'idioms.html',   label:'🀄 成語典故'},
-        {key:'tools',    href:'tools.html',    label:'⿴ 研讀工具'},
+        {key:'ontology', href:'ontology.html',  label:'本體總論'},
+        {key:'full-ontology', href:'full-ontology.html', label:'三維星圖'},
+        {key:'spec',     href:'spec.html',      label:'本體規範'},
+        {key:'classics', href:'classics.html',  label:'典籍詳解'},
+        {key:'terms',    href:'terms.html',     label:'術語詞典'},
+        {key:'idioms',   href:'idioms.html',    label:'成語典故'},
+        {key:'tools',    href:'tools.html',     label:'研讀工具'},
       ]
     },
     {
-      group:'義理研究', icon:'✦',
+      group:'義理研究', icon:'✦', collapsible:true,
       items:[
-        {key:'cross',     href:'cross.html',     label:'⇌ 六藏互通'},
-        {key:'people',    href:'people.html',    label:'👤 諸子人物'},
-        {key:'panjiao',   href:'panjiao.html',    label:'⚖ 歷代評騭'},
-        {key:'timeline',  href:'timeline.html',   label:'⎯ 時間長卷'},
-        {key:'graph',     href:'graph.html',      label:'✺ 譜系圖譜'},
-        {key:'citation',  href:'citation.html',   label:'⇌ 引文關聯'},
-        {key:'reasoning', href:'reasoning.html',  label:'⚙ 本體推理'},
-        {key:'statistics',href:'statistics.html',  label:'▤ 典籍統計'},
+        {key:'cross',     href:'cross.html',     label:'六藏互通'},
+        {key:'people',    href:'people.html',    label:'諸子人物'},
+        {key:'panjiao',   href:'panjiao.html',   label:'歷代評騭'},
+        {key:'timeline',  href:'timeline.html',  label:'時間長卷'},
+        {key:'graph',     href:'graph.html',     label:'譜系圖譜'},
+        {key:'citation',  href:'citation.html',  label:'引文關聯'},
+        {key:'reasoning', href:'reasoning.html', label:'本體推理'},
+        {key:'statistics',href:'statistics.html',label:'典籍統計'},
       ]
     },
     {
-      group:'典籍深讀', icon:'📜',
+      group:'典籍深讀', icon:'📜', collapsible:true,
       items:[
-        {key:'zhuangzi', href:'zhuangzi.html',  label:'🦋 《莊子》深讀'},
-        {key:'laozi',    href:'laozi.html',     label:'☯ 《老子》深讀'},
-        {key:'liezi',    href:'liezi.html',     label:'☁ 《列子》深讀'},
-        {key:'lunyu',    href:'lunyu.html',     label:'📜 《論語》深讀'},
-        {key:'mengzi',   href:'mengzi.html',    label:'🪶 《孟子》深讀'},
-        {key:'xunzi',    href:'xunzi.html',     label:'📐 《荀子》精讀'},
-        {key:'hanfeizi', href:'hanfeizi.html',  label:'⚔ 《韓非子》精讀'},
-        {key:'mozi',     href:'mozi.html',      label:'◈ 《墨子》精讀'},
+        {key:'zhuangzi', href:'zhuangzi.html',  label:'《莊子》'},
+        {key:'laozi',    href:'laozi.html',     label:'《老子》'},
+        {key:'liezi',    href:'liezi.html',     label:'《列子》'},
+        {key:'lunyu',    href:'lunyu.html',     label:'《論語》'},
+        {key:'mengzi',   href:'mengzi.html',    label:'《孟子》'},
+        {key:'xunzi',    href:'xunzi.html',     label:'《荀子》'},
+        {key:'hanfeizi', href:'hanfeizi.html',  label:'《韓非子》'},
+        {key:'mozi',     href:'mozi.html',      label:'《墨子》'},
       ]
     },
     {
@@ -131,14 +131,24 @@ function buildNav(active){
   ];
 
   let navHTML = '';
-  sections.forEach(sec=>{
+  sections.forEach((sec,si)=>{
     if(sec.group){
-      navHTML += `<div class="side-group"><div class="side-group-title">${sec.icon?sec.icon+' ':''}${sec.group}</div>`;
+      const hasActive = sec.items.some(i=>active===i.key);
+      navHTML += `<div class="side-group ${hasActive?'expanded':''}">
+        <div class="side-group-title" onclick="this.parentElement.classList.toggle('expanded')">
+          <span class="side-group-label">${sec.icon?sec.icon+' ':''}${sec.group}</span>
+          <span class="side-group-arrow">▸</span>
+        </div>
+        <div class="side-group-items">`;
+      sec.items.forEach(i=>{
+        navHTML += `<a href="${i.href}" class="side-link ${active===i.key?'active':''}">${i.label}</a>\n`;
+      });
+      navHTML += '</div></div>';
+    } else {
+      sec.items.forEach(i=>{
+        navHTML += `<a href="${i.href}" class="side-link ${active===i.key?'active':''}">${i.icon?i.icon+' ':''}${i.label}</a>\n`;
+      });
     }
-    sec.items.forEach(i=>{
-      navHTML += `<a href="${i.href}" class="side-link ${active===i.key?'active':''}">${i.icon?i.icon+' ':''}${i.label}</a>\n`;
-    });
-    if(sec.group) navHTML += '</div>';
   });
 
   return `<aside class="site-sidebar">
