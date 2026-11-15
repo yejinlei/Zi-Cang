@@ -158,8 +158,6 @@
 
 /* ---- 主内容区适配顶部+侧边栏双层导航 ---- */
 .main-content{
-  margin-left:200px;
-  margin-top:64px;
   min-height:calc(100vh - 64px);
   position:relative;
 }
@@ -859,7 +857,7 @@ code{padding:2px 6px;font-size:13px;color:var(--jade);}
   body{font-size:15px;}
   .top-nav{height:56px;}
   .site-sidebar{width:180px;top:56px;}
-  .main-content{margin-left:180px;margin-top:56px;min-height:calc(100vh - 56px);}
+  body{padding-top:56px;padding-left:180px;}.main-content{min-height:calc(100vh - 56px);}
   .top-link{padding:7px 8px;font-size:13px;letter-spacing:1px;}
   .top-cta{display:none;}
   .brand-chinese{font-size:15px;letter-spacing:2px;}
