@@ -74,63 +74,87 @@ document.addEventListener('click', e=>{
   }
 });
 
-// ====== 导航栏 ======
+// ====== 侧边栏导航（Ji-Cang风格：固定左侧、可折叠、分层分组）======
 function buildNav(active){
-  const items = [
-    {key:'home',    href:'index.html',    icon:'☰', label:'首頁'},
-    {key:'library', href:'library.html',  icon:'📚',label:'全文庫'},
-    {key:'search',  href:'search.html',   icon:'🔍',label:'檢索'},
-    {key:'ontology',icon:'⬡', label:'諸子本體', children:[
-      {key:'ontology', href:'ontology.html', label:'⬡ 本體總論'},
-      {key:'classics', href:'classics.html', label:'📖 典籍詳解'},
-      {key:'terms',    href:'terms.html',    label:'🔖 術語詞典'},
-      {key:'idioms',   href:'idioms.html',   label:'🀄 成語典故'},
-      {key:'tools',    href:'tools.html',    label:'⿴ 研讀工具'},
-      {key:'spec',     href:'spec.html',     label:'📐 本體規範'},
-      {key:'full-ontology', href:'full-ontology.html', label:'🔬 全文本體化'}
-    ]},
-    {key:'research',icon:'✦', label:'義理研究', children:[
-      {key:'cross',     href:'cross.html',     label:'⇌ 六藏互通'},
-      {key:'people',    href:'people.html',    label:'👤 諸子人物'},
-      {key:'panjiao',   href:'panjiao.html',    label:'⚖ 歷代評騭'},
-      {key:'timeline',  href:'timeline.html',   label:'⎯ 時間長卷'},
-      {key:'graph',     href:'graph.html',      label:'✺ 譜系圖譜'},
-      {key:'citation',  href:'citation.html',   label:'⇌ 引文關聯'},
-      {key:'reasoning', href:'reasoning.html',  label:'⚙ 本體推理'},
-      {key:'zhuangzi', href:'zhuangzi.html',  label:'🦋 《莊子》深讀'},
-      {key:'laozi',    href:'laozi.html',     label:'☯ 《老子》深讀'},
-      {key:'liezi',    href:'liezi.html',     label:'☁ 《列子》深讀'},
-      {key:'lunyu',    href:'lunyu.html',     label:'📜 《論語》深讀'},
-      {key:'mengzi',   href:'mengzi.html',    label:'🪶 《孟子》深讀'},
-      {key:'xunzi',    href:'xunzi.html',     label:'📐 《荀子》精讀'},
-      {key:'hanfeizi', href:'hanfeizi.html',  label:'⚔ 《韓非子》精讀'},
-      {key:'mozi',     href:'mozi.html',      label:'◈ 《墨子》精讀'},
-      {key:'statistics',href:'statistics.html',  label:'▤ 典籍統計'}
-    ]},
-    {key:'map',     href:'map.html',      icon:'🗺', label:'時空'},
-    {key:'data',    href:'data.html',     icon:'💾', label:'數據'}
-  ];
-  const navHTML = items.map(i=>{
-    if(i.children){
-      const isActive = i.children.some(c=>c.key===active);
-      return `<div class="nav-drop">
-        <a class="nav-link ${isActive?'active':''}" href="${i.children[0].href}">${i.icon} ${i.label} <span class="nav-caret">▾</span></a>
-        <div class="nav-drop-menu">
-          ${i.children.map(c=>`<a href="${c.href}" class="nav-drop-item ${active===c.key?'active':''}">${c.label}</a>`).join('')}
-        </div>
-      </div>`;
+  const sections = [
+    {
+      group:'', items:[
+        {key:'home',    href:'index.html',    icon:'☰', label:'首頁'},
+        {key:'library', href:'library.html',  icon:'📚',label:'全文庫'},
+        {key:'search',  href:'search.html',   icon:'🔍',label:'檢索'},
+      ]
+    },
+    {
+      group:'諸子本體', icon:'⬡',
+      items:[
+        {key:'ontology', href:'ontology.html',  label:'☰ 本體總論'},
+        {key:'full-ontology', href:'full-ontology.html', label:'🌌 三維星圖'},
+        {key:'spec',     href:'spec.html',      label:'📐 本體規範'},
+        {key:'classics', href:'classics.html', label:'📖 典籍詳解'},
+        {key:'terms',    href:'terms.html',    label:'🔖 術語詞典'},
+        {key:'idioms',   href:'idioms.html',   label:'🀄 成語典故'},
+        {key:'tools',    href:'tools.html',    label:'⿴ 研讀工具'},
+      ]
+    },
+    {
+      group:'義理研究', icon:'✦',
+      items:[
+        {key:'cross',     href:'cross.html',     label:'⇌ 六藏互通'},
+        {key:'people',    href:'people.html',    label:'👤 諸子人物'},
+        {key:'panjiao',   href:'panjiao.html',    label:'⚖ 歷代評騭'},
+        {key:'timeline',  href:'timeline.html',   label:'⎯ 時間長卷'},
+        {key:'graph',     href:'graph.html',      label:'✺ 譜系圖譜'},
+        {key:'citation',  href:'citation.html',   label:'⇌ 引文關聯'},
+        {key:'reasoning', href:'reasoning.html',  label:'⚙ 本體推理'},
+        {key:'statistics',href:'statistics.html',  label:'▤ 典籍統計'},
+      ]
+    },
+    {
+      group:'典籍深讀', icon:'📜',
+      items:[
+        {key:'zhuangzi', href:'zhuangzi.html',  label:'🦋 《莊子》深讀'},
+        {key:'laozi',    href:'laozi.html',     label:'☯ 《老子》深讀'},
+        {key:'liezi',    href:'liezi.html',     label:'☁ 《列子》深讀'},
+        {key:'lunyu',    href:'lunyu.html',     label:'📜 《論語》深讀'},
+        {key:'mengzi',   href:'mengzi.html',    label:'🪶 《孟子》深讀'},
+        {key:'xunzi',    href:'xunzi.html',     label:'📐 《荀子》精讀'},
+        {key:'hanfeizi', href:'hanfeizi.html',  label:'⚔ 《韓非子》精讀'},
+        {key:'mozi',     href:'mozi.html',      label:'◈ 《墨子》精讀'},
+      ]
+    },
+    {
+      group:'', items:[
+        {key:'map',     href:'map.html',      icon:'🗺', label:'時空'},
+        {key:'data',    href:'data.html',     icon:'💾', label:'數據'}
+      ]
     }
-    return `<a href="${i.href}" class="nav-link ${active===i.key?'active':''}">${i.icon} ${i.label}</a>`;
-  }).join('');
-  return `<header class="site-nav">
-    <div class="nav-inner">
-      <a class="brand" href="index.html"><span class="brand-box">子</span><span class="brand-text">藏本體 · Zi-Cang Ontology</span></a>
-      <nav class="nav-links">
-        ${navHTML}
-      </nav>
+  ];
+
+  let navHTML = '';
+  sections.forEach(sec=>{
+    if(sec.group){
+      navHTML += `<div class="side-group"><div class="side-group-title">${sec.icon?sec.icon+' ':''}${sec.group}</div>`;
+    }
+    sec.items.forEach(i=>{
+      navHTML += `<a href="${i.href}" class="side-link ${active===i.key?'active':''}">${i.icon?i.icon+' ':''}${i.label}</a>\n`;
+    });
+    if(sec.group) navHTML += '</div>';
+  });
+
+  return `<aside class="site-sidebar">
+    <div class="sidebar-header">
+      <a class="brand" href="index.html">
+        <span class="brand-box">子</span>
+        <span class="brand-text">藏本體<br><small>Zi-Cang Ontology</small></span>
+      </a>
+    </div>
+    <div class="sidebar-body">
+      ${navHTML}
+    </div>
+    <div class="sidebar-footer">
       ${buildThemeMenu()}
     </div>
-  </header>`;
+  </aside>`;
 }
 function buildFooter(){
   return `<footer class="site-footer">
@@ -148,6 +172,22 @@ function injectLayout(active){
   const f = document.getElementById('siteFooter');
   if(n) n.outerHTML = buildNav(active);
   if(f) f.outerHTML = buildFooter();
+
+  // 自动包裹main-content：如果body直接子元素里没有.main-content，就把body里除了sidebar之外的内容包进去
+  const sidebar = document.querySelector('.site-sidebar');
+  let mainWrap = document.querySelector('.main-content');
+  if(!mainWrap){
+    mainWrap = document.createElement('div');
+    mainWrap.className = 'main-content';
+    // 把body里所有非sidebar的元素移进去
+    Array.from(document.body.children).forEach(child=>{
+      if(!child.classList.contains('site-sidebar')){
+        mainWrap.appendChild(child);
+      }
+    });
+    document.body.appendChild(mainWrap);
+  }
+
   initTheme();
   // 动态注入manifest + theme-color（PWA）
   if(!document.querySelector('link[rel=manifest]')){
