@@ -1,4 +1,4 @@
-const CACHE = 'zicang-v33';
+const CACHE = 'zicang-v34';
 // 预缓存列表：仅含首屏核心 shell；超大索引文件（几 MB）不预缓存，运行时按需缓存
 // addAll 是原子操作，任一文件 404/超限会导致整个 install 失败，所以只列确定存在且体积小的文件
 const APP_SHELL = [
@@ -32,8 +32,8 @@ const APP_SHELL = [
   './xunzi.html',
   './hanfeizi.html',
   './mozi.html',
-  './css/common.css',
-  './js/common.js',
+
+
   './js/linkify.js',
   './js/flexsearch.min.js',
   './data/books.js',
@@ -106,6 +106,20 @@ self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
   if (url.origin !== location.origin) return;
   const path = url.pathname;
+
+  // JS/CSS/HTML：network-first（带版本号参数时永远拿到最新）
+  if (path.endsWith('.js') || path.endsWith('.css') || path.endsWith('.html') || path === '/' || path.endsWith('/Zi-Cang/')) {
+    e.respondWith(
+      fetch(e.request).then(res => {
+        if (res && res.status === 200) {
+          const copy = res.clone();
+          caches.open(CACHE).then(c => c.put(e.request, copy)).catch(()=>{});
+        }
+        return res;
+      }).catch(() => caches.match(e.request))
+    );
+    return;
+  }
 
   // 文本文件：network-first，避免缓存旧版本文本
   if (path.startsWith('/texts/') || path.endsWith('.txt')) {
